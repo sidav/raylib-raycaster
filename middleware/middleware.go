@@ -10,12 +10,16 @@ var (
 )
 
 func SetColor(r, g, b uint8) {
-	currColor = color.RGBA{
-		R: r,
-		G: g,
-		B: b,
-		A: 255,
-	}
+	currColor.R = r
+	currColor.G = g
+	currColor.B = b
+	currColor.A = 255
+	//currColor = color.RGBA{
+	//	R: r,
+	//	G: g,
+	//	B: b,
+	//	A: 255,
+	//}
 }
 
 func DrawPoint(x, y int32) {

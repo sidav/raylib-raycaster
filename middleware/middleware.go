@@ -6,8 +6,37 @@ import (
 )
 
 var (
-	currColor color.RGBA
+	currColor     color.RGBA
+	TargetTexture rl.RenderTexture2D
 )
+
+func SetInternalResolution(w, h int32) {
+	TargetTexture = rl.LoadRenderTexture(w, h)
+	rl.SetTextureFilter(TargetTexture.Texture, rl.FilterAnisotropic16x)
+}
+
+func Flush() {
+	rl.BeginDrawing()
+	rl.DrawTexturePro(TargetTexture.Texture, rl.Rectangle{
+		X:      0,
+		Y:      float32(TargetTexture.Texture.Height),
+		Width:  float32(TargetTexture.Texture.Width),
+		Height: float32(-TargetTexture.Texture.Height),
+	},
+	rl.Rectangle{
+		X:      0,
+		Y:      0,
+		Width:  float32(rl.GetScreenWidth()),
+		Height: float32(rl.GetScreenHeight()),
+	},
+	rl.Vector2{
+		X: 0,
+		Y: 0,
+	},
+	0,
+	color.RGBA{255, 255, 255, 255})
+	rl.EndDrawing()
+}
 
 func SetColor(r, g, b uint8) {
 	currColor.R = r

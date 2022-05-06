@@ -14,7 +14,7 @@ type Scene struct {
 }
 
 func (s *Scene) init() {
-	s.Camera = raycaster.CreateCamera(5, 5, 100, 0, 0, 0, 0)
+	s.Camera = raycaster.CreateCamera(5, 5, 100, 0, 0, 5, 1)
 	mp := []string{
 		"##########",
 		"#........#",

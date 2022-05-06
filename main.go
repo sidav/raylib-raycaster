@@ -43,14 +43,17 @@ func main() {
 	middleware.SetInternalResolution(IRES_W, IRES_H)
 
 	for !rl.WindowShouldClose() {
-		if rl.IsKeyDown(rl.KeyUp) {
-			s.Camera.MoveForward(0.03)
+		if rl.IsKeyPressed(rl.KeyUp) {
+			s.Camera.MoveForward(1)
 		}
-		if rl.IsKeyDown(rl.KeyLeft) {
-			s.Camera.Rotate(2 * -3.141592654/180)
+		if rl.IsKeyPressed(rl.KeyLeft) {
+			s.Camera.Rotate(45 * -3.141592654/180)
 		}
-		if rl.IsKeyDown(rl.KeyRight) {
-			s.Camera.Rotate(2 * 3.141592654/180)
+		if rl.IsKeyPressed(rl.KeyRight) {
+			s.Camera.Rotate(45 * 3.141592654/180)
+		}
+		if rl.IsKeyPressed(rl.KeyDown) {
+			s.Camera.MoveForward(-1)
 		}
 
 

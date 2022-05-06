@@ -14,12 +14,12 @@ type Scene struct {
 }
 
 func (s *Scene) init() {
-	s.Camera = raycaster.CreateCamera(5, 5, 100, 0, 0, 5, 1)
+	s.Camera = raycaster.CreateCamera(5.5, 5.5, 120, 0, 0, 5, 1)
 	mp := []string{
 		"##########",
 		"#........#",
 		"#........#",
-		"#........#",
+		"####+#####",
 		"#........#",
 		"#........#",
 		"#........#",
@@ -38,6 +38,7 @@ func (s *Scene) init() {
 	// init textures (temp.)
 	s.wallTexturesAtlas = make(map[rune]*raycaster.Texture, 0)
 	s.wallTexturesAtlas['#'] = s.readTextureFromFile("textures/wall.png")
+	s.wallTexturesAtlas['+'] = s.readTextureFromFile("textures/door.png")
 }
 
 func (s *Scene) AreGridCoordsValid(x, y int) bool {

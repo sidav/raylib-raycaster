@@ -10,8 +10,8 @@ const (
 	WINDOW_W = 800
 	WINDOW_H = 600
 
-	IRES_W = 320
-	IRES_H = 240
+	IRES_W = WINDOW_W/2
+	IRES_H = WINDOW_H/2
 )
 
 var (
@@ -21,6 +21,7 @@ var (
 
 func main() {
 	rl.InitWindow(WINDOW_W, WINDOW_H, "RENDERER")
+	rl.SetWindowState(rl.FlagWindowResizable)
 	rl.SetTargetFPS(30)
 	rl.SetExitKey(rl.KeyEscape)
 
@@ -43,14 +44,14 @@ func main() {
 	middleware.SetInternalResolution(IRES_W, IRES_H)
 
 	for !rl.WindowShouldClose() {
-		if rl.IsKeyPressed(rl.KeyUp) {
-			s.Camera.MoveForward(1)
+		if rl.IsKeyDown(rl.KeyUp) {
+			s.Camera.MoveForward(0.03)
 		}
-		if rl.IsKeyPressed(rl.KeyLeft) {
-			s.Camera.Rotate(45 * -3.141592654/180)
+		if rl.IsKeyDown(rl.KeyLeft) {
+			s.Camera.Rotate(2 * -3.141592654/180)
 		}
-		if rl.IsKeyPressed(rl.KeyRight) {
-			s.Camera.Rotate(45 * 3.141592654/180)
+		if rl.IsKeyDown(rl.KeyRight) {
+			s.Camera.Rotate(2 * 3.141592654/180)
 		}
 		if rl.IsKeyPressed(rl.KeyDown) {
 			s.Camera.MoveForward(-1)

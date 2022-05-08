@@ -4,7 +4,7 @@ type Scene interface {
 	GetFloorTextureForCoords(int, int) *Texture
 	GetCeilingTextureForCoords(int, int) *Texture
 	GetCamera() *Camera
-	GetListOfThings() []*Thing
+	GetListOfThings() []Thing
 	AreGridCoordsValid(int, int) bool
 	IsTileOpaque(int, int) bool
 	IsTileThin(int, int) bool

@@ -10,7 +10,8 @@ type SpriteStruct struct {
 	w, h   int
 }
 
-func (s *SpriteStruct) InitSpriteFromFile(filename string) {
+func InitSpriteFromImageFile(filename string) *SpriteStruct {
+	s := SpriteStruct{}
 	// first, read the image file
 	imgfile, _ := os.Open(filename)
 	defer imgfile.Close()
@@ -28,4 +29,5 @@ func (s *SpriteStruct) InitSpriteFromFile(filename string) {
 
 	s.bitmap = img
 	s.w, s.h = cfg.Width, cfg.Height
+	return &s
 }

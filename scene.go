@@ -1,14 +1,12 @@
 package main
 
 import (
-	"image"
-	"image/png"
-	"os"
 	"raylib-raycaster/raycaster"
 )
 
 type Scene struct {
 	wallTexturesAtlas map[rune]*raycaster.Texture
+	SpritesAtlas      map[string]*raycaster.SpriteStruct
 	gameMap           [][]rune
 	Camera            *raycaster.Camera
 }
@@ -37,8 +35,12 @@ func (s *Scene) init() {
 
 	// init textures (temp.)
 	s.wallTexturesAtlas = make(map[rune]*raycaster.Texture, 0)
-	s.wallTexturesAtlas['#'] = s.readTextureFromFile("textures/wall.png")
-	s.wallTexturesAtlas['+'] = s.readTextureFromFile("textures/door.png")
+	s.wallTexturesAtlas['#'] = raycaster.InitTextureFromImageFile("textures/wall.png")
+	s.wallTexturesAtlas['+'] = raycaster.InitTextureFromImageFile("textures/door.png")
+
+	// init sprites
+	s.SpritesAtlas = make(map[string]*raycaster.SpriteStruct, 0)
+	s.SpritesAtlas["proj"] = raycaster.InitSpriteFromImageFile("sprites/projectile.png")
 }
 
 func (s *Scene) AreGridCoordsValid(x, y int) bool {
@@ -112,34 +114,6 @@ func (s *Scene) GetCeilingTextureForCoords(x, y int) *raycaster.Texture {
 	//return tex
 }
 
-func (s *Scene) GetListOfThings() []*raycaster.Thing {
-	return make([]*raycaster.Thing, 0)
-}
-
-func (s *Scene) readTextureFromFile(filename string) *raycaster.Texture {
-	// first, read the image file
-	imgfile, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer imgfile.Close()
-	img, err := png.Decode(imgfile)
-	imgfile.Seek(0, 0)
-	if err != nil {
-		panic(err)
-	}
-	// return the "reader carriage" to zero
-	imgfile.Seek(0, 0)
-	// read file config (needed for w, h)
-	cfg, _, err := image.DecodeConfig(imgfile)
-	if err != nil {
-		panic(err)
-	}
-	// init the map if needed
-
-	return &raycaster.Texture{
-		Bitmap: img,
-		W:      cfg.Width,
-		H:      cfg.Height,
-	}
+func (s *Scene) GetListOfThings() []raycaster.Thing {
+	return []raycaster.Thing{}
 }

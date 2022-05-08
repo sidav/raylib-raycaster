@@ -33,7 +33,7 @@ func main() {
 		RenderCeilings:         false,
 		MaxRayLength:           25,
 		MaxFogFraction:         0,
-		RayLengthForMaximumFog: 0,
+		RayLengthForMaximumFog: 4,
 		FogR:                   0,
 		FogG:                   0,
 		FogB:                   0,

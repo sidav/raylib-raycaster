@@ -6,8 +6,9 @@ func (r *Renderer) renderThings() {
 	camx, camy := r.cam.getCoordsWithOffset()
 	things := r.scene.GetListOfThings()
 	for _, t := range things {
+		tx, ty := t.GetCoords()
 		// check if the Sprite is faced by Camera
-		xRelative, yRelative := t.X-camx, t.Y-camy
+		xRelative, yRelative := tx-camx, ty-camy
 		invDet := 1.0 / (r.cam.planeX*r.cam.dirY - r.cam.dirX*r.cam.planeY) // vector projection fuckery
 		transformX := invDet * (r.cam.dirY*xRelative - r.cam.dirX*yRelative)
 		transformY := invDet * (-r.cam.planeY*xRelative + r.cam.planeX*yRelative)
@@ -21,7 +22,7 @@ func (r *Renderer) renderThings() {
 		osh := int(r.aspectFactor * float64(r.RenderHeight) / transformY)
 
 		// render the Sprite column-wise, like a Texture
-		currSprite := t.Sprite
+		currSprite := t.GetSprite()
 		for x := 0; x < osw; x++ {
 			screenXCoord := x + osx - osw/2
 			if screenXCoord < 0 || screenXCoord > r.RenderWidth-1 || r.rayDistancesBuffer[screenXCoord] < transformY {

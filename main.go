@@ -10,13 +10,14 @@ const (
 	WINDOW_W = 800
 	WINDOW_H = 600
 
-	IRES_W = WINDOW_W/2
-	IRES_H = WINDOW_H/2
+	IRES_W = WINDOW_W / 2
+	IRES_H = WINDOW_H / 2
 )
 
 var (
 	gameIsRunning bool
 	renderer      *raycaster.Renderer
+	scene         *Scene
 )
 
 func main() {
@@ -38,27 +39,33 @@ func main() {
 		FogG:                   0,
 		FogB:                   0,
 	}
-	s := &Scene{}
-	s.init()
+	scene = &Scene{}
+	scene.init()
 	gameIsRunning = true
 	middleware.SetInternalResolution(IRES_W, IRES_H)
 
 	for !rl.WindowShouldClose() {
 		if rl.IsKeyDown(rl.KeyUp) {
-			s.Camera.MoveForward(0.03)
+			scene.Camera.MoveForward(0.03)
 		}
 		if rl.IsKeyDown(rl.KeyLeft) {
-			s.Camera.Rotate(2 * -3.141592654/180)
+			scene.Camera.Rotate(3 * -3.141592654 / 180)
 		}
 		if rl.IsKeyDown(rl.KeyRight) {
-			s.Camera.Rotate(2 * 3.141592654/180)
+			scene.Camera.Rotate(3 * 3.141592654 / 180)
 		}
 		if rl.IsKeyPressed(rl.KeyDown) {
-			s.Camera.MoveForward(-1)
+			scene.Camera.MoveForward(-1)
+		}
+		if rl.IsKeyPressed(rl.KeySpace) {
+			scene.things = append(scene.things, &thing{
+				x:          scene.Camera.X,
+				y:          scene.Camera.Y,
+				spriteCode: "proj",
+			})
 		}
 
-
-		renderFrame(s)
+		renderFrame(scene)
 	}
 
 	rl.CloseWindow()

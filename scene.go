@@ -6,8 +6,9 @@ import (
 
 type Scene struct {
 	wallTexturesAtlas map[rune]*raycaster.Texture
-	SpritesAtlas      map[string]*raycaster.SpriteStruct
+	spritesAtlas      map[string]*raycaster.SpriteStruct
 	gameMap           [][]rune
+	things            []raycaster.Thing
 	Camera            *raycaster.Camera
 }
 
@@ -39,8 +40,8 @@ func (s *Scene) init() {
 	s.wallTexturesAtlas['+'] = raycaster.InitTextureFromImageFile("textures/door.png")
 
 	// init sprites
-	s.SpritesAtlas = make(map[string]*raycaster.SpriteStruct, 0)
-	s.SpritesAtlas["proj"] = raycaster.InitSpriteFromImageFile("sprites/projectile.png")
+	s.spritesAtlas = make(map[string]*raycaster.SpriteStruct, 0)
+	s.spritesAtlas["proj"] = raycaster.InitSpriteFromImageFile("sprites/projectile.png")
 }
 
 func (s *Scene) AreGridCoordsValid(x, y int) bool {
@@ -115,5 +116,5 @@ func (s *Scene) GetCeilingTextureForCoords(x, y int) *raycaster.Texture {
 }
 
 func (s *Scene) GetListOfThings() []raycaster.Thing {
-	return []raycaster.Thing{}
+	return s.things
 }

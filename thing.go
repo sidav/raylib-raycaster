@@ -1,6 +1,9 @@
 package main
 
-import "raylib-raycaster/raycaster"
+import (
+	"fmt"
+	"raylib-raycaster/raycaster"
+)
 
 type thing struct {
 	x, y float64
@@ -13,5 +16,8 @@ func (t *thing) GetCoords() (float64, float64) {
 }
 
 func (t *thing) GetSprite() *raycaster.SpriteStruct {
-	return nil
+	if scene.spritesAtlas[t.spriteCode] == nil {
+		panic(fmt.Sprintf("WATAFUQ: %s, %v, %d", t.spriteCode, scene.spritesAtlas, len(scene.spritesAtlas)))
+	}
+	return scene.spritesAtlas[t.spriteCode]
 }

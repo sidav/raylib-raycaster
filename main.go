@@ -12,6 +12,8 @@ const (
 
 	IRES_W = 250
 	IRES_H = 200
+
+	VIEW_ANGLE = 135
 )
 
 var (

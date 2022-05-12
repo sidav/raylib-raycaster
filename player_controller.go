@@ -75,10 +75,13 @@ func (g *game) tryOpenDoorAsPlayer() {
 			g.scene.gameMap[tx][ty].tileSlideAmount += factor/MOVEFRAMES
 			renderFrame(g.scene)
 		}
-	} else {
-		g.scene.Camera.ChangeViewWidth(75.0)
+	} else { // zoom effect for "pushing" the wall
+		initialAngle := VIEW_ANGLE / 2.0
+		g.scene.Camera.ChangeViewWidth(initialAngle)
+		angleIncrement := (VIEW_ANGLE - initialAngle) / MOVEFRAMES
+
 		for i := 0; i < MOVEFRAMES; i++ {
-			g.scene.Camera.ChangeViewWidth(75.0 + float64(i) * (75.0 / MOVEFRAMES))
+			g.scene.Camera.ChangeViewWidth(initialAngle + float64(i) * angleIncrement)
 			renderFrame(g.scene)
 		}
 	}

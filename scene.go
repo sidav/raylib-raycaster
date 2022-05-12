@@ -11,7 +11,7 @@ type Scene struct {
 }
 
 func (s *Scene) init(camX, camY float64) {
-	s.Camera = raycaster.CreateCamera(camX, camY, 120, 0, 0, 4, 1)
+	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 0, 0, 4, 1)
 	mp := []string{
 		"##########",
 		"#........#",

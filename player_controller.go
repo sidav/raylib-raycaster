@@ -23,3 +23,7 @@ func (g *game) workPlayerInput() {
 		})
 	}
 }
+
+func (g *game) movePlayerForward() {
+
+}

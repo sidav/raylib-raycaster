@@ -5,13 +5,13 @@ import (
 )
 
 type Scene struct {
-	gameMap           [][]rune
+	gameMap           [][]tile
 	things            []raycaster.Thing
 	Camera            *raycaster.Camera
 }
 
-func (s *Scene) init() {
-	s.Camera = raycaster.CreateCamera(5.5, 5.5, 120, 0, 0, 4, 1)
+func (s *Scene) init(camX, camY float64) {
+	s.Camera = raycaster.CreateCamera(camX, camY, 120, 0, 0, 4, 1)
 	mp := []string{
 		"##########",
 		"#........#",
@@ -24,11 +24,18 @@ func (s *Scene) init() {
 		"#........#",
 		"##########",
 	}
-	s.gameMap = make([][]rune, 0)
+	s.gameMap = make([][]tile, 0)
 	for i := 0; i < len(mp); i++ {
-		s.gameMap = append(s.gameMap, make([]rune, 0))
+		s.gameMap = append(s.gameMap, make([]tile, 0))
 		for j := 0; j < len(mp[i]); j++ {
-			s.gameMap[i] = append(s.gameMap[i], rune(mp[i][j]))
+			char := rune(mp[i][j])
+			var code string
+			switch char {
+			case '.': code = "FLOOR"
+			case '#': code = "WALL"
+			case '+': code = "DOOR"
+			}
+			s.gameMap[i] = append(s.gameMap[i], tile{tileCode: code})
 		}
 	}
 }
@@ -38,7 +45,7 @@ func (s *Scene) AreGridCoordsValid(x, y int) bool {
 }
 
 func (s *Scene) IsTileOpaque(x, y int) bool {
-	return s.gameMap[x][y] != '.'
+	return s.gameMap[x][y].getStaticData().opaque
 }
 
 func (s *Scene) GetTileElevation(x, y int) float64 {
@@ -57,17 +64,17 @@ func (s *Scene) GetTileSlideAmount(x, y int) float64 {
 }
 
 func (s *Scene) IsTileThin(x, y int) bool {
-	return s.gameMap[x][y] == '|' || s.gameMap[x][y] == '-' || s.gameMap[x][y] == '+'
+	return s.gameMap[x][y].getStaticData().thin
 }
 
 func (s *Scene) GetTextureForTile(x, y int) *raycaster.Texture {
 	t := s.gameMap[x][y]
-	tex := wallTexturesAtlas[t]
+	tex := wallTexturesAtlas[t.tileCode]
 	if tex == nil {
-		tex = wallTexturesAtlas['#']
+		tex = wallTexturesAtlas["WALL"]
 	}
 	if tex == nil {
-		panic("NO Texture FOR " + string(t))
+		panic("NO Texture FOR " + t.tileCode)
 	}
 	return tex
 }

@@ -7,11 +7,11 @@ import (
 )
 
 const (
-	WINDOW_W = 800
-	WINDOW_H = 600
+	WINDOW_W = 1000
+	WINDOW_H = 800
 
-	IRES_W = WINDOW_W / 2
-	IRES_H = WINDOW_H / 2
+	IRES_W = 250
+	IRES_H = 200
 )
 
 var (
@@ -32,11 +32,11 @@ func main() {
 		RenderFloors:           false,
 		RenderCeilings:         false,
 		MaxRayLength:           25,
-		MaxFogFraction:         0,
-		RayLengthForMaximumFog: 4,
-		FogR:                   0,
-		FogG:                   0,
-		FogB:                   0,
+		MaxFogFraction:         0.9,
+		RayLengthForMaximumFog: 5,
+		FogR:                   64,
+		FogG:                   64,
+		FogB:                   32,
 	}
 	middleware.SetInternalResolution(IRES_W, IRES_H)
 	loadResources()

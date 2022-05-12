@@ -11,12 +11,17 @@ const (
 
 type game struct {
 	gameState int
+	player    *mob
 	scene     *Scene
 }
 
 func (g *game) init() {
 	g.scene = &Scene{}
-	g.scene.init()
+	g.player = &mob{
+		x: 5.5,
+		y: 5.5,
+	}
+	g.scene.init(g.player.x, g.player.y)
 	gameIsRunning = true
 }
 
@@ -25,6 +30,9 @@ func (g *game) gameLoop() {
 		switch g.gameState {
 		case GSTATE_PLAYER_INPUT:
 			g.workPlayerInput()
+		case GSTATE_PLAYER_MOVEMENT:
+		case GSTATE_RESET_TO_ZERO:
+			g.gameState = 0
 		}
 		renderFrame(g.scene)
 	}

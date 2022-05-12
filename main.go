@@ -10,8 +10,8 @@ const (
 	WINDOW_W = 1000
 	WINDOW_H = 800
 
-	IRES_W = 250
-	IRES_H = 200
+	IRES_W = 320
+	IRES_H = 240
 
 	VIEW_ANGLE = 135
 )

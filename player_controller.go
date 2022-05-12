@@ -2,6 +2,7 @@ package main
 
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"math"
 )
 
 func (g *game) workPlayerInput() {
@@ -75,7 +76,8 @@ func (g *game) tryOpenDoorAsPlayer() {
 			g.scene.gameMap[tx][ty].tileSlideAmount += factor/MOVEFRAMES
 			renderFrame(g.scene)
 		}
-	} else { // zoom effect for "pushing" the wall
+		g.scene.gameMap[tx][ty].tileSlideAmount = math.Round(g.scene.gameMap[tx][ty].tileSlideAmount)
+	} else if !g.scene.IsTilePassable(tx, ty) { // zoom effect for "pushing" the wall
 		initialAngle := VIEW_ANGLE / 2.0
 		g.scene.Camera.ChangeViewWidth(initialAngle)
 		angleIncrement := (VIEW_ANGLE - initialAngle) / MOVEFRAMES

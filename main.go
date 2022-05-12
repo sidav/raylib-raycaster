@@ -33,9 +33,9 @@ func main() {
 		RenderCeilings:         false,
 		MaxRayLength:           25,
 		MaxFogFraction:         0.9,
-		RayLengthForMaximumFog: 5,
+		RayLengthForMaximumFog: 6,
 		FogR:                   64,
-		FogG:                   64,
+		FogG:                   128,
 		FogB:                   32,
 	}
 	middleware.SetInternalResolution(IRES_W, IRES_H)
@@ -47,3 +47,12 @@ func main() {
 
 	rl.CloseWindow()
 }
+
+func trueCoordsToTileCoords(tx, ty float64) (int, int) {
+	return int(tx), int(ty)
+}
+
+func tileCoordsToPhysicalCoords(tx, ty int) (float64, float64) {
+	return float64(tx) + 0.5, float64(ty) + 0.5
+}
+

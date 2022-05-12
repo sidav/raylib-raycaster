@@ -18,8 +18,9 @@ type game struct {
 func (g *game) init() {
 	g.scene = &Scene{}
 	g.player = &mob{
-		x: 5.5,
-		y: 5.5,
+		x:     5.5,
+		y:     5.5,
+		facey: 1,
 	}
 	g.scene.init(g.player.x, g.player.y)
 	gameIsRunning = true

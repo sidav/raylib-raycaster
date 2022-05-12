@@ -48,6 +48,10 @@ func (s *Scene) IsTileOpaque(x, y int) bool {
 	return s.gameMap[x][y].getStaticData().opaque
 }
 
+func (s *Scene) IsTilePassable(x, y int) bool {
+	return s.gameMap[x][y].getStaticData().passable
+}
+
 func (s *Scene) GetTileElevation(x, y int) float64 {
 	return 0
 }

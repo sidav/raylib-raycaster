@@ -17,7 +17,6 @@ const (
 var (
 	gameIsRunning bool
 	renderer      *raycaster.Renderer
-	scene         *Scene
 )
 
 func main() {
@@ -39,34 +38,12 @@ func main() {
 		FogG:                   0,
 		FogB:                   0,
 	}
-	scene = &Scene{}
-	scene.init()
-	gameIsRunning = true
 	middleware.SetInternalResolution(IRES_W, IRES_H)
+	loadResources()
 
-	for !rl.WindowShouldClose() {
-		if rl.IsKeyDown(rl.KeyUp) {
-			scene.Camera.MoveForward(0.03)
-		}
-		if rl.IsKeyDown(rl.KeyLeft) {
-			scene.Camera.Rotate(3 * -3.141592654 / 180)
-		}
-		if rl.IsKeyDown(rl.KeyRight) {
-			scene.Camera.Rotate(3 * 3.141592654 / 180)
-		}
-		if rl.IsKeyPressed(rl.KeyDown) {
-			scene.Camera.MoveForward(-1)
-		}
-		if rl.IsKeyPressed(rl.KeySpace) {
-			scene.things = append(scene.things, &thing{
-				x:          scene.Camera.X,
-				y:          scene.Camera.Y,
-				spriteCode: "proj",
-			})
-		}
-
-		renderFrame(scene)
-	}
+	g := &game{}
+	g.init()
+	g.gameLoop()
 
 	rl.CloseWindow()
 }

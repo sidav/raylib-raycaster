@@ -16,8 +16,8 @@ func (t *thing) GetCoords() (float64, float64) {
 }
 
 func (t *thing) GetSprite() *raycaster.SpriteStruct {
-	if scene.spritesAtlas[t.spriteCode] == nil {
-		panic(fmt.Sprintf("WATAFUQ: %s, %v, %d", t.spriteCode, scene.spritesAtlas, len(scene.spritesAtlas)))
+	if spritesAtlas[t.spriteCode] == nil {
+		panic(fmt.Sprintf("WATAFUQ: %s, %v, %d", t.spriteCode, spritesAtlas, len(spritesAtlas)))
 	}
-	return scene.spritesAtlas[t.spriteCode]
+	return spritesAtlas[t.spriteCode]
 }

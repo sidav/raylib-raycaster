@@ -5,8 +5,6 @@ import (
 )
 
 type Scene struct {
-	wallTexturesAtlas map[rune]*raycaster.Texture
-	spritesAtlas      map[string]*raycaster.SpriteStruct
 	gameMap           [][]rune
 	things            []raycaster.Thing
 	Camera            *raycaster.Camera
@@ -33,15 +31,6 @@ func (s *Scene) init() {
 			s.gameMap[i] = append(s.gameMap[i], rune(mp[i][j]))
 		}
 	}
-
-	// init textures (temp.)
-	s.wallTexturesAtlas = make(map[rune]*raycaster.Texture, 0)
-	s.wallTexturesAtlas['#'] = raycaster.InitTextureFromImageFile("textures/wall.png")
-	s.wallTexturesAtlas['+'] = raycaster.InitTextureFromImageFile("textures/door.png")
-
-	// init sprites
-	s.spritesAtlas = make(map[string]*raycaster.SpriteStruct, 0)
-	s.spritesAtlas["proj"] = raycaster.InitSpriteFromImageFile("sprites/projectile.png")
 }
 
 func (s *Scene) AreGridCoordsValid(x, y int) bool {
@@ -73,9 +62,9 @@ func (s *Scene) IsTileThin(x, y int) bool {
 
 func (s *Scene) GetTextureForTile(x, y int) *raycaster.Texture {
 	t := s.gameMap[x][y]
-	tex := s.wallTexturesAtlas[t]
+	tex := wallTexturesAtlas[t]
 	if tex == nil {
-		tex = s.wallTexturesAtlas['#']
+		tex = wallTexturesAtlas['#']
 	}
 	if tex == nil {
 		panic("NO Texture FOR " + string(t))

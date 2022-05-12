@@ -1,15 +1,27 @@
 package main
 
 type tile struct {
-	tileCode string
+	tileCode        string
+	tileSlideAmount float64
 }
 
 func (t *tile) getStaticData() *tileStaticData {
 	return tileStaticTable[t.tileCode]
 }
 
+func (t *tile) isPassable() bool {
+	if t.getStaticData().openable {
+		return t.tileSlideAmount > 0.5
+	}
+	return t.getStaticData().passable
+}
+
+func (t *tile) isOpened() bool {
+	return t.tileSlideAmount >= 1.0
+}
+
 type tileStaticData struct {
-	passable, opaque, thin bool
+	passable, opaque, thin, openable bool
 }
 
 var tileStaticTable = map[string]*tileStaticData{
@@ -25,5 +37,6 @@ var tileStaticTable = map[string]*tileStaticData{
 		passable: false,
 		opaque:   true,
 		thin:     true,
+		openable: true,
 	},
 }

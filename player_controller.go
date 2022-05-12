@@ -17,6 +17,9 @@ func (g *game) workPlayerInput() {
 	if rl.IsKeyDown(rl.KeyDown) {
 		g.movePlayerByFacing(true)
 	}
+	if rl.IsKeyPressed(rl.KeySpace) {
+		g.tryOpenDoorAsPlayer()
+	}
 	//if rl.IsKeyPressed(rl.KeySpace) {
 	//	g.scene.things = append(g.scene.things, &thing{
 	//		x:          g.scene.Camera.X,
@@ -57,5 +60,26 @@ func (g *game) rotatePlayer(clockwise bool) {
 	for i := 0; i < int(MOVEFRAMES); i++ {
 		g.scene.Camera.Rotate(factor*(90/MOVEFRAMES)*3.14159265358 / 180.0)
 		renderFrame(g.scene)
+	}
+}
+
+func (g *game) tryOpenDoorAsPlayer() {
+	const MOVEFRAMES = 15.0
+	tx, ty := trueCoordsToTileCoords(g.player.x+g.player.facex, g.player.y+g.player.facey)
+	if g.scene.gameMap[tx][ty].getStaticData().openable {
+		factor := 1.0
+		if g.scene.gameMap[tx][ty].isOpened() {
+			factor = -1.0
+		}
+		for i := 0; i < MOVEFRAMES; i++ {
+			g.scene.gameMap[tx][ty].tileSlideAmount += factor/MOVEFRAMES
+			renderFrame(g.scene)
+		}
+	} else {
+		g.scene.Camera.ChangeViewWidth(75.0)
+		for i := 0; i < MOVEFRAMES; i++ {
+			g.scene.Camera.ChangeViewWidth(75.0 + float64(i) * (75.0 / MOVEFRAMES))
+			renderFrame(g.scene)
+		}
 	}
 }

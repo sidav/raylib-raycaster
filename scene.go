@@ -49,7 +49,7 @@ func (s *Scene) IsTileOpaque(x, y int) bool {
 }
 
 func (s *Scene) IsTilePassable(x, y int) bool {
-	return s.gameMap[x][y].getStaticData().passable
+	return s.gameMap[x][y].isPassable()
 }
 
 func (s *Scene) GetTileElevation(x, y int) float64 {
@@ -61,10 +61,7 @@ func (s *Scene) GetCamera() *raycaster.Camera {
 }
 
 func (s *Scene) GetTileSlideAmount(x, y int) float64 {
-	//if s.gameMap[x][y] == '-' || s.gameMap[x][y] == '|' {
-	//	return s.CurrElevation
-	//}
-	return 0
+	return s.gameMap[x][y].tileSlideAmount
 }
 
 func (s *Scene) IsTileThin(x, y int) bool {

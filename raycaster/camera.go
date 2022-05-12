@@ -43,6 +43,9 @@ func (c *Camera) getSquareDistanceTo(x, y float64) float64 {
 }
 
 func (c *Camera) ChangeViewWidth(degrees float64) {
+	// remember the camera rotation angle
+	lastAngle := math.Atan2(-c.dirX, c.dirY)
+
 	// reset the Camera dir
 	c.dirX = 0
 	c.movDirX = 0
@@ -50,7 +53,12 @@ func (c *Camera) ChangeViewWidth(degrees float64) {
 	c.movDirY = 1
 	c.planeX = -0.5
 	c.planeY = 0
-	c.dirY = 1.0 / math.Tan(degrees * math.Pi / 360.0)
+
+	// setting the degrees
+	c.dirY = 1.0 / math.Tan(degrees*math.Pi/360.0)
+
+	// return the Camera rotation angle
+	c.Rotate(lastAngle)
 }
 
 func (c *Camera) Rotate(radians float64) {

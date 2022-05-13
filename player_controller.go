@@ -21,13 +21,13 @@ func (g *game) workPlayerInput() {
 	if rl.IsKeyPressed(rl.KeySpace) {
 		g.tryOpenDoorAsPlayer()
 	}
-	//if rl.IsKeyPressed(rl.KeySpace) {
-	//	g.scene.things = append(g.scene.things, &thing{
-	//		x:          g.scene.Camera.X,
-	//		y:          g.scene.Camera.Y,
-	//		spriteCode: "proj",
-	//	})
-	//}
+	if rl.IsKeyPressed(rl.KeyEnter) {
+		g.scene.things = append(g.scene.things, &projectile{
+			x:          g.scene.Camera.X,
+			y:          g.scene.Camera.Y,
+			spriteCode: "proj",
+		})
+	}
 }
 
 func (g *game) movePlayerByFacing(backwards bool) {
@@ -38,10 +38,10 @@ func (g *game) movePlayerByFacing(backwards bool) {
 	}
 	tx, ty := trueCoordsToTileCoords(g.player.x+factor*g.player.facex, g.player.y+factor*g.player.facey)
 	if g.scene.IsTilePassable(tx, ty) {
-		g.player.x += factor*g.player.facex
-		g.player.y += factor*g.player.facey
+		g.player.x += factor * g.player.facex
+		g.player.y += factor * g.player.facey
 		for i := 0; i < int(MOVEFRAMES)-1; i++ {
-			g.scene.Camera.MoveForward(factor*1/MOVEFRAMES)
+			g.scene.Camera.MoveForward(factor * 1 / MOVEFRAMES)
 			renderFrame(g.scene)
 		}
 		g.scene.Camera.X = g.player.x
@@ -59,7 +59,7 @@ func (g *game) rotatePlayer(clockwise bool) {
 		g.player.facex, g.player.facey = g.player.facey, -g.player.facex
 	}
 	for i := 0; i < int(MOVEFRAMES); i++ {
-		g.scene.Camera.Rotate(factor*(90/MOVEFRAMES)*3.14159265358 / 180.0)
+		g.scene.Camera.Rotate(factor * (90 / MOVEFRAMES) * 3.14159265358 / 180.0)
 		renderFrame(g.scene)
 	}
 }
@@ -73,7 +73,7 @@ func (g *game) tryOpenDoorAsPlayer() {
 			factor = -1.0
 		}
 		for i := 0; i < MOVEFRAMES; i++ {
-			g.scene.gameMap[tx][ty].tileSlideAmount += factor/MOVEFRAMES
+			g.scene.gameMap[tx][ty].tileSlideAmount += factor / MOVEFRAMES
 			renderFrame(g.scene)
 		}
 		g.scene.gameMap[tx][ty].tileSlideAmount = math.Round(g.scene.gameMap[tx][ty].tileSlideAmount)
@@ -83,7 +83,7 @@ func (g *game) tryOpenDoorAsPlayer() {
 		angleIncrement := (VIEW_ANGLE - initialAngle) / MOVEFRAMES
 
 		for i := 0; i < MOVEFRAMES; i++ {
-			g.scene.Camera.ChangeViewWidth(initialAngle + float64(i) * angleIncrement)
+			g.scene.Camera.ChangeViewWidth(initialAngle + float64(i)*angleIncrement)
 			renderFrame(g.scene)
 		}
 	}

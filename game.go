@@ -38,3 +38,9 @@ func (g *game) gameLoop() {
 		renderFrame(g.scene)
 	}
 }
+
+func (g *game) actProjectiles() {
+	//for i, proj := range g.scene.projectiles {
+	//
+	//}
+}

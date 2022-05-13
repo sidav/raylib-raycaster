@@ -67,5 +67,5 @@ func (s *Scene) GetCeilingTextureForCoords(x, y int) *raycaster.Texture {
 }
 
 func (s *Scene) GetListOfThings() []raycaster.Thing {
-	return s.things
+	return s.projectiles
 }

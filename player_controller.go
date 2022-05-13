@@ -21,7 +21,7 @@ func (g *game) workPlayerInput() {
 		g.tryOpenDoorAsPlayer()
 	}
 	if rl.IsKeyPressed(rl.KeyEnter) {
-		g.scene.things = append(g.scene.things, &projectile{
+		g.scene.projectiles = append(g.scene.projectiles, &projectile{
 			x:          g.scene.Camera.X,
 			y:          g.scene.Camera.Y,
 			spriteCode: "proj",

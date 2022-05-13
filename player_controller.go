@@ -2,7 +2,6 @@ package main
 
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
-	"math"
 )
 
 func (g *game) workPlayerInput() {
@@ -68,15 +67,18 @@ func (g *game) tryOpenDoorAsPlayer() {
 	const MOVEFRAMES = 15.0
 	tx, ty := trueCoordsToTileCoords(g.player.x+g.player.facex, g.player.y+g.player.facey)
 	if g.scene.gameMap[tx][ty].getStaticData().openable {
-		factor := 1.0
 		if g.scene.gameMap[tx][ty].isOpened() {
-			factor = -1.0
+			for !g.scene.gameMap[tx][ty].isClosed() {
+				g.scene.gameMap[tx][ty].tileSlideAmount -= 1 / MOVEFRAMES
+				renderFrame(g.scene)
+			}
+		} else {
+			for !g.scene.gameMap[tx][ty].isOpened() {
+				g.scene.gameMap[tx][ty].tileSlideAmount += 1 / MOVEFRAMES
+				renderFrame(g.scene)
+			}
 		}
-		for i := 0; i < MOVEFRAMES; i++ {
-			g.scene.gameMap[tx][ty].tileSlideAmount += factor / MOVEFRAMES
-			renderFrame(g.scene)
-		}
-		g.scene.gameMap[tx][ty].tileSlideAmount = math.Round(g.scene.gameMap[tx][ty].tileSlideAmount)
+		// g.scene.gameMap[tx][ty].tileSlideAmount = math.Round(g.scene.gameMap[tx][ty].tileSlideAmount)
 	} else if !g.scene.IsTilePassable(tx, ty) { // zoom effect for "pushing" the wall
 		initialAngle := VIEW_ANGLE / 2.0
 		g.scene.Camera.ChangeViewWidth(initialAngle)

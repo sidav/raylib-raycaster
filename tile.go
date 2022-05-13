@@ -17,7 +17,11 @@ func (t *tile) isPassable() bool {
 }
 
 func (t *tile) isOpened() bool {
-	return t.tileSlideAmount >= 1.0
+	return t.tileSlideAmount >= 0.9
+}
+
+func (t *tile) isClosed() bool {
+	return t.tileSlideAmount <= 0.0001
 }
 
 type tileStaticData struct {

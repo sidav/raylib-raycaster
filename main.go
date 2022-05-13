@@ -33,7 +33,7 @@ func main() {
 		ApplyTexturing:         true,
 		RenderFloors:           false,
 		RenderCeilings:         false,
-		MaxRayLength:           25,
+		MaxRayLength:           2500,
 		MaxFogFraction:         0.9,
 		RayLengthForMaximumFog: 6,
 		FogR:                   64,
@@ -57,4 +57,3 @@ func trueCoordsToTileCoords(tx, ty float64) (int, int) {
 func tileCoordsToPhysicalCoords(tx, ty int) (float64, float64) {
 	return float64(tx) + 0.5, float64(ty) + 0.5
 }
-

@@ -1,6 +1,8 @@
 package raycaster
 
-import "raylib-raycaster/middleware"
+import (
+	"raylib-raycaster/middleware"
+)
 
 func (r *Renderer) renderThings() {
 	camx, camy := r.cam.getCoordsWithOffset()
@@ -12,7 +14,7 @@ func (r *Renderer) renderThings() {
 		invDet := 1.0 / (r.cam.planeX*r.cam.dirY - r.cam.dirX*r.cam.planeY) // vector projection fuckery
 		transformX := invDet * (r.cam.dirY*xRelative - r.cam.dirX*yRelative)
 		transformY := invDet * (-r.cam.planeY*xRelative + r.cam.planeX*yRelative)
-		if transformY < 0 {
+		if transformY < 0.01 { // close enough to zero
 			continue
 		}
 
@@ -20,6 +22,9 @@ func (r *Renderer) renderThings() {
 		osy := r.RenderHeight / 2
 		osw := int(float64(r.RenderWidth) / transformY)
 		osh := int(r.aspectFactor * float64(r.RenderHeight) / transformY)
+		if osw > r.RenderWidth {
+			continue
+		}
 
 		// render the Sprite column-wise, like a Texture
 		currSprite := t.GetSprite()

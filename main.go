@@ -2,8 +2,10 @@ package main
 
 import (
 	rl "github.com/gen2brain/raylib-go/raylib"
+	"math/rand"
 	"raylib-raycaster/middleware"
 	"raylib-raycaster/raycaster"
+	"time"
 )
 
 const (
@@ -19,6 +21,7 @@ const (
 var (
 	gameIsRunning bool
 	renderer      *raycaster.Renderer
+	rnd           *rand.Rand
 )
 
 func main() {
@@ -26,6 +29,7 @@ func main() {
 	rl.SetWindowState(rl.FlagWindowResizable)
 	rl.SetTargetFPS(30)
 	rl.SetExitKey(rl.KeyEscape)
+	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	renderer = &raycaster.Renderer{
 		RenderWidth:            IRES_W,

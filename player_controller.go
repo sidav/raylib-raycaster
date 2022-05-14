@@ -118,4 +118,5 @@ func (g *game) tryOpenDoorAsPlayer() {
 			renderFrame(g.scene)
 		}
 	}
+	g.gameState++
 }

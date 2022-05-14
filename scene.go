@@ -57,8 +57,8 @@ func (s *Scene) init(camX, camY float64) {
 	s.things.PushBack(&mob{
 		x:          4.5,
 		y:          4.5,
-		facex:      1,
-		facey:      0,
+		dirX:       1,
+		dirY:       0,
 		spriteCode: "enemy",
 	})
 
@@ -66,6 +66,11 @@ func (s *Scene) init(camX, camY float64) {
 
 func (s *Scene) AreGridCoordsValid(x, y int) bool {
 	return x >= 0 && y >= 0 && x < len(s.gameMap) && y < len(s.gameMap[0])
+}
+
+func (s *Scene) areRealCoordsPassable(x, y float64) bool {
+	tx, ty := trueCoordsToTileCoords(x, y)
+	return s.gameMap[tx][ty].isPassable()
 }
 
 func (s *Scene) IsTilePassable(x, y int) bool {

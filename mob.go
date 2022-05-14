@@ -6,9 +6,10 @@ import (
 )
 
 type mob struct {
-	x, y         float64
-	facex, facey float64
-	spriteCode   string
+	x, y       float64
+	dirX, dirY float64
+	intent     *mobIntent
+	spriteCode string
 }
 
 func (t *mob) GetCoords() (float64, float64) {
@@ -21,4 +22,3 @@ func (t *mob) GetSprite() *raycaster.SpriteStruct {
 	}
 	return spritesAtlas[t.spriteCode]
 }
-

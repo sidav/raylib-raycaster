@@ -45,16 +45,19 @@ func (g *game) gameLoop() {
 func (g *game) actProjectiles() {
 	changeState := true
 	const factor = 5
-	for node := g.scene.projectiles.Front(); node != nil; node = node.Next() {
-		proj := node.Value.(*projectile)
-		newX := proj.x + (proj.dirX/factor)
-		newY := proj.y + (proj.dirY/factor)
-		tx, ty := trueCoordsToTileCoords(newX, newY)
-		if !g.scene.gameMap[tx][ty].isPassable() {
-			g.scene.projectiles.Remove(node)
-		} else {
-			changeState = false
-			proj.x, proj.y = newX, newY
+	for node := g.scene.things.Front(); node != nil; node = node.Next() {
+		switch node.Value.(type) {
+		case *projectile:
+			proj := node.Value.(*projectile)
+			newX := proj.x + (proj.dirX/factor)
+			newY := proj.y + (proj.dirY/factor)
+			tx, ty := trueCoordsToTileCoords(newX, newY)
+			if !g.scene.gameMap[tx][ty].isPassable() {
+				g.scene.things.Remove(node)
+			} else {
+				changeState = false
+				proj.x, proj.y = newX, newY
+			}
 		}
 	}
 	if changeState {

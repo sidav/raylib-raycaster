@@ -21,7 +21,7 @@ func (g *game) workPlayerInput() {
 		g.tryOpenDoorAsPlayer()
 	}
 	if rl.IsKeyPressed(rl.KeyEnter) {
-		g.scene.projectiles.PushBack(&projectile{
+		g.scene.things.PushBack(&projectile{
 			x:          g.scene.Camera.X,
 			y:          g.scene.Camera.Y,
 			dirX:       g.player.facex,

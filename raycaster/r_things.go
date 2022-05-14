@@ -8,6 +8,10 @@ func (r *Renderer) renderThings() {
 	camx, camy := r.cam.getCoordsWithOffset()
 	things := r.scene.GetListOfThings()
 	for node := things.Front(); node != nil; node = node.Next() {
+		// unneeded? 
+		//if node.Value == nil {
+		//	continue
+		//}
 		t := node.Value.(Thing)
 		tx, ty := t.GetCoords()
 		// check if the Sprite is faced by Camera

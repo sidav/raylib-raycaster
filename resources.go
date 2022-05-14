@@ -16,4 +16,5 @@ func loadResources() {
 	// init sprites
 	spritesAtlas = make(map[string]*raycaster.SpriteStruct, 0)
 	spritesAtlas["proj"] = raycaster.InitSpriteFromImageFile("resources/sprites/projectile.png")
+	spritesAtlas["enemy"] = raycaster.InitSpriteFromImageFile("resources/sprites/enemy.png")
 }

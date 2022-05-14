@@ -6,14 +6,14 @@ import (
 )
 
 type Scene struct {
-	gameMap     [][]tile
-	projectiles *list.List
-	Camera      *raycaster.Camera
+	gameMap [][]tile
+	things  *list.List
+	Camera  *raycaster.Camera
 }
 
 func (s *Scene) init(camX, camY float64) {
 	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 0, 0, 4, 1)
-	s.projectiles = list.New()
+	s.things = list.New()
 	mp := []string{
 		"#############################################",
 		"#             #       #       #             #",
@@ -53,6 +53,15 @@ func (s *Scene) init(camX, camY float64) {
 			s.gameMap[i] = append(s.gameMap[i], tile{tileCode: code})
 		}
 	}
+
+	s.things.PushBack(&mob{
+		x:          4.5,
+		y:          4.5,
+		facex:      1,
+		facey:      0,
+		spriteCode: "enemy",
+	})
+
 }
 
 func (s *Scene) AreGridCoordsValid(x, y int) bool {

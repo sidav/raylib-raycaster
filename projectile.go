@@ -7,7 +7,7 @@ import (
 
 type projectile struct {
 	x, y       float64
-	dirX, dirY int
+	dirX, dirY float64
 	spriteCode string
 }
 

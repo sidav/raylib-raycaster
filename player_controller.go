@@ -24,8 +24,11 @@ func (g *game) workPlayerInput() {
 		g.scene.projectiles = append(g.scene.projectiles, &projectile{
 			x:          g.scene.Camera.X,
 			y:          g.scene.Camera.Y,
+			dirX:       g.player.facex,
+			dirY:       g.player.facey,
 			spriteCode: "proj",
 		})
+		g.gameState++
 	}
 }
 

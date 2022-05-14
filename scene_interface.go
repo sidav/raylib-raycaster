@@ -67,5 +67,9 @@ func (s *Scene) GetCeilingTextureForCoords(x, y int) *raycaster.Texture {
 }
 
 func (s *Scene) GetListOfThings() []raycaster.Thing {
-	return s.projectiles
+	list := make([]raycaster.Thing, 0)
+	for _, proj := range s.projectiles {
+		list = append(list, proj)
+	}
+	return list
 }

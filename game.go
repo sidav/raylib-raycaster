@@ -4,7 +4,7 @@ import rl "github.com/gen2brain/raylib-go/raylib"
 
 const (
 	GSTATE_PLAYER_INPUT = iota
-	GSTATE_PLAYER_MOVEMENT
+	GSTATE_PROJECTILE_MOVEMENT
 	GSTATE_WORLD_MOVEMENT
 	GSTATE_RESET_TO_ZERO // this state should be reset to 0
 )
@@ -31,7 +31,8 @@ func (g *game) gameLoop() {
 		switch g.gameState {
 		case GSTATE_PLAYER_INPUT:
 			g.workPlayerInput()
-		case GSTATE_PLAYER_MOVEMENT:
+		case GSTATE_PROJECTILE_MOVEMENT:
+			g.actProjectiles()
 		case GSTATE_RESET_TO_ZERO:
 			g.gameState = 0
 		}
@@ -40,7 +41,8 @@ func (g *game) gameLoop() {
 }
 
 func (g *game) actProjectiles() {
-	//for i, proj := range g.scene.projectiles {
-	//
-	//}
+	for _, proj := range g.scene.projectiles {
+		proj.x += proj.dirX
+		proj.y += proj.dirY
+	}
 }

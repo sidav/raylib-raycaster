@@ -6,7 +6,7 @@ import (
 
 type Scene struct {
 	gameMap     [][]tile
-	projectiles []raycaster.Thing
+	projectiles []*projectile
 	Camera      *raycaster.Camera
 }
 
@@ -17,7 +17,7 @@ func (s *Scene) init(camX, camY float64) {
 		"#             #       #       #             #",
 		"#             #       +       #             #",
 		"#             #       #       #             #",
-		"#             #       #       #             #",
+		"#        #    #       #       #             #",
 		"#             #       #       #             #",
 		"#             #       #       +             #",
 		"#####+#########       #       #             #",

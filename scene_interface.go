@@ -1,6 +1,9 @@
 package main
 
-import "raylib-raycaster/raycaster"
+import (
+	"container/list"
+	"raylib-raycaster/raycaster"
+)
 
 func (s *Scene) IsTileOpaque(x, y int) bool {
 	return s.gameMap[x][y].getStaticData().opaque
@@ -66,10 +69,6 @@ func (s *Scene) GetCeilingTextureForCoords(x, y int) *raycaster.Texture {
 	//return tex
 }
 
-func (s *Scene) GetListOfThings() []raycaster.Thing {
-	list := make([]raycaster.Thing, 0)
-	for _, proj := range s.projectiles {
-		list = append(list, proj)
-	}
-	return list
+func (s *Scene) GetListOfThings() *list.List {
+	return s.projectiles
 }

@@ -7,7 +7,8 @@ import (
 func (r *Renderer) renderThings() {
 	camx, camy := r.cam.getCoordsWithOffset()
 	things := r.scene.GetListOfThings()
-	for _, t := range things {
+	for node := things.Front(); node != nil; node = node.Next() {
+		t := node.Value.(Thing)
 		tx, ty := t.GetCoords()
 		// check if the Sprite is faced by Camera
 		xRelative, yRelative := tx-camx, ty-camy

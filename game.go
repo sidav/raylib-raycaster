@@ -35,14 +35,29 @@ func (g *game) gameLoop() {
 			g.actProjectiles()
 		case GSTATE_RESET_TO_ZERO:
 			g.gameState = 0
+		default:
+			g.gameState++
 		}
 		renderFrame(g.scene)
 	}
 }
 
 func (g *game) actProjectiles() {
-	for _, proj := range g.scene.projectiles {
-		proj.x += proj.dirX
-		proj.y += proj.dirY
+	changeState := true
+	const factor = 5
+	for node := g.scene.projectiles.Front(); node != nil; node = node.Next() {
+		proj := node.Value.(*projectile)
+		newX := proj.x + (proj.dirX/factor)
+		newY := proj.y + (proj.dirY/factor)
+		tx, ty := trueCoordsToTileCoords(newX, newY)
+		if !g.scene.gameMap[tx][ty].isPassable() {
+			g.scene.projectiles.Remove(node)
+		} else {
+			changeState = false
+			proj.x, proj.y = newX, newY
+		}
+	}
+	if changeState {
+		g.gameState++
 	}
 }

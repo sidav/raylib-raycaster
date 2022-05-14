@@ -1,17 +1,19 @@
 package main
 
 import (
+	"container/list"
 	"raylib-raycaster/raycaster"
 )
 
 type Scene struct {
 	gameMap     [][]tile
-	projectiles []*projectile
+	projectiles *list.List
 	Camera      *raycaster.Camera
 }
 
 func (s *Scene) init(camX, camY float64) {
 	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 0, 0, 4, 1)
+	s.projectiles = list.New()
 	mp := []string{
 		"#############################################",
 		"#             #       #       #             #",

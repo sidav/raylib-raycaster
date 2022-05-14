@@ -3,17 +3,17 @@ package raycaster
 import "math"
 
 type Camera struct {
-	X, Y           float64
-	dirX, dirY     float64
-	planeX, planeY float64
+	X, Y             float64
+	dirX, dirY       float64
+	planeX, planeY   float64
 	movDirX, movDirY float64 // same as dirX/dirY but always of length 1 
 
 	vBobOffset, maxVBobOffset, vBobSpeed int
-	
+
 	hBobOffset, hBobSpeed, maxHBobOffset float64
 }
 
-func CreateCamera(x, y,  viewAngle, maxHBobOffset, hBobSpeed float64, maxVBobOffset, vBobSpeed int) *Camera {
+func CreateCamera(x, y, viewAngle, maxHBobOffset, hBobSpeed float64, maxVBobOffset, vBobSpeed int) *Camera {
 	// planeX := math.Tan(float64(viewAngle)*3.14159265358979323 / (2*180.0))
 	cam := &Camera{
 		X:             x,
@@ -22,15 +22,15 @@ func CreateCamera(x, y,  viewAngle, maxHBobOffset, hBobSpeed float64, maxVBobOff
 		vBobSpeed:     vBobSpeed,
 		maxHBobOffset: maxHBobOffset,
 		hBobSpeed:     hBobSpeed,
-		movDirX: 0,
-		movDirY: 1,
+		movDirX:       0,
+		movDirY:       1,
 	}
 	cam.ChangeViewWidth(viewAngle)
 	return cam
 }
 
 func (c *Camera) getCoordsWithOffset() (float64, float64) {
-	return c.X + c.dirY * c.hBobOffset, c.Y + c.dirX * c.hBobOffset
+	return c.X + c.dirY*c.hBobOffset, c.Y + c.dirX*c.hBobOffset
 }
 
 func (c *Camera) getIntCoords() (int, int) {
@@ -76,6 +76,30 @@ func (c *Camera) Rotate(radians float64) {
 func (c *Camera) MoveForward(fraction float64) {
 	c.X += c.movDirX * fraction
 	c.Y += c.movDirY * fraction
+	c.vBobOffset += c.vBobSpeed
+	if c.vBobOffset >= c.maxVBobOffset {
+		c.vBobSpeed = -c.vBobSpeed
+		c.vBobOffset = c.maxVBobOffset
+	}
+	if c.vBobOffset <= -c.maxVBobOffset {
+		c.vBobSpeed = -c.vBobSpeed
+		c.vBobOffset = -c.maxVBobOffset
+	}
+
+	c.hBobOffset += c.hBobSpeed
+	if c.hBobOffset >= c.maxHBobOffset {
+		c.hBobSpeed = -c.hBobSpeed
+		c.hBobOffset = c.maxHBobOffset
+	}
+	if c.hBobOffset <= -c.maxHBobOffset {
+		c.hBobSpeed = -c.hBobSpeed
+		c.hBobOffset = -c.maxHBobOffset
+	}
+}
+
+func (c *Camera) MoveByVector(vx, vy float64) {
+	c.X += vx
+	c.Y += vy
 	c.vBobOffset += c.vBobSpeed
 	if c.vBobOffset >= c.maxVBobOffset {
 		c.vBobSpeed = -c.vBobSpeed

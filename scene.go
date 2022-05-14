@@ -54,6 +54,21 @@ func (s *Scene) init(camX, camY float64) {
 		}
 	}
 
+	for i := 0; i < 15; i++ {
+		x, y := 0, 0
+		for !s.IsTilePassable(x, y) {
+			x = rnd.Intn(len(s.gameMap))
+			y = rnd.Intn(len(s.gameMap[0]))
+		}
+		rx, ry := tileCoordsToPhysicalCoords(x, y)
+		s.things.PushBack(&mob{
+			x:          rx,
+			y:          ry,
+			dirX:       1,
+			dirY:       0,
+			spriteCode: "enemy",
+		})
+	}
 	s.things.PushBack(&mob{
 		x:          4.5,
 		y:          4.5,

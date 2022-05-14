@@ -20,5 +20,6 @@ func (t *mob) GetSprite() *raycaster.SpriteStruct {
 	if spritesAtlas[t.spriteCode] == nil {
 		panic(fmt.Sprintf("WATAFUQ: %s, %v, %d", t.spriteCode, spritesAtlas, len(spritesAtlas)))
 	}
-	return spritesAtlas[t.spriteCode]
+	const changeFrameEveryTicks = 15
+	return spritesAtlas[t.spriteCode][(tick/changeFrameEveryTicks) % len(spritesAtlas[t.spriteCode])]
 }

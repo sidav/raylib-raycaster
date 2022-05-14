@@ -4,7 +4,7 @@ import "raylib-raycaster/raycaster"
 
 var (
 	wallTexturesAtlas map[string]*raycaster.Texture
-	spritesAtlas      map[string]*raycaster.SpriteStruct
+	spritesAtlas      map[string][]*raycaster.SpriteStruct
 )
 
 func loadResources() {
@@ -14,7 +14,15 @@ func loadResources() {
 	wallTexturesAtlas["DOOR"] = raycaster.InitTextureFromImageFile("resources/textures/door.png")
 
 	// init sprites
-	spritesAtlas = make(map[string]*raycaster.SpriteStruct, 0)
-	spritesAtlas["proj"] = raycaster.InitSpriteFromImageFile("resources/sprites/projectile.png")
-	spritesAtlas["enemy"] = raycaster.InitSpriteFromImageFile("resources/sprites/enemy.png")
+	loadSprite("proj", "resources/sprites/projectile0.png")
+	loadSprite("proj", "resources/sprites/projectile1.png")
+	loadSprite("enemy", "resources/sprites/cobra1.png")
+	loadSprite("enemy", "resources/sprites/cobra2.png")
+}
+
+func loadSprite(code string, filename string) {
+	if spritesAtlas == nil {
+		spritesAtlas = make(map[string][]*raycaster.SpriteStruct, 0)
+	}
+	spritesAtlas[code] = append(spritesAtlas[code], raycaster.InitSpriteFromImageFile(filename))
 }

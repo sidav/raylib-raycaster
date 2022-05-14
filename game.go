@@ -46,6 +46,7 @@ func (g *game) gameLoop() {
 		default:
 			g.gameState++
 		}
+		tick++
 		renderFrame(g.scene)
 	}
 }

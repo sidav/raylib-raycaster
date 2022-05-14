@@ -22,6 +22,7 @@ var (
 	gameIsRunning bool
 	renderer      *raycaster.Renderer
 	rnd           *rand.Rand
+	tick          int
 )
 
 func main() {

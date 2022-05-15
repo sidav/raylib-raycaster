@@ -12,8 +12,7 @@ const (
 	WINDOW_W = 1000
 	WINDOW_H = 800
 
-	IRES_W = WINDOW_W/4 // 320
-	IRES_H = WINDOW_H/4 // 240
+	PIXEL_SIZE = 4
 
 	VIEW_ANGLE = 135
 )
@@ -33,8 +32,8 @@ func main() {
 	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	renderer = &raycaster.Renderer{
-		RenderWidth:            IRES_W,
-		RenderHeight:           IRES_H,
+		RenderWidth:            rl.GetScreenWidth()/PIXEL_SIZE,
+		RenderHeight:           rl.GetScreenHeight()/PIXEL_SIZE,
 		ApplyTexturing:         true,
 		RenderFloors:           true,
 		RenderCeilings:         true,
@@ -45,7 +44,7 @@ func main() {
 		FogG:                   32,
 		FogB:                   32,
 	}
-	middleware.SetInternalResolution(IRES_W, IRES_H)
+	middleware.SetInternalResolution(int32(rl.GetScreenWidth()/PIXEL_SIZE), int32(rl.GetScreenHeight()/PIXEL_SIZE))
 	loadResources()
 
 	g := &game{}

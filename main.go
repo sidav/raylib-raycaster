@@ -12,8 +12,8 @@ const (
 	WINDOW_W = 1000
 	WINDOW_H = 800
 
-	IRES_W = 320
-	IRES_H = 240
+	IRES_W = WINDOW_W/4 // 320
+	IRES_H = WINDOW_H/4 // 240
 
 	VIEW_ANGLE = 135
 )
@@ -40,9 +40,9 @@ func main() {
 		RenderCeilings:         true,
 		MaxRayLength:           2500,
 		MaxFogFraction:         0.9,
-		RayLengthForMaximumFog: 6,
+		RayLengthForMaximumFog: 7,
 		FogR:                   64,
-		FogG:                   128,
+		FogG:                   32,
 		FogB:                   32,
 	}
 	middleware.SetInternalResolution(IRES_W, IRES_H)

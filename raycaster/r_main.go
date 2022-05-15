@@ -32,7 +32,8 @@ type Renderer struct {
 }
 
 func (r *Renderer) RenderFrame(scene Scene) {
-	startTime := time.Now()
+	fmt.Printf("=== FRAME START ===\n")
+	startTimeTotal := time.Now()
 
 	r.cam = scene.GetCamera()
 	r.scene = scene
@@ -44,16 +45,22 @@ func (r *Renderer) RenderFrame(scene Scene) {
 	}
 
 	if r.ApplyTexturing && r.RenderFloors {
+		startTimeFloorsCeilings := time.Now()
 		r.renderFloorAndCeiling()
+		fmt.Printf("Floors/ceilings rendered in %d ms.\n", int(time.Since(startTimeFloorsCeilings) / time.Millisecond))
 	} else {
 		middleware.SetColor(64, 64, 64)
 		middleware.FillRect(0, r.RenderHeight/2, r.RenderWidth, r.RenderHeight/2)
 	}
 
+	startTimeWalls := time.Now()
 	r.renderWalls()
+	fmt.Printf("Walls rendered in %d ms.\n", int(time.Since(startTimeWalls) / time.Millisecond))
+	startTimeThings := time.Now()
+	fmt.Printf("Things rendered in %d ms.\n", int(time.Since(startTimeThings) / time.Millisecond))
 	r.renderThings()
 
-	elapsedTime := int(time.Since(startTime) / time.Millisecond)
+	elapsedTime := int(time.Since(startTimeTotal) / time.Millisecond)
 	if elapsedTime != 0 {
 		fmt.Printf("Frame rendered in %d ms. (~ %d FPS) \n", elapsedTime, 1000/elapsedTime)
 	} else {

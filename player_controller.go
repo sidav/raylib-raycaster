@@ -45,7 +45,7 @@ func (g *game) movePlayerByFacing(backwards bool) {
 		factor = -1.0
 	}
 	tx, ty := trueCoordsToTileCoords(g.player.x+factor*g.player.dirX, g.player.y+factor*g.player.dirY)
-	if g.scene.IsTilePassable(tx, ty) {
+	if g.scene.IsTilePassable(tx, ty) && g.scene.GetMobAtTileCoords(tx, ty) == nil {
 		g.player.x += factor * g.player.dirX
 		g.player.y += factor * g.player.dirY
 		for i := 0; i < int(MOVEFRAMES)-1; i++ {

@@ -54,7 +54,7 @@ func (s *Scene) init(camX, camY float64) {
 		}
 	}
 
-	for i := 0; i < 15; i++ {
+	for i := 0; i < 150; i++ {
 		x, y := 0, 0
 		for !s.IsTilePassable(x, y) {
 			x = rnd.Intn(len(s.gameMap))
@@ -76,11 +76,29 @@ func (s *Scene) init(camX, camY float64) {
 		dirY:       0,
 		spriteCode: "enemy",
 	})
-
 }
 
 func (s *Scene) AreGridCoordsValid(x, y int) bool {
 	return x >= 0 && y >= 0 && x < len(s.gameMap) && y < len(s.gameMap[0])
+}
+
+func (s *Scene) GetMobAtRealCoords(x, y float64) *mob {
+	tx, ty := trueCoordsToTileCoords(x, y)
+	return s.GetMobAtTileCoords(tx, ty)
+}
+
+func (s *Scene) GetMobAtTileCoords(tx, ty int) *mob {
+	for m := s.things.Front(); m != nil; m = m.Next() {
+		switch m.Value.(type) {
+		case *mob:
+			mrx, mry := m.Value.(*mob).GetCoords()
+			mtx, mty := trueCoordsToTileCoords(mrx, mry)
+			if mtx == tx && mty == ty {
+				return m.Value.(*mob)
+			}
+		}
+	}
+	return nil
 }
 
 func (s *Scene) areRealCoordsPassable(x, y float64) bool {

@@ -79,13 +79,22 @@ func (g *game) decideMobs() {
 		case *mob:
 			currMob := node.Value.(*mob)
 			if currMob.intent == nil {
+
 				dirx, diry := 1.0, 0.0
-				rotate := rnd.Intn(4)
-				for i := 0; i < rotate; i++ {
-					dirx, diry = -diry, dirx // rotate 90 degrees
+				var movx, movy float64
+
+				for try := 0; try < 10; try++  {
+					rotate := rnd.Intn(4)
+					for i := 0; i < rotate; i++ {
+						dirx, diry = -diry, dirx // rotate 90 degrees
+					}
+					movx, movy = currMob.x+dirx, currMob.y+diry
+					if g.scene.areRealCoordsPassable(movx, movy) && g.scene.GetMobAtRealCoords(movx, movy) == nil {
+						break
+					}
 				}
-				movx, movy := currMob.x+dirx, currMob.y+diry
-				if g.scene.areRealCoordsPassable(movx, movy) {
+
+				if g.scene.areRealCoordsPassable(movx, movy) && g.scene.GetMobAtRealCoords(movx, movy) == nil {
 					currMob.intent = &mobIntent{
 						dirx:    dirx,
 						diry:    diry,

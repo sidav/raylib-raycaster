@@ -38,7 +38,7 @@ func (r *Renderer) RenderFrame(scene Scene) {
 	r.cam = scene.GetCamera()
 	r.scene = scene
 
-	r.aspectFactor = float64(r.RenderWidth) / float64(r.RenderHeight) // * r.cam.distToScreenPlane
+	r.aspectFactor = float64(r.RenderWidth) / (1.35 * float64(r.RenderHeight)) // * r.cam.distToScreenPlane
 
 	if len(r.rayDistancesBuffer) == 0 || len (r.rayDistancesBuffer) != r.RenderWidth {
 		r.rayDistancesBuffer = make([]float64, r.RenderWidth)

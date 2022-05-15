@@ -50,8 +50,8 @@ func (r *Renderer) renderFloorAndCeiling() {
 				texHeight := texture.H
 
 				// get the Texture coordinate from the fractional part
-				tx := int(float64(texWidth) * (floorX - float64(cellX)))
-				ty := int(float64(texHeight) * (floorY - float64(cellY)))
+				tx := int(float64(texWidth) * (floorX - float64(cellX))) // & (texWidth-1)
+				ty := int(float64(texHeight) * (floorY - float64(cellY))) // & (texHeight-1)
 				r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, floorRowDistance)
 				middleware.DrawPoint(int32(x), int32(y))
 			} else if r.RenderCeilings {
@@ -67,10 +67,10 @@ func (r *Renderer) renderFloorAndCeiling() {
 				middleware.DrawPoint(int32(x), int32(y))
 			}
 
-			floorX += floorStepX + 0.5
-			floorY += floorStepY + 0.5
-			ceilingX += ceilingStepX + 0.5
-			ceilingY += ceilingStepY + 0.5
+			floorX += floorStepX // + 0.5
+			floorY += floorStepY // + 0.5
+			ceilingX += ceilingStepX // + 0.5
+			ceilingY += ceilingStepY // + 0.5
 		}
 	}
 }

@@ -1,8 +1,7 @@
 package raycaster
 
 import (
-	"fmt"
-	"raylib-raycaster/middleware"
+	"raylib-raycaster/backend"
 	"time"
 )
 
@@ -12,8 +11,9 @@ const (
 )
 
 type Renderer struct {
-	cam   *Camera
-	scene Scene
+	backend backend.RendererBackend
+	cam     *Camera
+	scene   Scene
 
 	RenderWidth                  int
 	RenderHeight                 int
@@ -31,8 +31,12 @@ type Renderer struct {
 	rayDistancesBuffer []float64
 }
 
+func (r *Renderer) SetBackend(b backend.RendererBackend) {
+	r.backend = b
+}
+
 func (r *Renderer) RenderFrame(scene Scene) {
-	fmt.Printf("=== FRAME START ===\n")
+	debugPrint("=== FRAME START ===")
 	startTimeTotal := time.Now()
 
 	r.cam = scene.GetCamera()
@@ -40,30 +44,30 @@ func (r *Renderer) RenderFrame(scene Scene) {
 
 	r.aspectFactor = float64(r.RenderWidth) / (1.35 * float64(r.RenderHeight)) // * r.cam.distToScreenPlane
 
-	if len(r.rayDistancesBuffer) == 0 || len (r.rayDistancesBuffer) != r.RenderWidth {
+	if len(r.rayDistancesBuffer) == 0 || len(r.rayDistancesBuffer) != r.RenderWidth {
 		r.rayDistancesBuffer = make([]float64, r.RenderWidth)
 	}
 
 	if r.ApplyTexturing && r.RenderFloors {
 		startTimeFloorsCeilings := time.Now()
 		r.renderFloorAndCeiling()
-		fmt.Printf("Floors/ceilings rendered in %d ms.\n", int(time.Since(startTimeFloorsCeilings) / time.Millisecond))
+		debugPrintf("Floors/ceilings rendered in %d ms.\n", int(time.Since(startTimeFloorsCeilings)/time.Millisecond))
 	} else {
-		middleware.SetColor(64, 64, 64)
-		middleware.FillRect(0, r.RenderHeight/2, r.RenderWidth, r.RenderHeight/2)
+		r.backend.SetColor(64, 64, 64)
+		r.backend.FillRect(0, r.RenderHeight/2, r.RenderWidth, r.RenderHeight/2)
 	}
 
 	startTimeWalls := time.Now()
 	r.renderWalls()
-	fmt.Printf("Walls rendered in %d ms.\n", int(time.Since(startTimeWalls) / time.Millisecond))
+	debugPrintf("Walls rendered in %d ms.\n", int(time.Since(startTimeWalls)/time.Millisecond))
 	startTimeThings := time.Now()
-	fmt.Printf("Things rendered in %d ms.\n", int(time.Since(startTimeThings) / time.Millisecond))
+	debugPrintf("Things rendered in %d ms.\n", int(time.Since(startTimeThings)/time.Millisecond))
 	r.renderThings()
 
 	elapsedTime := int(time.Since(startTimeTotal) / time.Millisecond)
 	if elapsedTime != 0 {
-		fmt.Printf("Frame rendered in %d ms. (~ %d FPS) \n", elapsedTime, 1000/elapsedTime)
+		debugPrintf("Frame rendered in %d ms. (~ %d FPS) \n", elapsedTime, 1000/elapsedTime)
 	} else {
-		fmt.Printf("Frame rendered in 0 ms. Yay! \n")
+		debugPrintf("Frame rendered in 0 ms. Yay! \n")
 	}
 }

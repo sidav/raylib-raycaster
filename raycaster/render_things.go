@@ -1,26 +1,22 @@
 package raycaster
 
-import (
-	"raylib-raycaster/middleware"
-)
-
 func (r *Renderer) renderThings() {
 	camx, camy := r.cam.getCoordsWithOffset()
 	things := r.scene.GetListOfThings()
-	
+
 	// sort by distance from camera (descending)
 	// WARNING: breaks things list order!
 	for node1 := things.Front(); node1 != nil && node1.Next() != nil; node1 = node1.Next() {
 
-		t1 := node1.Value.(Thing)
+		t1 := node1.Value.(Spritable)
 		t1x, t1y := t1.GetCoords()
-		dist1 := (camx - t1x) * (camx - t1x) + (camy - t1y) * (camy - t1y)
+		dist1 := (camx-t1x)*(camx-t1x) + (camy-t1y)*(camy-t1y)
 
 		for node2 := node1.Next(); node2 != nil; node2 = node2.Next() {
 
-			t2 := node2.Value.(Thing)
+			t2 := node2.Value.(Spritable)
 			t2x, t2y := t2.GetCoords()
-			dist2 := (camx - t2x) * (camx - t2x) + (camy - t2y) * (camy - t2y)
+			dist2 := (camx-t2x)*(camx-t2x) + (camy-t2y)*(camy-t2y)
 
 			if dist2 > dist1 {
 				// swap 2 and 1
@@ -28,13 +24,13 @@ func (r *Renderer) renderThings() {
 			}
 		}
 	}
-	
+
 	for node := things.Front(); node != nil; node = node.Next() {
-		// unneeded? 
+		// unneeded?
 		//if node.Value == nil {
 		//	continue
 		//}
-		t := node.Value.(Thing)
+		t := node.Value.(Spritable)
 		tx, ty := t.GetCoords()
 		// check if the Sprite is faced by Camera
 		xRelative, yRelative := tx-camx, ty-camy
@@ -70,7 +66,7 @@ func (r *Renderer) renderThings() {
 					continue
 				}
 				r.setFoggedColorFromBitmapPixelAtCoords(currSprite.bitmap, spriteX, spriteY, transformY)
-				middleware.DrawPoint(int32(x+osx-osw/2), int32(y+osy-osh/2)+int32(r.cam.vBobOffset))
+				r.backend.DrawPoint(int32(x+osx-osw/2), int32(y+osy-osh/2)+int32(r.cam.vBobOffset))
 			}
 		}
 	}

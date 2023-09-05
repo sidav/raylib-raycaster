@@ -1,7 +1,5 @@
 package raycaster
 
-import "raylib-raycaster/middleware"
-
 func (r *Renderer) renderFloorAndCeiling() {
 	posX, posY := r.cam.getCoordsWithOffset()
 	for y := 0; y < r.RenderHeight; y++ {
@@ -50,10 +48,10 @@ func (r *Renderer) renderFloorAndCeiling() {
 				texHeight := texture.H
 
 				// get the Texture coordinate from the fractional part
-				tx := int(float64(texWidth) * (floorX - float64(cellX))) // & (texWidth-1)
+				tx := int(float64(texWidth) * (floorX - float64(cellX)))  // & (texWidth-1)
 				ty := int(float64(texHeight) * (floorY - float64(cellY))) // & (texHeight-1)
 				r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, floorRowDistance)
-				middleware.DrawPoint(int32(x), int32(y))
+				r.backend.DrawPoint(int32(x), int32(y))
 			} else if r.RenderCeilings {
 				//ceiling
 				cellX := int(ceilingX)
@@ -64,11 +62,11 @@ func (r *Renderer) renderFloorAndCeiling() {
 				tx := int(float64(texWidth) * (ceilingX - float64(cellX)))
 				ty := int(float64(texHeight) * (ceilingY - float64(cellY)))
 				r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, ceilingRowDistance)
-				middleware.DrawPoint(int32(x), int32(y))
+				r.backend.DrawPoint(int32(x), int32(y))
 			}
 
-			floorX += floorStepX // + 0.5
-			floorY += floorStepY // + 0.5
+			floorX += floorStepX     // + 0.5
+			floorY += floorStepY     // + 0.5
 			ceilingX += ceilingStepX // + 0.5
 			ceilingY += ceilingStepY // + 0.5
 		}

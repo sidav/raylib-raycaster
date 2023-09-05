@@ -2,7 +2,6 @@ package raycaster
 
 import (
 	"image"
-	"raylib-raycaster/middleware"
 )
 
 func (r *Renderer) setFoggedColorFromBitmapPixelAtCoords(bitmap image.Image, x, y int, distance float64) {
@@ -18,5 +17,5 @@ func (r *Renderer) setFoggedColorFromBitmapPixelAtCoords(bitmap image.Image, x, 
 	gbyte := uint8(fadeoutFraction*float64(uint8(g)) + (1-fadeoutFraction)*float64(r.FogG))
 	bbyte := uint8(fadeoutFraction*float64(uint8(b)) + (1-fadeoutFraction)*float64(r.FogB))
 
-	middleware.SetColor(rbyte, gbyte, bbyte)
+	r.backend.SetColor(rbyte, gbyte, bbyte)
 }

@@ -1,20 +1,26 @@
 package main
 
-import "raylib-raycaster/raycaster"
+import (
+	"raylib-raycaster/raycaster"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
+)
 
 var (
 	wallTexturesAtlas    map[string][]*raycaster.Texture
 	floorTexturesAtlas   map[string][]*raycaster.Texture
 	ceilingTexturesAtlas map[string][]*raycaster.Texture
 	spritesAtlas         map[string][]*raycaster.SpriteStruct
+
+	uiAtlas map[string][]rl.Texture2D
 )
 
 func loadResources() {
 	// init textures (temp.)
-	loadTexture(&wallTexturesAtlas, "WALL", "resources/textures/tile091.png")
+	loadTexture(&wallTexturesAtlas, "WALL", "resources/textures/tile094.png")
 	loadTexture(&wallTexturesAtlas, "DOOR", "resources/textures/door.png")
 
-	loadTexture(&floorTexturesAtlas, "DEFAULT", "resources/textures/tile126.png")
+	loadTexture(&floorTexturesAtlas, "DEFAULT", "resources/textures/tile113.png")
 	loadTexture(&floorTexturesAtlas, "DOOR", "resources/textures/tile110.png")
 
 	loadTexture(&ceilingTexturesAtlas, "DEFAULT", "resources/textures/tile110.png")
@@ -23,6 +29,8 @@ func loadResources() {
 	loadSprite("proj", "resources/sprites/projectile1.png")
 	loadSprite("enemy", "resources/sprites/cobra1.png")
 	loadSprite("enemy", "resources/sprites/cobra2.png")
+
+	uiAtlas = make(map[string][]rl.Texture2D)
 }
 
 func loadTexture(atlas *map[string][]*raycaster.Texture, code string, filename string) {

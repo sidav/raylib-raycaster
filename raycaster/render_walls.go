@@ -2,7 +2,6 @@ package raycaster
 
 import (
 	"math"
-	"raylib-raycaster/middleware"
 )
 
 type r_column struct {
@@ -170,11 +169,11 @@ func (rend *Renderer) renderColumn(column *r_column, rayDirectionX, rayDirection
 
 	if !rend.ApplyTexturing {
 
-		middleware.SetColor(128, 128, 128)
+		rend.backend.SetColor(128, 128, 128)
 		if column.side == NS {
-			middleware.SetColor(255, 255, 255)
+			rend.backend.SetColor(255, 255, 255)
 		}
-		middleware.VerticalLine(column.x, lowestPixelY+rend.cam.vBobOffset, highestPixelY+rend.cam.vBobOffset)
+		rend.backend.VerticalLine(column.x, lowestPixelY+rend.cam.vBobOffset, highestPixelY+rend.cam.vBobOffset)
 		//middleware.SetColor(0, 255, 255)
 		//middleware.DrawPoint(int32(X), int32(lowestPixelY))
 		//middleware.DrawPoint(int32(X), int32(highestPixelY))
@@ -214,7 +213,7 @@ func (rend *Renderer) renderColumn(column *r_column, rayDirectionX, rayDirection
 			// fmt.Printf("(%d,%d) OUT OF (%d,%d)\n", texX, texY, texWidth, texHeight)
 
 			rend.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, texX, texY, column.perpWallDist)
-			middleware.DrawPoint(int32(column.x), int32(y+rend.cam.vBobOffset))
+			rend.backend.DrawPoint(int32(column.x), int32(y+rend.cam.vBobOffset))
 		}
 
 	}

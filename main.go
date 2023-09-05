@@ -1,30 +1,35 @@
 package main
 
 import (
-	rl "github.com/gen2brain/raylib-go/raylib"
 	"math/rand"
-	"raylib-raycaster/middleware"
+	"raylib-raycaster/backend"
 	"raylib-raycaster/raycaster"
 	"time"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 const (
-	WINDOW_W = 1000
-	WINDOW_H = 800
+	WINDOW_W = 1360
+	WINDOW_H = 768
+	RENDER_W = WINDOW_W / PIXEL_SIZE
+	RENDER_H = WINDOW_H / PIXEL_SIZE
 
-	PIXEL_SIZE = 4
+	PIXEL_SIZE = 6
 
-	VIEW_ANGLE = 135
+	VIEW_ANGLE = 120
 )
 
 var (
 	gameIsRunning bool
 	renderer      *raycaster.Renderer
+	drawBackend   *backend.RaylibBackend
 	rnd           *rand.Rand
 	tick          int
 )
 
 func main() {
+	drawBackend = &backend.RaylibBackend{}
 	rl.InitWindow(WINDOW_W, WINDOW_H, "RENDERER")
 	rl.SetWindowState(rl.FlagWindowResizable)
 	rl.SetTargetFPS(30)
@@ -32,19 +37,20 @@ func main() {
 	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	renderer = &raycaster.Renderer{
-		RenderWidth:            rl.GetScreenWidth()/PIXEL_SIZE,
-		RenderHeight:           rl.GetScreenHeight()/PIXEL_SIZE,
+		RenderWidth:            RENDER_W,
+		RenderHeight:           RENDER_H,
 		ApplyTexturing:         true,
 		RenderFloors:           true,
 		RenderCeilings:         true,
-		MaxRayLength:           2500,
+		MaxRayLength:           20,
 		MaxFogFraction:         0.9,
 		RayLengthForMaximumFog: 7,
 		FogR:                   64,
 		FogG:                   32,
 		FogB:                   32,
 	}
-	middleware.SetInternalResolution(int32(rl.GetScreenWidth()/PIXEL_SIZE), int32(rl.GetScreenHeight()/PIXEL_SIZE))
+	renderer.SetBackend(drawBackend)
+	drawBackend.SetInternalResolution(int32(rl.GetScreenWidth()/PIXEL_SIZE), int32(rl.GetScreenHeight()/PIXEL_SIZE))
 	loadResources()
 
 	g := &game{}
@@ -58,6 +64,6 @@ func trueCoordsToTileCoords(tx, ty float64) (int, int) {
 	return int(tx), int(ty)
 }
 
-func tileCoordsToPhysicalCoords(tx, ty int) (float64, float64) {
+func tileCoordsToTrueCoords(tx, ty int) (float64, float64) {
 	return float64(tx) + 0.5, float64(ty) + 0.5
 }

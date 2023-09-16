@@ -22,7 +22,7 @@ func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY 
 	}
 
 	if !rend.ApplyTexturing {
-		rend.drawColumnUntextured(column, highestPixelY, lowestPixelY)
+		rend.drawColumnUntextured(column, lowestPixelY, highestPixelY)
 	} else {
 		rend.drawColumnTextured(column, rayDirectionX, rayDirectionY, columnHeight, offset, lowestPixelY, highestPixelY)
 	}

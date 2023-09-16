@@ -2,7 +2,10 @@ package main
 
 import (
 	"container/list"
+	bspdung "raylib-raycaster/bsp_dung"
+	pcgr "raylib-raycaster/random/pcgrandom"
 	"raylib-raycaster/raycaster"
+	"time"
 )
 
 type Scene struct {
@@ -11,32 +14,14 @@ type Scene struct {
 	Camera  *raycaster.Camera
 }
 
-func (s *Scene) init(camX, camY float64) {
-	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 0, 0, 4, 1)
+func (s *Scene) init() (float64, float64) {
 	s.things = list.New()
-	mp := []string{
-		"#############################################",
-		"#             #       #       #             #",
-		"#             #       +       #             #",
-		"#             #       #       #             #",
-		"#        #    #       #       #             #",
-		"#             #       #       #             #",
-		"#             #       #       +             #",
-		"#####+#########       #       #             #",
-		"#            #        #       #             #",
-		"#            +        #       #             #",
-		"#            #        #       #             #",
-		"#            #        #       #             #",
-		"###+###################       ######+########",
-		"#                             #             #",
-		"#                             #             #",
-		"#                             #             #",
-		"#                             #             #",
-		"#                             #             #",
-		"#                             #             #",
-		"#############################################",
-	}
+	gen := bspdung.Generator{}
+	rnd := pcgr.NewPCG64()
+	rnd.SetSeed(int(time.Now().UnixNano()))
+	mp := gen.Generate(rnd, 40, 40)
 	s.gameMap = make([][]tile, 0)
+	camX, camY := 0.0, 0.0
 	for i := 0; i < len(mp); i++ {
 		s.gameMap = append(s.gameMap, make([]tile, 0))
 		for j := 0; j < len(mp[i]); j++ {
@@ -45,7 +30,10 @@ func (s *Scene) init(camX, camY float64) {
 			switch char {
 			case '.', ' ':
 				code = "FLOOR"
-			case '#':
+			case '<':
+				camX, camY = float64(i), float64(j)
+				code = "FLOOR"
+			case '#', '"':
 				code = "WALL"
 			case '+':
 				code = "DOOR"
@@ -54,11 +42,12 @@ func (s *Scene) init(camX, camY float64) {
 		}
 	}
 
+	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 0, 0, 4, 1)
 	for i := 0; i < 15; i++ {
 		x, y := 0, 0
 		for !s.IsTilePassable(x, y) {
-			x = rnd.Intn(len(s.gameMap))
-			y = rnd.Intn(len(s.gameMap[0]))
+			x = rnd.Rand(len(s.gameMap))
+			y = rnd.Rand(len(s.gameMap[0]))
 		}
 		rx, ry := tileCoordsToTrueCoords(x, y)
 		s.things.PushBack(&mob{
@@ -67,11 +56,7 @@ func (s *Scene) init(camX, camY float64) {
 			spriteCode: "enemy",
 		})
 	}
-	s.things.PushBack(&mob{
-		x:          4.5,
-		y:          4.5,
-		spriteCode: "enemy",
-	})
+	return camX, camY
 }
 
 func (s *Scene) AreGridCoordsValid(x, y int) bool {

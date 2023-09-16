@@ -21,11 +21,11 @@ type game struct {
 
 func (g *game) init() {
 	g.scene = &Scene{}
+	px, py := g.scene.init()
 	g.player = &mob{
-		x: 5.5,
-		y: 5.5,
+		x: px,
+		y: py,
 	}
-	g.scene.init(g.player.x, g.player.y)
 	gameIsRunning = true
 }
 

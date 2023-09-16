@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -37,6 +39,7 @@ func (g *game) gameLoop() {
 		g.actMobs()
 		g.actTiles()
 		tick++
+		fmt.Printf("TOTAL %d THINGS\n", g.scene.things.Len())
 		renderFrame(g.scene)
 	}
 }

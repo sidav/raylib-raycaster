@@ -50,11 +50,10 @@ func (r *Renderer) RenderFrame(scene Scene) {
 
 	if r.ApplyTexturing && r.RenderFloors {
 		startTimeFloorsCeilings := time.Now()
-		r.renderFloorAndCeiling()
+		r.renderTexturedFloorAndCeiling()
 		debugPrintf("Floors/ceilings rendered in %d ms.\n", int(time.Since(startTimeFloorsCeilings)/time.Millisecond))
 	} else {
-		r.backend.SetColor(64, 64, 64)
-		r.backend.FillRect(0, r.RenderHeight/2, r.RenderWidth, r.RenderHeight/2)
+		r.renderUntexturedFloorAndCeiling()
 	}
 
 	startTimeWalls := time.Now()

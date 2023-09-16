@@ -13,19 +13,19 @@ func (g *game) workPlayerInput() {
 	if rl.IsKeyDown(rl.KeyUp) || rl.IsKeyDown(rl.KeyW) {
 		g.movePlayerByFacing(false)
 	}
-	if rl.IsKeyDown(rl.KeyLeft) || rl.IsKeyDown(rl.KeyA) {
+	if rl.IsKeyDown(rl.KeyLeft) || rl.IsKeyDown(rl.KeyQ) {
 		g.rotatePlayer(false)
 	}
-	if rl.IsKeyDown(rl.KeyRight) || rl.IsKeyDown(rl.KeyD) {
+	if rl.IsKeyDown(rl.KeyRight) || rl.IsKeyDown(rl.KeyE) {
 		g.rotatePlayer(true)
 	}
 	if rl.IsKeyDown(rl.KeyDown) || rl.IsKeyDown(rl.KeyS) {
 		g.movePlayerByFacing(true)
 	}
-	if rl.IsKeyDown(rl.KeyQ) {
+	if rl.IsKeyDown(rl.KeyA) {
 		g.movePlayerSideways(false)
 	}
-	if rl.IsKeyDown(rl.KeyE) {
+	if rl.IsKeyDown(rl.KeyD) {
 		g.movePlayerSideways(true)
 	}
 	if rl.IsKeyPressed(rl.KeySpace) {

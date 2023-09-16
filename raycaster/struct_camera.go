@@ -10,7 +10,7 @@ type Camera struct {
 
 	vBobOffset, maxVBobOffset, vBobSpeed int
 
-	hBobOffset, hBobSpeed, maxHBobOffset float64
+	hBobOffset, hBobSpeed, maxHBobOffset float64 // horizontal bobbing (TODO: remove?)
 }
 
 func CreateCamera(x, y, viewAngle, maxHBobOffset, hBobSpeed float64, maxVBobOffset, vBobSpeed int) *Camera {

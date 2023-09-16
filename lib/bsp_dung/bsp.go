@@ -18,8 +18,7 @@ type Generator struct {
 
 func (g *Generator) Generate(r random.PRNG, w, h int) [][]rune {
 	rnd = r
-	//
-	g.MinRoomSide = 5
+	// g.MinRoomSide = 5
 	g.RoomWForRandomDropping = w / 2
 	g.RoomHForRandomDropping = h / 2
 	g.MaxRoomRatio = 0.65

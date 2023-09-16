@@ -15,7 +15,7 @@ const (
 	RENDER_W = WINDOW_W / PIXEL_SIZE
 	RENDER_H = WINDOW_H / PIXEL_SIZE
 
-	PIXEL_SIZE = 8
+	PIXEL_SIZE = 4
 
 	VIEW_ANGLE = 110
 )
@@ -38,11 +38,11 @@ func main() {
 		RenderWidth:            RENDER_W,
 		RenderHeight:           RENDER_H,
 		ApplyTexturing:         true,
-		RenderFloors:           false,
-		RenderCeilings:         false,
-		MaxRayLength:           200,
+		RenderFloors:           true,
+		RenderCeilings:         true,
+		MaxRayLength:           100,
 		MaxFogFraction:         1,
-		RayLengthForMaximumFog: 20,
+		RayLengthForMaximumFog: 2000,
 		FogR:                   64,
 		FogG:                   48,
 		FogB:                   32,

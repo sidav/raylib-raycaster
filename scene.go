@@ -16,9 +16,13 @@ type Scene struct {
 
 func (s *Scene) init() (float64, float64) {
 	s.things = list.New()
-	gen := bspdung.Generator{}
+	gen := bspdung.Generator{
+		MinRoomSide:            20,
+		RoomWForRandomDropping: 20,
+	}
 	rnd := pcgr.NewPCG64()
 	rnd.SetSeed(int(time.Now().UnixNano()))
+	rnd.SetSeed(1)
 	mp := gen.Generate(rnd, 40, 40)
 	s.gameMap = make([][]tile, 0)
 	camX, camY := 0.0, 0.0

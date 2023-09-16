@@ -11,6 +11,13 @@ type RaylibBackend struct {
 	TargetTexture rl.RenderTexture2D
 }
 
+func (rb *RaylibBackend) Init(w, h int32) {
+	rl.InitWindow(w, h, "RENDERER")
+	rl.SetWindowState(rl.FlagWindowResizable + rl.FlagWindowMaximized)
+	rl.SetTargetFPS(30)
+	rl.SetExitKey(rl.KeyEscape)
+}
+
 func (rb *RaylibBackend) SetInternalResolution(w, h int32) {
 	rb.TargetTexture = rl.LoadRenderTexture(w, h)
 	rl.SetTextureFilter(rb.TargetTexture.Texture, rl.FilterAnisotropic16x)

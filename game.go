@@ -22,9 +22,8 @@ type game struct {
 func (g *game) init() {
 	g.scene = &Scene{}
 	g.player = &mob{
-		x:    5.5,
-		y:    5.5,
-		dirY: 1,
+		x: 5.5,
+		y: 5.5,
 	}
 	g.scene.init(g.player.x, g.player.y)
 	gameIsRunning = true
@@ -32,107 +31,45 @@ func (g *game) init() {
 
 func (g *game) gameLoop() {
 	for gameIsRunning && !rl.WindowShouldClose() {
-		switch g.gameState {
-		case GSTATE_PLAYER_INPUT:
-			g.workPlayerInput()
-		case GSTATE_PROJECTILE_MOVEMENT:
-			g.actProjectiles()
-		case GSTATE_MOBS_DECISION:
-			g.decideMobs()
-		case GSTATE_MOBS_ACTION:
-			g.actMobs()
-		case GSTATE_RESET_TO_ZERO:
-			g.gameState = 0
-		default:
-			g.gameState++
-		}
+		g.workPlayerInput()
+		g.actProjectiles()
+		g.decideMobs()
+		g.actMobs()
+		g.actTiles()
 		tick++
 		renderFrame(g.scene)
 	}
 }
 
 func (g *game) actProjectiles() {
-	changeState := true
-	const factor = 5
+	speed := 0.75
 	for node := g.scene.things.Front(); node != nil; node = node.Next() {
 		switch node.Value.(type) {
 		case *projectile:
 			proj := node.Value.(*projectile)
-			newX := proj.x + (proj.dirX / factor)
-			newY := proj.y + (proj.dirY / factor)
+			newX := proj.x + (proj.dirX * speed)
+			newY := proj.y + (proj.dirY * speed)
 			if !g.scene.areRealCoordsPassable(newX, newY) {
 				g.scene.things.Remove(node)
 			} else {
-				changeState = false
 				proj.x, proj.y = newX, newY
 			}
 		}
 	}
-	if changeState {
-		g.gameState++
+}
+
+func (g *game) actTiles() {
+	for x := range g.scene.gameMap {
+		for y := range g.scene.gameMap[x] {
+			g.scene.gameMap[x][y].actOnState()
+		}
 	}
 }
 
 func (g *game) decideMobs() {
-	for node := g.scene.things.Front(); node != nil; node = node.Next() {
-		switch node.Value.(type) {
-		case *mob:
-			currMob := node.Value.(*mob)
-			if currMob.intent == nil {
 
-				dirx, diry := 1.0, 0.0
-				var movx, movy float64
-
-				for try := 0; try < 10; try++  {
-					rotate := rnd.Intn(4)
-					for i := 0; i < rotate; i++ {
-						dirx, diry = -diry, dirx // rotate 90 degrees
-					}
-					movx, movy = currMob.x+dirx, currMob.y+diry
-					if g.scene.areRealCoordsPassable(movx, movy) && g.scene.GetMobAtRealCoords(movx, movy) == nil {
-						break
-					}
-				}
-
-				if g.scene.areRealCoordsPassable(movx, movy) && g.scene.GetMobAtRealCoords(movx, movy) == nil {
-					currMob.intent = &mobIntent{
-						dirx:    dirx,
-						diry:    diry,
-						moveToX: movx,
-						moveToY: movy,
-					}
-				}
-			}
-		}
-	}
-	g.gameState++
 }
 
 func (g *game) actMobs() {
-	changeState := true
-	const factor = 5
-	for node := g.scene.things.Front(); node != nil; node = node.Next() {
-		switch node.Value.(type) {
-		case *mob:
-			currMob := node.Value.(*mob)
 
-			if currMob.intent == nil {
-				continue
-			}
-
-			currMob.x += currMob.intent.dirx / factor
-			currMob.y += currMob.intent.diry / factor
-			currMob.intent.framesSpent++
-			changeState = false
-
-			if currMob.intent.framesSpent == factor {
-				currMob.x = currMob.intent.moveToX
-				currMob.y = currMob.intent.moveToY
-				currMob.intent = nil
-			}
-		}
-	}
-	if changeState {
-		g.gameState++
-	}
 }

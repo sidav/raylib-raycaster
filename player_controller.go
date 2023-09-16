@@ -4,6 +4,11 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+const (
+	playerMovementSpeed = 0.05
+	playerRotationSpeed = 3.5 // degrees
+)
+
 func (g *game) workPlayerInput() {
 	if rl.IsKeyDown(rl.KeyUp) || rl.IsKeyDown(rl.KeyW) {
 		g.movePlayerByFacing(false)
@@ -26,12 +31,13 @@ func (g *game) workPlayerInput() {
 	if rl.IsKeyPressed(rl.KeySpace) {
 		g.tryOpenDoorAsPlayer()
 	}
-	if rl.IsKeyPressed(rl.KeyEnter) {
+	if rl.IsKeyDown(rl.KeyEnter) {
+		dx, dy := g.player.GetDirectionVector()
 		g.scene.things.PushBack(&projectile{
 			x:          g.scene.Camera.X,
 			y:          g.scene.Camera.Y,
-			dirX:       g.player.dirX,
-			dirY:       g.player.dirY,
+			dirX:       dx,
+			dirY:       dy,
 			spriteCode: "proj",
 		})
 		g.gameState++
@@ -39,84 +45,56 @@ func (g *game) workPlayerInput() {
 }
 
 func (g *game) movePlayerByFacing(backwards bool) {
-	const MOVEFRAMES = 15.0
-	factor := 1.0
+	factor := playerMovementSpeed
 	if backwards {
-		factor = -1.0
+		factor = -factor
 	}
-	tx, ty := trueCoordsToTileCoords(g.player.x+factor*g.player.dirX, g.player.y+factor*g.player.dirY)
+	dx, dy := g.player.GetDirectionVector()
+	tx, ty := trueCoordsToTileCoords(g.player.x+5*factor*dx, g.player.y+5*factor*dy)
 	if g.scene.IsTilePassable(tx, ty) && g.scene.GetMobAtTileCoords(tx, ty) == nil {
-		g.player.x += factor * g.player.dirX
-		g.player.y += factor * g.player.dirY
-		for i := 0; i < int(MOVEFRAMES)-1; i++ {
-			g.scene.Camera.MoveForward(factor * 1 / MOVEFRAMES)
-			renderFrame(g.scene)
-		}
+		g.player.x += factor * dx
+		g.player.y += factor * dy
+		g.scene.Camera.MoveForward(factor)
 		g.scene.Camera.X = g.player.x
 		g.scene.Camera.Y = g.player.y
 	}
 }
 
 func (g *game) movePlayerSideways(right bool) {
-	const MOVEFRAMES = 15.0
-	factor := 1.0
+	factor := playerMovementSpeed
 	if right {
-		factor = -1.0
+		factor = -factor
 	}
-	moveDirX, moveDirY := factor*g.player.dirY, -factor*g.player.dirX
-	tx, ty := trueCoordsToTileCoords(g.player.x+moveDirX, g.player.y+moveDirY)
+	dx, dy := g.player.GetDirectionVector()
+	moveDirX, moveDirY := factor*dy, -factor*dx
+	tx, ty := trueCoordsToTileCoords(g.player.x+5*moveDirX, g.player.y+5*moveDirY)
 	if g.scene.IsTilePassable(tx, ty) {
 		g.player.x += moveDirX
 		g.player.y += moveDirY
-		for i := 0; i < int(MOVEFRAMES)-1; i++ {
-			g.scene.Camera.MoveByVector(moveDirX*1/MOVEFRAMES, moveDirY*1/MOVEFRAMES)
-			renderFrame(g.scene)
-		}
+		g.scene.Camera.MoveByVector(moveDirX, moveDirY)
 		g.scene.Camera.X = g.player.x
 		g.scene.Camera.Y = g.player.y
 	}
 }
 
 func (g *game) rotatePlayer(clockwise bool) {
-	const MOVEFRAMES = 15.0
 	factor := -1.0
 	if clockwise {
-		g.player.dirX, g.player.dirY = -g.player.dirY, g.player.dirX
 		factor = 1.0
-	} else {
-		g.player.dirX, g.player.dirY = g.player.dirY, -g.player.dirX
 	}
-	for i := 0; i < int(MOVEFRAMES); i++ {
-		g.scene.Camera.Rotate(factor * (90 / MOVEFRAMES) * 3.14159265358 / 180.0)
-		renderFrame(g.scene)
-	}
+	rot := factor * playerRotationSpeed * 3.14159265358 / 180.0
+	g.player.rotationRadians += rot
+	g.scene.Camera.Rotate(rot)
 }
 
 func (g *game) tryOpenDoorAsPlayer() {
-	const MOVEFRAMES = 15.0
-	tx, ty := trueCoordsToTileCoords(g.player.x+g.player.dirX, g.player.y+g.player.dirY)
+	dx, dy := g.player.GetDirectionVector()
+	tx, ty := trueCoordsToTileCoords(g.player.x+dx, g.player.y+dy)
 	if g.scene.gameMap[tx][ty].getStaticData().openable {
 		if g.scene.gameMap[tx][ty].isOpened() {
-			for !g.scene.gameMap[tx][ty].isClosed() {
-				g.scene.gameMap[tx][ty].tileSlideAmount -= 1 / MOVEFRAMES
-				renderFrame(g.scene)
-			}
+			g.scene.gameMap[tx][ty].state = tileStateClosing
 		} else {
-			for !g.scene.gameMap[tx][ty].isOpened() {
-				g.scene.gameMap[tx][ty].tileSlideAmount += 1 / MOVEFRAMES
-				renderFrame(g.scene)
-			}
-		}
-		// g.scene.gameMap[tx][ty].tileSlideAmount = math.Round(g.scene.gameMap[tx][ty].tileSlideAmount)
-	} else if !g.scene.IsTilePassable(tx, ty) { // zoom effect for "pushing" the wall
-		initialAngle := VIEW_ANGLE / 2.0
-		g.scene.Camera.ChangeViewWidth(initialAngle)
-		angleIncrement := (VIEW_ANGLE - initialAngle) / MOVEFRAMES
-
-		for i := 0; i < MOVEFRAMES; i++ {
-			g.scene.Camera.ChangeViewWidth(initialAngle + float64(i)*angleIncrement)
-			renderFrame(g.scene)
+			g.scene.gameMap[tx][ty].state = tileStateOpening
 		}
 	}
-	g.gameState++
 }

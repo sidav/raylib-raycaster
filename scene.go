@@ -64,16 +64,12 @@ func (s *Scene) init(camX, camY float64) {
 		s.things.PushBack(&mob{
 			x:          rx,
 			y:          ry,
-			dirX:       1,
-			dirY:       0,
 			spriteCode: "enemy",
 		})
 	}
 	s.things.PushBack(&mob{
 		x:          4.5,
 		y:          4.5,
-		dirX:       1,
-		dirY:       0,
 		spriteCode: "enemy",
 	})
 }

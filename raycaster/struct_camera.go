@@ -6,7 +6,7 @@ type Camera struct {
 	X, Y             float64
 	dirX, dirY       float64
 	planeX, planeY   float64
-	movDirX, movDirY float64 // same as dirX/dirY but always of length 1 
+	movDirX, movDirY float64 // same as dirX/dirY but always of length 1
 
 	vBobOffset, maxVBobOffset, vBobSpeed int
 
@@ -22,8 +22,8 @@ func CreateCamera(x, y, viewAngle, maxHBobOffset, hBobSpeed float64, maxVBobOffs
 		vBobSpeed:     vBobSpeed,
 		maxHBobOffset: maxHBobOffset,
 		hBobSpeed:     hBobSpeed,
-		movDirX:       0,
-		movDirY:       1,
+		movDirX:       1,
+		movDirY:       0,
 	}
 	cam.ChangeViewWidth(viewAngle)
 	return cam
@@ -42,20 +42,24 @@ func (c *Camera) getSquareDistanceTo(x, y float64) float64 {
 	return (x-c.X)*(x-c.X) + (y-c.Y)*(y-c.Y)
 }
 
+func (c *Camera) reset() {
+	// reset the Camera dir
+	c.dirX = 1
+	c.movDirX = 1
+	c.dirY = 0
+	c.movDirY = 0
+	c.planeX = 0 //-0.5
+	c.planeY = 0.5
+}
+
 func (c *Camera) ChangeViewWidth(degrees float64) {
 	// remember the camera rotation angle
 	lastAngle := math.Atan2(-c.dirX, c.dirY)
 
-	// reset the Camera dir
-	c.dirX = 0
-	c.movDirX = 0
-	c.dirY = 1
-	c.movDirY = 1
-	c.planeX = -0.5
-	c.planeY = 0
+	c.reset()
 
 	// setting the degrees
-	c.dirY = 1.0 / math.Tan(degrees*math.Pi/360.0)
+	c.dirX = 1.0 / math.Tan(degrees*math.Pi/360.0)
 
 	// return the Camera rotation angle
 	c.Rotate(lastAngle)

@@ -1,6 +1,7 @@
 package backend
 
 type RendererBackend interface {
+	Init(int32, int32)
 	BeginFrame()
 	EndFrame()
 	SetInternalResolution(w, h int32)

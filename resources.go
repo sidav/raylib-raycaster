@@ -17,7 +17,7 @@ var (
 
 func loadResources() {
 	// init textures (temp.)
-	loadTexture(&wallTexturesAtlas, "WALL", "resources/textures/tile094.png")
+	loadTexture(&wallTexturesAtlas, "WALL", "resources/textures/scifi/suprt2.png")
 	loadTexture(&wallTexturesAtlas, "DOOR", "resources/textures/door.png")
 
 	loadTexture(&floorTexturesAtlas, "DEFAULT", "resources/textures/tile113.png")
@@ -27,8 +27,8 @@ func loadResources() {
 	// init sprites
 	loadSprite("proj", "resources/sprites/projectile0.png")
 	loadSprite("proj", "resources/sprites/projectile1.png")
-	loadSprite("enemy", "resources/sprites/cobra1.png")
-	loadSprite("enemy", "resources/sprites/cobra2.png")
+	loadSprite("enemy", "resources/sprites/characters/CommandoWalk1.png")
+	loadSprite("enemy", "resources/sprites/characters/CommandoWalk2.png")
 
 	uiAtlas = make(map[string][]rl.Texture2D)
 }

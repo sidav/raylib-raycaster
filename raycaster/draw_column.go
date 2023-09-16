@@ -25,6 +25,7 @@ func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY 
 		rend.drawColumnUntextured(column, lowestPixelY, highestPixelY)
 	} else {
 		rend.drawColumnTextured(column, rayDirectionX, rayDirectionY, columnHeight, offset, lowestPixelY, highestPixelY)
+		rend.renderTexturedFloorAndCeilingColumn(column.x, lowestPixelY, highestPixelY)
 	}
 	rend.rayDistancesBuffer[column.x] = column.perpWallDist
 }

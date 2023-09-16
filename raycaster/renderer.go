@@ -49,9 +49,9 @@ func (r *Renderer) RenderFrame(scene Scene) {
 	}
 
 	if r.ApplyTexturing && r.RenderFloors {
-		startTimeFloorsCeilings := time.Now()
-		r.renderTexturedFloorAndCeiling()
-		debugPrintf("Floors/ceilings rendered in %d ms.\n", int(time.Since(startTimeFloorsCeilings)/time.Millisecond))
+		// startTimeFloorsCeilings := time.Now()
+		// r.renderTexturedFloorAndCeiling()
+		// debugPrintf("Floors/ceilings rendered in %d ms.\n", int(time.Since(startTimeFloorsCeilings)/time.Millisecond))
 	} else {
 		r.renderUntexturedFloorAndCeiling()
 	}

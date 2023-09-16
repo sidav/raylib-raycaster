@@ -1,7 +1,7 @@
 package bspdung
 
 import (
-	"raylib-raycaster/random"
+	"raylib-raycaster/lib/random"
 )
 
 var rnd random.PRNG

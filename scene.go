@@ -2,8 +2,8 @@ package main
 
 import (
 	"container/list"
-	bspdung "raylib-raycaster/bsp_dung"
-	pcgr "raylib-raycaster/random/pcgrandom"
+	bspdung "raylib-raycaster/lib/bsp_dung"
+	pcgr "raylib-raycaster/lib/random/pcgrandom"
 	"raylib-raycaster/raycaster"
 	"time"
 )

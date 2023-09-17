@@ -45,7 +45,7 @@ func (g *game) gameLoop() {
 }
 
 func (g *game) actProjectiles() {
-	speed := 0.75
+	speed := 0.5
 	for node := g.scene.things.Front(); node != nil; node = node.Next() {
 		switch node.Value.(type) {
 		case *projectile:

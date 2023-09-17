@@ -12,6 +12,7 @@ var (
 	ceilingTexturesAtlas map[string][]*raycaster.Texture
 	spritesAtlas         map[string][]*raycaster.SpriteStruct
 
+	// non-renderer related: UI, weapons in hands etc
 	uiAtlas map[string][]rl.Texture2D
 )
 
@@ -30,7 +31,8 @@ func loadResources() {
 	loadSprite("enemy", "resources/sprites/characters/CommandoWalk1.png")
 	loadSprite("enemy", "resources/sprites/characters/CommandoWalk2.png")
 
-	uiAtlas = make(map[string][]rl.Texture2D)
+	loadUIImage("pWeaponPistol", "resources/sprites/lab/guns/gun2.png")
+	loadUIImage("pWeaponGun", "resources/sprites/lab/guns/gun1a.png")
 }
 
 func loadTexture(atlas *map[string][]*raycaster.Texture, code string, filename string) {
@@ -45,4 +47,11 @@ func loadSprite(code string, filename string) {
 		spritesAtlas = make(map[string][]*raycaster.SpriteStruct, 0)
 	}
 	spritesAtlas[code] = append(spritesAtlas[code], raycaster.InitSpriteFromImageFile(filename))
+}
+
+func loadUIImage(code, filename string) {
+	if len(uiAtlas) == 0 {
+		uiAtlas = make(map[string][]rl.Texture2D)
+	}
+	uiAtlas[code] = append(uiAtlas[code], drawBackend.LoadImageAsRlTexture(filename))
 }

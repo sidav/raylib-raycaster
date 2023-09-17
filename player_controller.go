@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	playerMovementSpeed = 0.05
-	playerRotationSpeed = 3.5 // degrees
+	playerMovementSpeed = 0.075
+	playerRotationSpeed = 5 // degrees
 )
 
 func (g *game) workPlayerInput() {

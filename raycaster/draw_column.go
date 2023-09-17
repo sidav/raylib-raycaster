@@ -4,19 +4,21 @@ import "math"
 
 func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY float64) {
 	// drawing the pixels column
-	columnHeight := int(float64(rend.RenderHeight) / column.perpWallDist * rend.aspectFactor)
+	camH := rend.cam.getVerticalCoordWithBob()
+	// columnHeight := int(float64(rend.RenderHeight) / column.perpWallDist * rend.aspectFactor)
 
-	lowestPixelY := columnHeight/2 + rend.RenderHeight/2
+	// lowestPixelY := columnHeight/2 + rend.RenderHeight/2
+	lowestPixelY := int(float64(rend.RenderHeight) * (0.5 - rend.aspectFactor*(0-camH)/column.perpWallDist))
 	var offset int
 	if column.elevation > 0 {
 		offset = int(float64(rend.RenderHeight) / column.perpWallDist * column.elevation * rend.aspectFactor)
 		lowestPixelY -= offset
 	}
 
-	highestPixelY := -columnHeight/2 + rend.RenderHeight/2
+	// highestPixelY := -columnHeight/2 + rend.RenderHeight/2
+	highestPixelY := int(float64(rend.RenderHeight) * (0.5 - rend.aspectFactor*(1-camH)/column.perpWallDist))
+	columnHeight := lowestPixelY - highestPixelY
 	// Note: highest and lowest PixelY both CAN be out of screen bounds (this behaviour is needed for texturing).
-	highestPixelY += rend.cam.vBobOffset
-	lowestPixelY += rend.cam.vBobOffset
 
 	if !rend.ApplyTexturing {
 		rend.wallsTimer.measure(func() {

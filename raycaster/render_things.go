@@ -45,8 +45,8 @@ func (r *Renderer) renderThings() {
 		width, height := t.GetWidthAndHeightFactors()
 		osx := int((float64(r.RenderWidth) / 2) * (1 + transformX/transformY))
 		osw := int(width * float64(r.RenderWidth) / transformY)
-		// first 0.5 is vertical center of the screen, second one is camera height
-		osy := int(float64(r.RenderHeight) * (0.5 - (tz-0.5)/transformY))
+		// Perspective projection of Spritable's center. 0.5 is vertical center of the screen
+		osy := int(float64(r.RenderHeight) * (0.5 - r.aspectFactor*(tz-r.cam.getVerticalCoordWithBob())/transformY))
 		osh := int(height * r.aspectFactor * float64(r.RenderHeight) / transformY)
 		if osw > r.RenderWidth {
 			continue
@@ -69,7 +69,7 @@ func (r *Renderer) renderThings() {
 					continue
 				}
 				r.setFoggedColorFromBitmapPixelAtCoords(currSprite.bitmap, spriteX, spriteY, transformY, false)
-				r.backend.DrawPoint(int32(x+osx-osw/2), int32(y+osy-osh/2)+int32(r.cam.vBobOffset))
+				r.backend.DrawPoint(int32(x+osx-osw/2), int32(y+osy-osh/2))
 			}
 		}
 	}

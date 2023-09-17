@@ -2,7 +2,7 @@ package raycaster
 
 func (r *Renderer) renderUntexturedFloorAndCeiling() {
 	r.backend.SetColor(32, 32, 40)
-	floorOnScreenHeight := r.RenderHeight/2 + r.cam.vBobOffset
+	floorOnScreenHeight := r.RenderHeight / 2 // + r.cam.vBobOffset
 	r.backend.FillRect(0, floorOnScreenHeight, r.RenderWidth, r.RenderHeight-floorOnScreenHeight)
 }
 
@@ -15,7 +15,8 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 	rayDirX1 := r.cam.dirX + r.cam.planeX
 	rayDirY1 := r.cam.dirY + r.cam.planeY
 	// Vertical position of the Camera.
-	floorPosZ := float64(r.RenderHeight/2) * r.aspectFactor // + float64(r.cam.vBobOffset)
+	floorPosZ := r.aspectFactor * float64(r.RenderHeight) * r.cam.getVerticalCoordWithBob()
+	ceilingPosZ := r.aspectFactor*float64(r.RenderHeight) - floorPosZ
 
 	for y := 0; y < r.RenderHeight; y++ {
 		if y >= wallTopY && y <= wallLowY {
@@ -25,13 +26,13 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 			return
 		}
 		// Current Y position compared to the center of the screen (the horizon)
-		offsetFromCenterForFloor := y - r.RenderHeight/2 - r.cam.vBobOffset
-		offsetFromCenterForCeiling := r.RenderHeight/2 - y + r.cam.vBobOffset
+		offsetFromCenterForFloor := y - r.RenderHeight/2   // - r.cam.vBobOffset
+		offsetFromCenterForCeiling := r.RenderHeight/2 - y // + r.cam.vBobOffset
 
 		// Horizontal distance from the Camera to the floor for the current row.
 		// 0.5 is the z position exactly in the middle between floor and ceiling.
 		floorRowDistance := floorPosZ / float64(offsetFromCenterForFloor)
-		ceilingRowDistance := floorPosZ / float64(offsetFromCenterForCeiling)
+		ceilingRowDistance := ceilingPosZ / float64(offsetFromCenterForCeiling)
 		// fmt.Printf("dist %f \n", floorRowDistance)
 
 		// calculate the real world step vector we have to add for each X (parallel to Camera plane)

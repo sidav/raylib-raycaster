@@ -10,7 +10,7 @@ type Scene interface {
 	AreGridCoordsValid(int, int) bool
 	IsTileOpaque(int, int) bool
 	IsTileThin(int, int) bool
-	GetTileSlideAmount(int, int) float64
-	GetTileElevation(int, int) float64
+	GetTileHorizontalSlide(int, int) float64
+	GetTileVerticalSlide(int, int) float64
 	GetTextureForTile(int, int) *Texture
 }

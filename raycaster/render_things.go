@@ -1,7 +1,7 @@
 package raycaster
 
 func (r *Renderer) renderThings() {
-	camx, camy := r.cam.getCoordsWithOffset()
+	camx, camy := r.cam.getCoords()
 	things := r.scene.GetListOfThings()
 
 	// sort by distance from camera (descending)
@@ -9,13 +9,13 @@ func (r *Renderer) renderThings() {
 	for node1 := things.Front(); node1 != nil && node1.Next() != nil; node1 = node1.Next() {
 
 		t1 := node1.Value.(Spritable)
-		t1x, t1y := t1.GetCoords()
+		t1x, t1y, _ := t1.GetCoords()
 		dist1 := (camx-t1x)*(camx-t1x) + (camy-t1y)*(camy-t1y)
 
 		for node2 := node1.Next(); node2 != nil; node2 = node2.Next() {
 
 			t2 := node2.Value.(Spritable)
-			t2x, t2y := t2.GetCoords()
+			t2x, t2y, _ := t2.GetCoords()
 			dist2 := (camx-t2x)*(camx-t2x) + (camy-t2y)*(camy-t2y)
 
 			if dist2 > dist1 {
@@ -31,20 +31,23 @@ func (r *Renderer) renderThings() {
 		//	continue
 		//}
 		t := node.Value.(Spritable)
-		tx, ty := t.GetCoords()
+		tx, ty, tz := t.GetCoords()
 		// check if the Sprite is faced by Camera
 		xRelative, yRelative := tx-camx, ty-camy
 		invDet := 1.0 / (r.cam.planeX*r.cam.dirY - r.cam.dirX*r.cam.planeY) // vector projection fuckery
 		transformX := invDet * (r.cam.dirY*xRelative - r.cam.dirX*yRelative)
+		// transformY is equal to the distance to camera plane
 		transformY := invDet * (-r.cam.planeY*xRelative + r.cam.planeX*yRelative)
-		if transformY < 0.01 { // close enough to zero
+		if transformY < 0.01 { // close enough to zero == too close to the camera
 			continue
 		}
 
+		width, height := t.GetWidthAndHeightFactors()
 		osx := int((float64(r.RenderWidth) / 2) * (1 + transformX/transformY))
-		osy := r.RenderHeight / 2
-		osw := int(float64(r.RenderWidth) / transformY)
-		osh := int(r.aspectFactor * float64(r.RenderHeight) / transformY)
+		osw := int(width * float64(r.RenderWidth) / transformY)
+		// Perspective projection of Spritable's center. 0.5 is vertical center of the screen
+		osy := int(float64(r.RenderHeight)*(0.5-r.aspectFactor*(tz-r.cam.getVerticalCoordWithBob())/transformY)) + r.cam.OnScreenVerticalOffset
+		osh := int(height * r.aspectFactor * float64(r.RenderHeight) / transformY)
 		if osw > r.RenderWidth {
 			continue
 		}
@@ -66,7 +69,7 @@ func (r *Renderer) renderThings() {
 					continue
 				}
 				r.setFoggedColorFromBitmapPixelAtCoords(currSprite.bitmap, spriteX, spriteY, transformY, false)
-				r.backend.DrawPoint(int32(x+osx-osw/2), int32(y+osy-osh/2)+int32(r.cam.vBobOffset))
+				r.backend.DrawPoint(int32(x+osx-osw/2), int32(y+osy-osh/2))
 			}
 		}
 	}

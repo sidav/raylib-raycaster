@@ -10,7 +10,7 @@ func (s *Scene) IsTileOpaque(x, y int) bool {
 	return s.gameMap[x][y].getStaticData().opaque
 }
 
-func (s *Scene) GetTileElevation(x, y int) float64 {
+func (s *Scene) GetTileVerticalSlide(x, y int) float64 {
 	return 0
 }
 
@@ -18,7 +18,7 @@ func (s *Scene) GetCamera() *raycaster.Camera {
 	return s.Camera
 }
 
-func (s *Scene) GetTileSlideAmount(x, y int) float64 {
+func (s *Scene) GetTileHorizontalSlide(x, y int) float64 {
 	return s.gameMap[x][y].tileSlideAmount
 }
 
@@ -36,7 +36,7 @@ func (s *Scene) GetTextureForTile(x, y int) *raycaster.Texture {
 		panic("NO Texture FOR " + t.tileCode)
 	}
 	const changeFrameEveryTicks = 30
-	return tex[tick / changeFrameEveryTicks % len(tex)]
+	return tex[tick/changeFrameEveryTicks%len(tex)]
 }
 
 func (s *Scene) GetFloorTextureForCoords(x, y int) *raycaster.Texture {
@@ -55,7 +55,7 @@ func (s *Scene) GetFloorTextureForCoords(x, y int) *raycaster.Texture {
 		}
 	}
 	const changeFrameEveryTicks = 30
-	return tex[tick / changeFrameEveryTicks % len(tex)]
+	return tex[tick/changeFrameEveryTicks%len(tex)]
 }
 
 func (s *Scene) GetCeilingTextureForCoords(x, y int) *raycaster.Texture {
@@ -74,7 +74,7 @@ func (s *Scene) GetCeilingTextureForCoords(x, y int) *raycaster.Texture {
 		}
 	}
 	const changeFrameEveryTicks = 30
-	return tex[tick / changeFrameEveryTicks % len(tex)]
+	return tex[tick/changeFrameEveryTicks%len(tex)]
 }
 
 func (s *Scene) GetListOfThings() *list.List {

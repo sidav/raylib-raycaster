@@ -42,6 +42,12 @@ func (g *game) workPlayerInput() {
 		})
 		g.gameState++
 	}
+	if rl.IsKeyDown(rl.KeyPageUp) {
+		g.scene.Camera.OnScreenVerticalOffset--
+	}
+	if rl.IsKeyDown(rl.KeyPageDown) {
+		g.scene.Camera.OnScreenVerticalOffset++
+	}
 }
 
 func (g *game) movePlayerByFacing(backwards bool) {

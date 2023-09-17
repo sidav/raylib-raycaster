@@ -17,12 +17,12 @@ type Scene struct {
 func (s *Scene) init() (float64, float64) {
 	s.things = list.New()
 	gen := bspdung.Generator{
-		MinRoomSide:            20,
-		RoomWForRandomDropping: 20,
+		MinRoomSide:            3,
+		RoomWForRandomDropping: 10,
 	}
 	rnd := pcgr.NewPCG64()
 	rnd.SetSeed(int(time.Now().UnixNano()))
-	rnd.SetSeed(1)
+	// rnd.SetSeed(1)
 	mp := gen.Generate(rnd, 40, 40)
 	s.gameMap = make([][]tile, 0)
 	camX, camY := 0.0, 0.0
@@ -46,7 +46,7 @@ func (s *Scene) init() (float64, float64) {
 		}
 	}
 
-	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 0, 0, 4, 1)
+	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 4, 1)
 	for i := 0; i < 15; i++ {
 		x, y := 0, 0
 		for !s.IsTilePassable(x, y) {
@@ -76,7 +76,7 @@ func (s *Scene) GetMobAtTileCoords(tx, ty int) *mob {
 	for m := s.things.Front(); m != nil; m = m.Next() {
 		switch m.Value.(type) {
 		case *mob:
-			mrx, mry := m.Value.(*mob).GetCoords()
+			mrx, mry, _ := m.Value.(*mob).GetCoords()
 			mtx, mty := trueCoordsToTileCoords(mrx, mry)
 			if mtx == tx && mty == ty {
 				return m.Value.(*mob)

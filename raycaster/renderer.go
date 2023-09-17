@@ -29,6 +29,9 @@ type Renderer struct {
 
 	// private
 	rayDistancesBuffer []float64
+
+	// time measure
+	columnsTimer, wallsTimer, floorCeilingTimer, thingsTimer timer
 }
 
 func (r *Renderer) SetBackend(b backend.RendererBackend) {
@@ -48,20 +51,27 @@ func (r *Renderer) RenderFrame(scene Scene) {
 		r.rayDistancesBuffer = make([]float64, r.RenderWidth)
 	}
 
-	if r.ApplyTexturing && r.RenderFloors {
-		startTimeFloorsCeilings := time.Now()
-		r.renderTexturedFloorAndCeiling()
-		debugPrintf("Floors/ceilings rendered in %d ms.\n", int(time.Since(startTimeFloorsCeilings)/time.Millisecond))
-	} else {
-		r.renderUntexturedFloorAndCeiling()
-	}
+	r.renderUntexturedFloorAndCeiling()
 
-	startTimeWalls := time.Now()
-	r.renderWalls()
-	debugPrintf("Walls rendered in %d ms.\n", int(time.Since(startTimeWalls)/time.Millisecond))
-	startTimeThings := time.Now()
-	debugPrintf("Things rendered in %d ms.\n", int(time.Since(startTimeThings)/time.Millisecond))
-	r.renderThings()
+	r.columnsTimer.newMeasure()
+	r.wallsTimer.newMeasure()
+	r.floorCeilingTimer.newMeasure()
+	// r.renderWalls()
+	r.columnsTimer.measure(func() { r.castRays() })
+	debugPrintf("Columns rendered in %d ms (mean %d ms).\n",
+		int(r.columnsTimer.getMeasuredPassedTime()/time.Millisecond),
+		int(r.columnsTimer.getMeanPassedTime()/time.Millisecond),
+	)
+	debugPrintf(" -> Walls: %d ms (mean %dms), floors/ceilings %dms (mean %d ms).\n",
+		int(r.wallsTimer.getMeasuredPassedTime()/time.Millisecond),
+		int(r.wallsTimer.getMeanPassedTime()/time.Millisecond),
+		int(r.floorCeilingTimer.getMeasuredPassedTime()/time.Millisecond),
+		int(r.floorCeilingTimer.getMeanPassedTime()/time.Millisecond),
+	)
+
+	r.thingsTimer.newMeasure()
+	r.thingsTimer.measure(func() { r.renderThings() })
+	debugPrintf("Things rendered in %d ms.\n", int(r.thingsTimer.getMeasuredPassedTime()/time.Millisecond))
 
 	elapsedTime := int(time.Since(startTimeTotal) / time.Millisecond)
 	if elapsedTime != 0 {

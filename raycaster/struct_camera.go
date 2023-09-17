@@ -3,38 +3,43 @@ package raycaster
 import "math"
 
 type Camera struct {
-	X, Y             float64
-	dirX, dirY       float64
-	planeX, planeY   float64
-	movDirX, movDirY float64 // same as dirX/dirY but always of length 1
+	X, Y, Z                float64
+	dirX, dirY             float64
+	planeX, planeY         float64
+	movDirX, movDirY       float64 // same as dirX/dirY but always of length 1
+	OnScreenVerticalOffset int     // same sa vBobOffset earlier; now used to simulate up/down look
 
-	vBobOffset, maxVBobOffset, vBobSpeed int
-
-	hBobOffset, hBobSpeed, maxHBobOffset float64 // horizontal bobbing (TODO: remove?)
+	// vertical bobbing
+	currVerticalBob, maxBob, bobSpeed float64
 }
 
-func CreateCamera(x, y, viewAngle, maxHBobOffset, hBobSpeed float64, maxVBobOffset, vBobSpeed int) *Camera {
+func CreateCamera(x, y, viewAngle float64, maxVBobOffset, vBobSpeed int) *Camera {
 	// planeX := math.Tan(float64(viewAngle)*3.14159265358979323 / (2*180.0))
 	cam := &Camera{
-		X:             x,
-		Y:             y,
-		maxVBobOffset: maxVBobOffset,
-		vBobSpeed:     vBobSpeed,
-		maxHBobOffset: maxHBobOffset,
-		hBobSpeed:     hBobSpeed,
-		movDirX:       1,
-		movDirY:       0,
+		X:                      x,
+		Y:                      y,
+		Z:                      0.5,
+		movDirX:                1,
+		movDirY:                0,
+		OnScreenVerticalOffset: 0,
+
+		maxBob:   0.075,
+		bobSpeed: 0.0075,
 	}
 	cam.ChangeViewWidth(viewAngle)
 	return cam
 }
 
-func (c *Camera) getCoordsWithOffset() (float64, float64) {
-	return c.X + c.dirY*c.hBobOffset, c.Y + c.dirX*c.hBobOffset
+func (c *Camera) getCoords() (float64, float64) {
+	return c.X, c.Y
+}
+
+func (c *Camera) getVerticalCoordWithBob() float64 {
+	return c.Z + c.currVerticalBob
 }
 
 func (c *Camera) getIntCoords() (int, int) {
-	cx, cy := c.getCoordsWithOffset()
+	cx, cy := c.getCoords()
 	return int(cx), int(cy)
 }
 
@@ -66,61 +71,34 @@ func (c *Camera) ChangeViewWidth(degrees float64) {
 }
 
 func (c *Camera) Rotate(radians float64) {
+	sin := math.Sin(radians)
+	cos := math.Cos(radians)
 	oldDirX := c.dirX
-	c.dirX = c.dirX*math.Cos(radians) - c.dirY*math.Sin(radians)
-	c.dirY = oldDirX*math.Sin(radians) + c.dirY*math.Cos(radians)
+	c.dirX = c.dirX*cos - c.dirY*sin
+	c.dirY = oldDirX*sin + c.dirY*cos
 	oldMovDirX := c.movDirX
-	c.movDirX = c.movDirX*math.Cos(radians) - c.movDirY*math.Sin(radians)
-	c.movDirY = oldMovDirX*math.Sin(radians) + c.movDirY*math.Cos(radians)
+	c.movDirX = c.movDirX*cos - c.movDirY*sin
+	c.movDirY = oldMovDirX*sin + c.movDirY*cos
 	oldPlaneX := c.planeX
-	c.planeX = c.planeX*math.Cos(radians) - c.planeY*math.Sin(radians)
-	c.planeY = oldPlaneX*math.Sin(radians) + c.planeY*math.Cos(radians)
+	c.planeX = c.planeX*cos - c.planeY*sin
+	c.planeY = oldPlaneX*sin + c.planeY*cos
 }
 
 func (c *Camera) MoveForward(fraction float64) {
 	c.X += c.movDirX * fraction
 	c.Y += c.movDirY * fraction
-	c.vBobOffset += c.vBobSpeed
-	if c.vBobOffset >= c.maxVBobOffset {
-		c.vBobSpeed = -c.vBobSpeed
-		c.vBobOffset = c.maxVBobOffset
+	c.currVerticalBob += c.bobSpeed
+	if c.currVerticalBob >= c.maxBob {
+		c.bobSpeed = -c.bobSpeed
+		c.currVerticalBob = c.maxBob
 	}
-	if c.vBobOffset <= -c.maxVBobOffset {
-		c.vBobSpeed = -c.vBobSpeed
-		c.vBobOffset = -c.maxVBobOffset
-	}
-
-	c.hBobOffset += c.hBobSpeed
-	if c.hBobOffset >= c.maxHBobOffset {
-		c.hBobSpeed = -c.hBobSpeed
-		c.hBobOffset = c.maxHBobOffset
-	}
-	if c.hBobOffset <= -c.maxHBobOffset {
-		c.hBobSpeed = -c.hBobSpeed
-		c.hBobOffset = -c.maxHBobOffset
+	if c.currVerticalBob <= -c.maxBob {
+		c.bobSpeed = -c.bobSpeed
+		c.currVerticalBob = -c.maxBob
 	}
 }
 
 func (c *Camera) MoveByVector(vx, vy float64) {
 	c.X += vx
 	c.Y += vy
-	c.vBobOffset += c.vBobSpeed
-	if c.vBobOffset >= c.maxVBobOffset {
-		c.vBobSpeed = -c.vBobSpeed
-		c.vBobOffset = c.maxVBobOffset
-	}
-	if c.vBobOffset <= -c.maxVBobOffset {
-		c.vBobSpeed = -c.vBobSpeed
-		c.vBobOffset = -c.maxVBobOffset
-	}
-
-	c.hBobOffset += c.hBobSpeed
-	if c.hBobOffset >= c.maxHBobOffset {
-		c.hBobSpeed = -c.hBobSpeed
-		c.hBobOffset = c.maxHBobOffset
-	}
-	if c.hBobOffset <= -c.maxHBobOffset {
-		c.hBobSpeed = -c.hBobSpeed
-		c.hBobOffset = -c.maxHBobOffset
-	}
 }

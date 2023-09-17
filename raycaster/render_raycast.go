@@ -4,22 +4,28 @@ import (
 	"math"
 )
 
-type r_column struct {
-	x                  int     // on-screen X coord
-	perpWallDist       float64 // the distance to camera PLANE, not to the camera itself
-	elevation, slide   float64
-	side               uint8
-	hitTileX, hitTileY int
-	deferred           bool
+// corresponds to each on-screen column
+type castedRay struct {
+	x                     int     // on-screen X coord
+	perpWallDist          float64 // the distance to camera PLANE, not to the camera itself
+	vertSlide, horizSlide float64 // vertical and horizontal slide amount for hit tile
+	side                  uint8
+	hitTileX, hitTileY    int
+
+	// "True" if the ray hit wall, but was cast further anyway.
+	// There will be two castedRay structs: one for first hit (deferred=true), and one for final hit (deferred=false).
+	// This may occur with, for example, half-transparent walls.
+	// Also needed for walls with vertical slide.
+	deferred bool
 }
 
-func (r *Renderer) renderWalls() {
+func (r *Renderer) castRays() {
 	for x := 0; x < r.RenderWidth; x++ {
 		cameraX := 2*float64(x)/float64(r.RenderWidth) - 1
 		rayDirectionX := r.cam.dirX + r.cam.planeX*cameraX
 		rayDirectionY := r.cam.dirY + r.cam.planeY*cameraX
 
-		camX, camY := r.cam.getCoordsWithOffset()
+		camX, camY := r.cam.getCoords()
 		mapX, mapY := r.cam.getIntCoords()
 
 		var sideDistX, sideDistY, rayToScreenLength float64
@@ -47,8 +53,8 @@ func (r *Renderer) renderWalls() {
 		}
 
 		// tracing the ray
-		column := r_column{x: x}
-		deferredColumn := r_column{x: x, deferred: false}
+		column := castedRay{x: x}
+		deferredColumn := castedRay{x: x, deferred: false}
 		for !hit {
 			if sideDistX < sideDistY {
 				sideDistX += deltaDistX
@@ -64,9 +70,11 @@ func (r *Renderer) renderWalls() {
 			} else {
 				rayToScreenLength = (float64(mapY) - camY + (1-float64(stepY))/2) / rayDirectionY
 			}
-			// break tracing of the ray is too long
+			// break tracing if the ray is too long
 			if r.MaxRayLength != 0 && rayToScreenLength > r.MaxRayLength {
-				return
+				rayToScreenLength = r.MaxRayLength * 2
+				side = EW
+				break
 			}
 			// ray is out of map bounds
 			if !r.scene.AreGridCoordsValid(mapX, mapY) {
@@ -112,30 +120,30 @@ func (r *Renderer) renderWalls() {
 
 				// sliding tiles code
 				var wallX float64
-				if r.scene.GetTileSlideAmount(mapX, mapY) != 0 {
+				if r.scene.GetTileHorizontalSlide(mapX, mapY) != 0 {
 					if side == EW {
 						wallX = camY + rayToScreenLength*rayDirectionY
 					} else {
 						wallX = camX + rayToScreenLength*rayDirectionX
 					}
 					wallX -= math.Floor(wallX)
-					if wallX < r.scene.GetTileSlideAmount(mapX, mapY) {
+					if wallX < r.scene.GetTileHorizontalSlide(mapX, mapY) {
 						continue
 					}
 				}
 				// sliding tiles code ended
-				if r.scene.GetTileElevation(mapX, mapY) == 0 {
+				if r.scene.GetTileVerticalSlide(mapX, mapY) == 0 {
 					hit = true
 					column.hitTileX, column.hitTileY = mapX, mapY
-					column.slide = r.scene.GetTileSlideAmount(mapX, mapY)
+					column.horizSlide = r.scene.GetTileHorizontalSlide(mapX, mapY)
 
 				} else {
 					deferredColumn.hitTileX, deferredColumn.hitTileY = mapX, mapY
-					deferredColumn.elevation = r.scene.GetTileElevation(mapX, mapY)
+					deferredColumn.vertSlide = r.scene.GetTileVerticalSlide(mapX, mapY)
 					deferredColumn.deferred = true
 					deferredColumn.perpWallDist = rayToScreenLength
 					deferredColumn.side = side
-					deferredColumn.slide = r.scene.GetTileSlideAmount(mapX, mapY)
+					deferredColumn.horizSlide = r.scene.GetTileHorizontalSlide(mapX, mapY)
 				}
 			}
 		}

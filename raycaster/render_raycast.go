@@ -70,9 +70,11 @@ func (r *Renderer) castRays() {
 			} else {
 				rayToScreenLength = (float64(mapY) - camY + (1-float64(stepY))/2) / rayDirectionY
 			}
-			// break tracing of the ray is too long
+			// break tracing if the ray is too long
 			if r.MaxRayLength != 0 && rayToScreenLength > r.MaxRayLength {
-				return
+				rayToScreenLength = r.MaxRayLength * 2
+				side = EW
+				break
 			}
 			// ray is out of map bounds
 			if !r.scene.AreGridCoordsValid(mapX, mapY) {

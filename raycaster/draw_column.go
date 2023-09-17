@@ -42,7 +42,7 @@ func (rend *Renderer) drawColumnUntextured(column *r_column, lowestPixelY, highe
 }
 
 func (rend *Renderer) drawColumnTextured(column *r_column, rayDirectionX, rayDirectionY float64, columnHeight, offset, lowestPixelY, highestPixelY int) {
-	camx, camy := rend.cam.getCoordsWithOffset()
+	camx, camy := rend.cam.getCoords()
 	// TEXTURING
 	texture := rend.scene.GetTextureForTile(column.hitTileX, column.hitTileY)
 	texWidth := texture.W

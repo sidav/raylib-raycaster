@@ -46,7 +46,7 @@ func (s *Scene) init() (float64, float64) {
 		}
 	}
 
-	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 0, 0, 4, 1)
+	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 4, 1)
 	for i := 0; i < 15; i++ {
 		x, y := 0, 0
 		for !s.IsTilePassable(x, y) {

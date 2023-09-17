@@ -7,7 +7,7 @@ func (r *Renderer) renderUntexturedFloorAndCeiling() {
 }
 
 func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int) {
-	posX, posY := r.cam.getCoordsWithOffset()
+	posX, posY := r.cam.getCoords()
 	xFloat := float64(x)
 	// rayDir for leftmost ray (X = 0) and rightmost ray (X = W)
 	rayDirX0 := r.cam.dirX - r.cam.planeX

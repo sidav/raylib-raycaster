@@ -1,7 +1,7 @@
 package raycaster
 
 func (r *Renderer) renderThings() {
-	camx, camy := r.cam.getCoordsWithOffset()
+	camx, camy := r.cam.getCoords()
 	things := r.scene.GetListOfThings()
 
 	// sort by distance from camera (descending)

@@ -9,19 +9,15 @@ type Camera struct {
 	movDirX, movDirY float64 // same as dirX/dirY but always of length 1
 
 	vBobOffset, maxVBobOffset, vBobSpeed int
-
-	hBobOffset, hBobSpeed, maxHBobOffset float64 // horizontal bobbing (TODO: remove?)
 }
 
-func CreateCamera(x, y, viewAngle, maxHBobOffset, hBobSpeed float64, maxVBobOffset, vBobSpeed int) *Camera {
+func CreateCamera(x, y, viewAngle float64, maxVBobOffset, vBobSpeed int) *Camera {
 	// planeX := math.Tan(float64(viewAngle)*3.14159265358979323 / (2*180.0))
 	cam := &Camera{
 		X:             x,
 		Y:             y,
 		maxVBobOffset: maxVBobOffset,
 		vBobSpeed:     vBobSpeed,
-		maxHBobOffset: maxHBobOffset,
-		hBobSpeed:     hBobSpeed,
 		movDirX:       1,
 		movDirY:       0,
 	}
@@ -29,12 +25,12 @@ func CreateCamera(x, y, viewAngle, maxHBobOffset, hBobSpeed float64, maxVBobOffs
 	return cam
 }
 
-func (c *Camera) getCoordsWithOffset() (float64, float64) {
-	return c.X + c.dirY*c.hBobOffset, c.Y + c.dirX*c.hBobOffset
+func (c *Camera) getCoords() (float64, float64) {
+	return c.X, c.Y
 }
 
 func (c *Camera) getIntCoords() (int, int) {
-	cx, cy := c.getCoordsWithOffset()
+	cx, cy := c.getCoords()
 	return int(cx), int(cy)
 }
 
@@ -91,16 +87,6 @@ func (c *Camera) MoveForward(fraction float64) {
 		c.vBobSpeed = -c.vBobSpeed
 		c.vBobOffset = -c.maxVBobOffset
 	}
-
-	c.hBobOffset += c.hBobSpeed
-	if c.hBobOffset >= c.maxHBobOffset {
-		c.hBobSpeed = -c.hBobSpeed
-		c.hBobOffset = c.maxHBobOffset
-	}
-	if c.hBobOffset <= -c.maxHBobOffset {
-		c.hBobSpeed = -c.hBobSpeed
-		c.hBobOffset = -c.maxHBobOffset
-	}
 }
 
 func (c *Camera) MoveByVector(vx, vy float64) {
@@ -114,15 +100,5 @@ func (c *Camera) MoveByVector(vx, vy float64) {
 	if c.vBobOffset <= -c.maxVBobOffset {
 		c.vBobSpeed = -c.vBobSpeed
 		c.vBobOffset = -c.maxVBobOffset
-	}
-
-	c.hBobOffset += c.hBobSpeed
-	if c.hBobOffset >= c.maxHBobOffset {
-		c.hBobSpeed = -c.hBobSpeed
-		c.hBobOffset = c.maxHBobOffset
-	}
-	if c.hBobOffset <= -c.maxHBobOffset {
-		c.hBobSpeed = -c.hBobSpeed
-		c.hBobOffset = -c.maxHBobOffset
 	}
 }

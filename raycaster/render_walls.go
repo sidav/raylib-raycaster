@@ -19,7 +19,7 @@ func (r *Renderer) renderWalls() {
 		rayDirectionX := r.cam.dirX + r.cam.planeX*cameraX
 		rayDirectionY := r.cam.dirY + r.cam.planeY*cameraX
 
-		camX, camY := r.cam.getCoordsWithOffset()
+		camX, camY := r.cam.getCoords()
 		mapX, mapY := r.cam.getIntCoords()
 
 		var sideDistX, sideDistY, rayToScreenLength float64

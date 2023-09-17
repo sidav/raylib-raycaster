@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY float64) {
+func (rend *Renderer) drawColumn(column *castedRay, rayDirectionX, rayDirectionY float64) {
 	// drawing the pixels column
 	camH := rend.cam.getVerticalCoordWithBob()
 	// columnHeight := int(float64(rend.RenderHeight) / column.perpWallDist * rend.aspectFactor)
@@ -19,9 +19,9 @@ func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY 
 
 	// Vertical verticalSlideOffset for "slided up" walls
 	var verticalSlideOffset int
-	if column.elevation > 0 {
+	if column.vertSlide > 0 {
 		newLowY := int(float64(rend.RenderHeight)*
-			(0.5-rend.aspectFactor*(column.elevation-camH)/column.perpWallDist)) + rend.cam.OnScreenVerticalOffset
+			(0.5-rend.aspectFactor*(column.vertSlide-camH)/column.perpWallDist)) + rend.cam.OnScreenVerticalOffset
 		verticalSlideOffset = lowestPixelY - newLowY
 		lowestPixelY = newLowY
 	}
@@ -44,7 +44,7 @@ func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY 
 	rend.rayDistancesBuffer[column.x] = column.perpWallDist
 }
 
-func (rend *Renderer) drawColumnUntextured(column *r_column, lowestPixelY, highestPixelY int) {
+func (rend *Renderer) drawColumnUntextured(column *castedRay, lowestPixelY, highestPixelY int) {
 	rend.backend.SetColor(128, 128, 128)
 	if column.side == NS {
 		rend.backend.SetColor(255, 255, 255)
@@ -52,7 +52,7 @@ func (rend *Renderer) drawColumnUntextured(column *r_column, lowestPixelY, highe
 	rend.backend.VerticalLine(column.x, lowestPixelY, highestPixelY)
 }
 
-func (rend *Renderer) drawColumnTextured(column *r_column, rayDirectionX, rayDirectionY float64, columnHeight, verticalSlideOffset, lowestPixelY, highestPixelY int) {
+func (rend *Renderer) drawColumnTextured(column *castedRay, rayDirectionX, rayDirectionY float64, columnHeight, verticalSlideOffset, lowestPixelY, highestPixelY int) {
 	camx, camy := rend.cam.getCoords()
 	// TEXTURING
 	texture := rend.scene.GetTextureForTile(column.hitTileX, column.hitTileY)
@@ -61,9 +61,9 @@ func (rend *Renderer) drawColumnTextured(column *r_column, rayDirectionX, rayDir
 
 	var wallX float64 //where exactly the wall was hit
 	if column.side == EW {
-		wallX = camy + column.perpWallDist*rayDirectionY - column.slide
+		wallX = camy + column.perpWallDist*rayDirectionY - column.horizSlide
 	} else {
-		wallX = camx + column.perpWallDist*rayDirectionX - column.slide
+		wallX = camx + column.perpWallDist*rayDirectionX - column.horizSlide
 	}
 	wallX -= math.Floor(wallX)
 

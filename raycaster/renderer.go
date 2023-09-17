@@ -57,7 +57,7 @@ func (r *Renderer) RenderFrame(scene Scene) {
 	r.wallsTimer.newMeasure()
 	r.floorCeilingTimer.newMeasure()
 	// r.renderWalls()
-	r.columnsTimer.measure(func() { r.renderWalls() })
+	r.columnsTimer.measure(func() { r.castRays() })
 	debugPrintf("Columns rendered in %d ms (mean %d ms).\n",
 		int(r.columnsTimer.getMeasuredPassedTime()/time.Millisecond),
 		int(r.columnsTimer.getMeanPassedTime()/time.Millisecond),

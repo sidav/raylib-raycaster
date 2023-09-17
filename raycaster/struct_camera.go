@@ -3,10 +3,11 @@ package raycaster
 import "math"
 
 type Camera struct {
-	X, Y, Z          float64
-	dirX, dirY       float64
-	planeX, planeY   float64
-	movDirX, movDirY float64 // same as dirX/dirY but always of length 1
+	X, Y, Z                float64
+	dirX, dirY             float64
+	planeX, planeY         float64
+	movDirX, movDirY       float64 // same as dirX/dirY but always of length 1
+	OnScreenVerticalOffset int     // same sa vBobOffset earlier; now used to simulate up/down look
 
 	// vertical bobbing
 	currVerticalBob, maxBob, bobSpeed float64
@@ -15,11 +16,12 @@ type Camera struct {
 func CreateCamera(x, y, viewAngle float64, maxVBobOffset, vBobSpeed int) *Camera {
 	// planeX := math.Tan(float64(viewAngle)*3.14159265358979323 / (2*180.0))
 	cam := &Camera{
-		X:       x,
-		Y:       y,
-		Z:       0.5,
-		movDirX: 1,
-		movDirY: 0,
+		X:                      x,
+		Y:                      y,
+		Z:                      0.5,
+		movDirX:                1,
+		movDirY:                0,
+		OnScreenVerticalOffset: 0,
 
 		maxBob:   0.075,
 		bobSpeed: 0.0075,

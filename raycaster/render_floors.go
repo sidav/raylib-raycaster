@@ -2,7 +2,7 @@ package raycaster
 
 func (r *Renderer) renderUntexturedFloorAndCeiling() {
 	r.backend.SetColor(32, 32, 40)
-	floorOnScreenHeight := r.RenderHeight / 2 // + r.cam.vBobOffset
+	floorOnScreenHeight := r.RenderHeight/2 + r.cam.OnScreenVerticalOffset
 	r.backend.FillRect(0, floorOnScreenHeight, r.RenderWidth, r.RenderHeight-floorOnScreenHeight)
 }
 
@@ -26,8 +26,8 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 			return
 		}
 		// Current Y position compared to the center of the screen (the horizon)
-		offsetFromCenterForFloor := y - r.RenderHeight/2   // - r.cam.vBobOffset
-		offsetFromCenterForCeiling := r.RenderHeight/2 - y // + r.cam.vBobOffset
+		offsetFromCenterForFloor := y - r.RenderHeight/2 - r.cam.OnScreenVerticalOffset
+		offsetFromCenterForCeiling := r.RenderHeight/2 - y + r.cam.OnScreenVerticalOffset
 
 		// Horizontal distance from the Camera to the floor for the current row.
 		// 0.5 is the z position exactly in the middle between floor and ceiling.

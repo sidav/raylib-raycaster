@@ -46,7 +46,7 @@ func (r *Renderer) renderThings() {
 		osx := int((float64(r.RenderWidth) / 2) * (1 + transformX/transformY))
 		osw := int(width * float64(r.RenderWidth) / transformY)
 		// Perspective projection of Spritable's center. 0.5 is vertical center of the screen
-		osy := int(float64(r.RenderHeight) * (0.5 - r.aspectFactor*(tz-r.cam.getVerticalCoordWithBob())/transformY))
+		osy := int(float64(r.RenderHeight)*(0.5-r.aspectFactor*(tz-r.cam.getVerticalCoordWithBob())/transformY)) + r.cam.OnScreenVerticalOffset
 		osh := int(height * r.aspectFactor * float64(r.RenderHeight) / transformY)
 		if osw > r.RenderWidth {
 			continue

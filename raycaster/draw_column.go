@@ -1,6 +1,8 @@
 package raycaster
 
-import "math"
+import (
+	"math"
+)
 
 func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY float64) {
 	// drawing the pixels column
@@ -8,7 +10,7 @@ func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY 
 	// columnHeight := int(float64(rend.RenderHeight) / column.perpWallDist * rend.aspectFactor)
 
 	// lowestPixelY := columnHeight/2 + rend.RenderHeight/2
-	lowestPixelY := int(float64(rend.RenderHeight) * (0.5 - rend.aspectFactor*(0-camH)/column.perpWallDist))
+	lowestPixelY := int(float64(rend.RenderHeight)*(0.5-rend.aspectFactor*(0-camH)/column.perpWallDist)) + rend.cam.OnScreenVerticalOffset
 	var offset int
 	if column.elevation > 0 {
 		offset = int(float64(rend.RenderHeight) / column.perpWallDist * column.elevation * rend.aspectFactor)
@@ -16,7 +18,7 @@ func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY 
 	}
 
 	// highestPixelY := -columnHeight/2 + rend.RenderHeight/2
-	highestPixelY := int(float64(rend.RenderHeight) * (0.5 - rend.aspectFactor*(1-camH)/column.perpWallDist))
+	highestPixelY := int(float64(rend.RenderHeight)*(0.5-rend.aspectFactor*(1-camH)/column.perpWallDist)) + rend.cam.OnScreenVerticalOffset
 	columnHeight := lowestPixelY - highestPixelY
 	// Note: highest and lowest PixelY both CAN be out of screen bounds (this behaviour is needed for texturing).
 
@@ -73,7 +75,7 @@ func (rend *Renderer) drawColumnTextured(column *r_column, rayDirectionX, rayDir
 	// texPos := (float64(highestPixelY+offset-rend.cam.vBobOffset) - float64(rend.RenderHeight)/2 + float64(columnHeight)/2) * step
 	texPos := 0.0
 	if highestPixelY+offset < 0 {
-		texPos = -float64(highestPixelY+offset) * step
+		texPos = -float64(highestPixelY+offset-rend.cam.OnScreenVerticalOffset) * step
 	}
 	from := max(0, highestPixelY)
 	to := min(rend.RenderHeight-1, lowestPixelY)

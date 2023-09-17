@@ -66,15 +66,17 @@ func (c *Camera) ChangeViewWidth(degrees float64) {
 }
 
 func (c *Camera) Rotate(radians float64) {
+	sin := math.Sin(radians)
+	cos := math.Cos(radians)
 	oldDirX := c.dirX
-	c.dirX = c.dirX*math.Cos(radians) - c.dirY*math.Sin(radians)
-	c.dirY = oldDirX*math.Sin(radians) + c.dirY*math.Cos(radians)
+	c.dirX = c.dirX*cos - c.dirY*sin
+	c.dirY = oldDirX*sin + c.dirY*cos
 	oldMovDirX := c.movDirX
-	c.movDirX = c.movDirX*math.Cos(radians) - c.movDirY*math.Sin(radians)
-	c.movDirY = oldMovDirX*math.Sin(radians) + c.movDirY*math.Cos(radians)
+	c.movDirX = c.movDirX*cos - c.movDirY*sin
+	c.movDirY = oldMovDirX*sin + c.movDirY*cos
 	oldPlaneX := c.planeX
-	c.planeX = c.planeX*math.Cos(radians) - c.planeY*math.Sin(radians)
-	c.planeY = oldPlaneX*math.Sin(radians) + c.planeY*math.Cos(radians)
+	c.planeX = c.planeX*cos - c.planeY*sin
+	c.planeY = oldPlaneX*sin + c.planeY*cos
 }
 
 func (c *Camera) MoveForward(fraction float64) {

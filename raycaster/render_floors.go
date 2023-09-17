@@ -18,11 +18,11 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 	floorPosZ := float64(r.RenderHeight/2) * r.aspectFactor // + float64(r.cam.vBobOffset)
 
 	for y := 0; y < r.RenderHeight; y++ {
-		if y >= wallTopY+r.cam.vBobOffset && y <= wallLowY+r.cam.vBobOffset {
-			y = wallLowY + r.cam.vBobOffset + 1
-			if y >= r.RenderHeight {
-				return
-			}
+		if y >= wallTopY && y <= wallLowY {
+			y = wallLowY + 1
+		}
+		if y >= r.RenderHeight {
+			return
 		}
 		// Current Y position compared to the center of the screen (the horizon)
 		offsetFromCenterForFloor := y - r.RenderHeight/2 - r.cam.vBobOffset
@@ -49,7 +49,7 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 		ceilingY := posY + ceilingRowDistance*rayDirY0 + ceilingStepY*xFloat
 		// fmt.Printf("fx %f, fy %f \n", floorX, floorY)
 
-		if y > r.RenderHeight/2+r.cam.vBobOffset {
+		if y > wallLowY {
 			// the cell coord is simply got from the integer parts of floorX and floorY
 			cellX := int(floorX)
 			cellY := int(floorY)

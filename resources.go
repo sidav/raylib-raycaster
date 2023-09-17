@@ -32,7 +32,12 @@ func loadResources() {
 	loadSprite("enemy", "resources/sprites/characters/CommandoWalk2.png")
 
 	loadUIImage("pWeaponPistol", "resources/sprites/lab/guns/gun2.png")
+	loadUIImage("pWeaponPistol", "resources/sprites/lab/guns/gun2b.png")
+	loadUIImage("pWeaponPistol", "resources/sprites/lab/guns/gun2c.png")
+
 	loadUIImage("pWeaponGun", "resources/sprites/lab/guns/gun1a.png")
+	loadUIImage("pWeaponGun", "resources/sprites/lab/guns/gun1b.png")
+	loadUIImage("pWeaponGun", "resources/sprites/lab/guns/gun1c.png")
 }
 
 func loadTexture(atlas *map[string][]*raycaster.Texture, code string, filename string) {

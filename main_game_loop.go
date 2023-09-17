@@ -16,9 +16,10 @@ const (
 )
 
 type game struct {
-	gameState int
-	player    *mob
-	scene     *Scene
+	gameState   int
+	player      *mob
+	scene       *Scene
+	currentTick int
 }
 
 func (g *game) init() {
@@ -27,6 +28,9 @@ func (g *game) init() {
 	g.player = &mob{
 		x: px,
 		y: py,
+		weaponInHands: &weapon{
+			static: sTableWeapons[1],
+		},
 	}
 	gameIsRunning = true
 }
@@ -38,9 +42,11 @@ func (g *game) gameLoop() {
 		g.decideMobs()
 		g.actMobs()
 		g.actTiles()
+		g.updatePlayerWeaponState()
 		tick++
+		g.currentTick++
 		fmt.Printf("TOTAL %d THINGS\n", g.scene.things.Len())
-		renderFrame(g.scene)
+		renderFrame(g)
 	}
 }
 
@@ -66,6 +72,16 @@ func (g *game) actTiles() {
 		for y := range g.scene.gameMap[x] {
 			g.scene.gameMap[x][y].actOnState()
 		}
+	}
+}
+
+func (g *game) updatePlayerWeaponState() {
+	wpn := g.player.weaponInHands
+	if wpn == nil {
+		return
+	}
+	if g.currentTick-wpn.lastTickShot > wpn.static.ticksInFiringState {
+		wpn.state = wStateIdle
 	}
 }
 

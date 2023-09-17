@@ -31,16 +31,8 @@ func (g *game) workPlayerInput() {
 	if rl.IsKeyPressed(rl.KeySpace) {
 		g.tryOpenDoorAsPlayer()
 	}
-	if rl.IsKeyDown(rl.KeyEnter) {
-		dx, dy := g.player.GetDirectionVector()
-		g.scene.things.PushBack(&projectile{
-			x:          g.scene.Camera.X,
-			y:          g.scene.Camera.Y,
-			dirX:       dx,
-			dirY:       dy,
-			spriteCode: "proj",
-		})
-		g.gameState++
+	if rl.IsKeyDown(rl.KeyEnter) || rl.IsKeyDown(rl.KeyLeftControl) {
+		g.shootAsPlayer()
 	}
 	if rl.IsKeyDown(rl.KeyPageUp) {
 		g.scene.Camera.OnScreenVerticalOffset--
@@ -103,4 +95,20 @@ func (g *game) tryOpenDoorAsPlayer() {
 			g.scene.gameMap[tx][ty].state = tileStateOpening
 		}
 	}
+}
+
+func (g *game) shootAsPlayer() {
+	if g.player.weaponInHands == nil || !g.player.weaponInHands.canShoot() {
+		return
+	}
+	g.player.weaponInHands.lastTickShot = g.currentTick
+	g.player.weaponInHands.state = wStateFiring
+	dx, dy := g.player.GetDirectionVector()
+	g.scene.things.PushBack(&projectile{
+		x:          g.scene.Camera.X,
+		y:          g.scene.Camera.Y,
+		dirX:       dx,
+		dirY:       dy,
+		spriteCode: "proj",
+	})
 }

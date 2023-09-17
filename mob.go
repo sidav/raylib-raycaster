@@ -7,14 +7,18 @@ import (
 )
 
 type mob struct {
-	x, y            float64
+	x, y, z         float64
 	rotationRadians float64
 	intent          *mobIntent
 	spriteCode      string
 }
 
-func (t *mob) GetCoords() (float64, float64) {
-	return t.x, t.y
+func (t *mob) GetCoords() (float64, float64, float64) {
+	return t.x, t.y, 0.5
+}
+
+func (t *mob) GetWidthAndHeightFactors() (float64, float64) {
+	return 1, 1
 }
 
 func (t *mob) GetDirectionVector() (float64, float64) {

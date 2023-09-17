@@ -76,7 +76,7 @@ func (s *Scene) GetMobAtTileCoords(tx, ty int) *mob {
 	for m := s.things.Front(); m != nil; m = m.Next() {
 		switch m.Value.(type) {
 		case *mob:
-			mrx, mry := m.Value.(*mob).GetCoords()
+			mrx, mry, _ := m.Value.(*mob).GetCoords()
 			mtx, mty := trueCoordsToTileCoords(mrx, mry)
 			if mtx == tx && mty == ty {
 				return m.Value.(*mob)

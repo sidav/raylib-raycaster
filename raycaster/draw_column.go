@@ -11,16 +11,20 @@ func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY 
 
 	// lowestPixelY := columnHeight/2 + rend.RenderHeight/2
 	lowestPixelY := int(float64(rend.RenderHeight)*(0.5-rend.aspectFactor*(0-camH)/column.perpWallDist)) + rend.cam.OnScreenVerticalOffset
-	var offset int
-	if column.elevation > 0 {
-		offset = int(float64(rend.RenderHeight) / column.perpWallDist * column.elevation * rend.aspectFactor)
-		lowestPixelY -= offset
-	}
 
 	// highestPixelY := -columnHeight/2 + rend.RenderHeight/2
 	highestPixelY := int(float64(rend.RenderHeight)*(0.5-rend.aspectFactor*(1-camH)/column.perpWallDist)) + rend.cam.OnScreenVerticalOffset
 	columnHeight := lowestPixelY - highestPixelY
 	// Note: highest and lowest PixelY both CAN be out of screen bounds (this behaviour is needed for texturing).
+
+	// Vertical verticalSlideOffset for "slided up" walls
+	var verticalSlideOffset int
+	if column.elevation > 0 {
+		newLowY := int(float64(rend.RenderHeight)*
+			(0.5-rend.aspectFactor*(column.elevation-camH)/column.perpWallDist)) + rend.cam.OnScreenVerticalOffset
+		verticalSlideOffset = lowestPixelY - newLowY
+		lowestPixelY = newLowY
+	}
 
 	if !rend.ApplyTexturing {
 		rend.wallsTimer.measure(func() {
@@ -28,11 +32,14 @@ func (rend *Renderer) drawColumn(column *r_column, rayDirectionX, rayDirectionY 
 		})
 	} else {
 		rend.wallsTimer.measure(func() {
-			rend.drawColumnTextured(column, rayDirectionX, rayDirectionY, columnHeight, offset, lowestPixelY, highestPixelY)
+			rend.drawColumnTextured(column, rayDirectionX, rayDirectionY, columnHeight, verticalSlideOffset, lowestPixelY, highestPixelY)
 		})
-		rend.floorCeilingTimer.measure(func() {
-			rend.renderTexturedFloorAndCeilingColumn(column.x, lowestPixelY, highestPixelY)
-		})
+		// Render floor/ceiling only once per column
+		if !column.deferred {
+			rend.floorCeilingTimer.measure(func() {
+				rend.renderTexturedFloorAndCeilingColumn(column.x, lowestPixelY, highestPixelY)
+			})
+		}
 	}
 	rend.rayDistancesBuffer[column.x] = column.perpWallDist
 }
@@ -45,7 +52,7 @@ func (rend *Renderer) drawColumnUntextured(column *r_column, lowestPixelY, highe
 	rend.backend.VerticalLine(column.x, lowestPixelY, highestPixelY)
 }
 
-func (rend *Renderer) drawColumnTextured(column *r_column, rayDirectionX, rayDirectionY float64, columnHeight, offset, lowestPixelY, highestPixelY int) {
+func (rend *Renderer) drawColumnTextured(column *r_column, rayDirectionX, rayDirectionY float64, columnHeight, verticalSlideOffset, lowestPixelY, highestPixelY int) {
 	camx, camy := rend.cam.getCoords()
 	// TEXTURING
 	texture := rend.scene.GetTextureForTile(column.hitTileX, column.hitTileY)
@@ -73,9 +80,9 @@ func (rend *Renderer) drawColumnTextured(column *r_column, rayDirectionX, rayDir
 	step := 1.0 * float64(texHeight) / float64(columnHeight)
 	// Starting Texture coordinate
 	// texPos := (float64(highestPixelY+offset-rend.cam.vBobOffset) - float64(rend.RenderHeight)/2 + float64(columnHeight)/2) * step
-	texPos := 0.0
-	if highestPixelY+offset < 0 {
-		texPos = -float64(highestPixelY+offset-rend.cam.OnScreenVerticalOffset) * step
+	texPos := float64(verticalSlideOffset) * step
+	if highestPixelY < 0 {
+		texPos += -float64(highestPixelY) * step
 	}
 	from := max(0, highestPixelY)
 	to := min(rend.RenderHeight-1, lowestPixelY)

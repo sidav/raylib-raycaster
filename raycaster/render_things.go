@@ -38,7 +38,7 @@ func (r *Renderer) renderThings() {
 		transformX := invDet * (r.cam.dirY*xRelative - r.cam.dirX*yRelative)
 		// transformY is equal to the distance to camera plane
 		transformY := invDet * (-r.cam.planeY*xRelative + r.cam.planeX*yRelative)
-		if transformY < 0.01 { // close enough to zero == too close to the camera
+		if transformY < 0.001 { // close enough to zero == too close to the camera
 			continue
 		}
 
@@ -55,21 +55,25 @@ func (r *Renderer) renderThings() {
 		// render the Sprite column-wise, like a Texture
 		currSprite := t.GetSprite()
 		for x := 0; x < osw; x++ {
-			screenXCoord := x + osx - osw/2
-			if screenXCoord < 0 || screenXCoord > r.RenderWidth-1 || r.rayDistancesBuffer[screenXCoord] < transformY {
+			onScreenX := x + osx - osw/2
+			if onScreenX < 0 || onScreenX > r.RenderWidth-1 || r.rayDistancesBuffer[onScreenX] < transformY {
 				continue
 			}
 			// r.rayDistancesBuffer[screenXCoord] = transformY
 			spriteX := x * currSprite.w / osw
 
 			for y := 0; y < osh; y++ {
+				onScreenY := y + osy - osh/2
+				if onScreenY < 0 || onScreenY >= r.RenderHeight {
+					break
+				}
 				spriteY := (y * currSprite.h / osh) % currSprite.h
 				_, _, _, a := currSprite.bitmap.At(spriteX, spriteY).RGBA()
 				if a == 0 {
 					continue
 				}
 				color := r.setFoggedColorFromBitmapPixelAtCoords(currSprite.bitmap, spriteX, spriteY, transformY, false)
-				r.putPixel(x+osx-osw/2, y+osy-osh/2, color)
+				r.surface.putPixel(onScreenX, onScreenY, color)
 			}
 		}
 	}

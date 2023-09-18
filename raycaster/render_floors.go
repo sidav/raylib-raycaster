@@ -2,7 +2,7 @@ package raycaster
 
 func (r *Renderer) renderUntexturedFloorAndCeiling() {
 	floorOnScreenHeight := r.RenderHeight/2 + r.cam.OnScreenVerticalOffset
-	r.fillRect(0, floorOnScreenHeight, r.RenderWidth, r.RenderHeight-floorOnScreenHeight, surfaceColor{32, 32, 40})
+	r.surface.fillRect(0, floorOnScreenHeight, r.RenderWidth, r.RenderHeight-floorOnScreenHeight, surfaceColor{32, 32, 40})
 }
 
 func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int) {
@@ -62,7 +62,7 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 			tx := int(float64(texWidth) * (floorX - float64(cellX)))  // & (texWidth-1)
 			ty := int(float64(texHeight) * (floorY - float64(cellY))) // & (texHeight-1)
 			color := r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, floorRowDistance, false)
-			r.putPixel(x, y, color)
+			r.surface.putPixel(x, y, color)
 		} else if r.RenderCeilings {
 			//ceiling
 			cellX := int(ceilingX)
@@ -73,7 +73,7 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 			tx := int(float64(texWidth) * (ceilingX - float64(cellX)))
 			ty := int(float64(texHeight) * (ceilingY - float64(cellY)))
 			color := r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, ceilingRowDistance, false)
-			r.putPixel(x, y, color)
+			r.surface.putPixel(x, y, color)
 		}
 	}
 }

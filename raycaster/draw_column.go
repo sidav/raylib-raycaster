@@ -46,9 +46,9 @@ func (rend *Renderer) drawColumn(column *castedRay, rayDirectionX, rayDirectionY
 
 func (rend *Renderer) drawColumnUntextured(column *castedRay, lowestPixelY, highestPixelY int) {
 	if column.side == NS {
-		rend.verticalLine(column.x, lowestPixelY, highestPixelY, surfaceColor{128, 128, 128})
+		rend.surface.verticalLine(column.x, lowestPixelY, highestPixelY, surfaceColor{128, 128, 128})
 	} else {
-		rend.verticalLine(column.x, lowestPixelY, highestPixelY, surfaceColor{64, 64, 64})
+		rend.surface.verticalLine(column.x, lowestPixelY, highestPixelY, surfaceColor{64, 64, 64})
 	}
 }
 
@@ -93,6 +93,6 @@ func (rend *Renderer) drawColumnTextured(column *castedRay, rayDirectionX, rayDi
 		// fmt.Printf("(%d,%d) OUT OF (%d,%d)\n", texX, texY, texWidth, texHeight)
 
 		color := rend.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, texX, texY, column.perpWallDist, column.side == NS)
-		rend.putPixel(column.x, y, color)
+		rend.surface.putPixel(column.x, y, color)
 	}
 }

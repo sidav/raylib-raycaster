@@ -15,27 +15,27 @@ func (s *surface) create(w, h int) {
 	}
 }
 
-func (r *Renderer) clearScreen() {
-	r.fillRect(0, 0, r.RenderWidth, r.RenderHeight, surfaceColor{0, 0, 0})
+func (s *surface) clear() {
+	s.fillRect(0, 0, len(s.pixels), len(s.pixels[0]), surfaceColor{0, 0, 0})
 }
 
-func (r *Renderer) putPixel(x, y int, color surfaceColor) {
-	r.surface.pixels[x][y][0] = color.r
-	r.surface.pixels[x][y][1] = color.g
-	r.surface.pixels[x][y][2] = color.b
+func (s *surface) putPixel(x, y int, color surfaceColor) {
+	s.pixels[x][y][0] = color.r
+	s.pixels[x][y][1] = color.g
+	s.pixels[x][y][2] = color.b
 }
 
-func (r *Renderer) fillRect(x, y, w, h int, color surfaceColor) {
+func (s *surface) fillRect(x, y, w, h int, color surfaceColor) {
 	for i := x; i < x+w; i++ {
 		for j := y; j < y+h; j++ {
-			r.putPixel(i, j, color)
+			s.putPixel(i, j, color)
 		}
 	}
 }
 
-func (r *Renderer) verticalLine(x, y0, y1 int, color surfaceColor) {
+func (s *surface) verticalLine(x, y0, y1 int, color surfaceColor) {
 	for j := y0; j < y1; j++ {
-		r.putPixel(x, j, color)
+		s.putPixel(x, j, color)
 	}
 }
 

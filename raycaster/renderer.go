@@ -54,8 +54,8 @@ func (r *Renderer) RenderFrame(scene Scene) {
 		r.rayDistancesBuffer = make([]float64, r.RenderWidth)
 		r.surface.create(r.RenderWidth, r.RenderHeight)
 	}
+	r.surface.clear()
 
-	r.clearScreen()
 	r.renderUntexturedFloorAndCeiling()
 
 	r.columnsTimer.newMeasure()

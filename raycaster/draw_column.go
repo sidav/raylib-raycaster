@@ -45,11 +45,11 @@ func (rend *Renderer) drawColumn(column *castedRay, rayDirectionX, rayDirectionY
 }
 
 func (rend *Renderer) drawColumnUntextured(column *castedRay, lowestPixelY, highestPixelY int) {
-	rend.backend.SetColor(128, 128, 128)
 	if column.side == NS {
-		rend.backend.SetColor(255, 255, 255)
+		rend.verticalLine(column.x, lowestPixelY, highestPixelY, surfaceColor{128, 128, 128})
+	} else {
+		rend.verticalLine(column.x, lowestPixelY, highestPixelY, surfaceColor{64, 64, 64})
 	}
-	rend.backend.VerticalLine(column.x, lowestPixelY, highestPixelY)
 }
 
 func (rend *Renderer) drawColumnTextured(column *castedRay, rayDirectionX, rayDirectionY float64, columnHeight, verticalSlideOffset, lowestPixelY, highestPixelY int) {
@@ -92,7 +92,7 @@ func (rend *Renderer) drawColumnTextured(column *castedRay, rayDirectionX, rayDi
 		texPos += step
 		// fmt.Printf("(%d,%d) OUT OF (%d,%d)\n", texX, texY, texWidth, texHeight)
 
-		rend.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, texX, texY, column.perpWallDist, column.side == NS)
-		rend.backend.DrawPoint(int32(column.x), int32(y))
+		color := rend.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, texX, texY, column.perpWallDist, column.side == NS)
+		rend.putPixel(column.x, y, color)
 	}
 }

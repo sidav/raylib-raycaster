@@ -1,9 +1,8 @@
 package raycaster
 
 func (r *Renderer) renderUntexturedFloorAndCeiling() {
-	r.backend.SetColor(32, 32, 40)
 	floorOnScreenHeight := r.RenderHeight/2 + r.cam.OnScreenVerticalOffset
-	r.backend.FillRect(0, floorOnScreenHeight, r.RenderWidth, r.RenderHeight-floorOnScreenHeight)
+	r.fillRect(0, floorOnScreenHeight, r.RenderWidth, r.RenderHeight-floorOnScreenHeight, surfaceColor{32, 32, 40})
 }
 
 func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int) {
@@ -62,8 +61,8 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 			// get the Texture coordinate from the fractional part
 			tx := int(float64(texWidth) * (floorX - float64(cellX)))  // & (texWidth-1)
 			ty := int(float64(texHeight) * (floorY - float64(cellY))) // & (texHeight-1)
-			r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, floorRowDistance, false)
-			r.backend.DrawPoint(int32(x), int32(y))
+			color := r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, floorRowDistance, false)
+			r.putPixel(x, y, color)
 		} else if r.RenderCeilings {
 			//ceiling
 			cellX := int(ceilingX)
@@ -73,8 +72,8 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 			texHeight := texture.H
 			tx := int(float64(texWidth) * (ceilingX - float64(cellX)))
 			ty := int(float64(texHeight) * (ceilingY - float64(cellY)))
-			r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, ceilingRowDistance, false)
-			r.backend.DrawPoint(int32(x), int32(y))
+			color := r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, ceilingRowDistance, false)
+			r.putPixel(x, y, color)
 		}
 	}
 }

@@ -4,7 +4,7 @@ import (
 	"image"
 )
 
-func (r *Renderer) setFoggedColorFromBitmapPixelAtCoords(bitmap image.Image, x, y int, distance float64, shadow bool) {
+func (r *Renderer) setFoggedColorFromBitmapPixelAtCoords(bitmap image.Image, x, y int, distance float64, shadow bool) surfaceColor {
 	// fade out calculation
 	fadeoutFraction := 1 - (distance / r.RayLengthForMaximumFog)
 	if fadeoutFraction < (1 - r.MaxFogFraction) {
@@ -22,5 +22,5 @@ func (r *Renderer) setFoggedColorFromBitmapPixelAtCoords(bitmap image.Image, x, 
 		bbyte /= 2
 	}
 
-	r.backend.SetColor(rbyte, gbyte, bbyte)
+	return surfaceColor{r: rbyte, g: gbyte, b: bbyte}
 }

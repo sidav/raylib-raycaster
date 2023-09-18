@@ -2,6 +2,7 @@ package raycaster
 
 import (
 	"math"
+	"sync"
 )
 
 // corresponds to each on-screen column
@@ -19,140 +20,156 @@ type castedRay struct {
 	deferred bool
 }
 
+const maxThreads = 4
+
 func (r *Renderer) castRays() {
+	wg := &sync.WaitGroup{}
 	for x := 0; x < r.RenderWidth; x++ {
-		cameraX := 2*float64(x)/float64(r.RenderWidth) - 1
-		rayDirectionX := r.cam.dirX + r.cam.planeX*cameraX
-		rayDirectionY := r.cam.dirY + r.cam.planeY*cameraX
+		wg.Add(1)
 
-		camX, camY := r.cam.getCoords()
-		mapX, mapY := r.cam.getIntCoords()
+		go r.castRayForColumn(x, wg)
 
-		var sideDistX, sideDistY, rayToScreenLength float64
-		deltaDistX := math.Abs(1 / rayDirectionX)
-		deltaDistY := math.Abs(1 / rayDirectionY)
-
-		var stepX, stepY int
-		var side uint8
-
-		hit := false
-
-		if rayDirectionX < 0 {
-			stepX = -1
-			sideDistX = (camX - float64(mapX)) * deltaDistX
-		} else {
-			stepX = 1
-			sideDistX = (float64(mapX) + 1.0 - camX) * deltaDistX
+		if (x+1)%maxThreads == 0 {
+			wg.Wait()
 		}
-		if rayDirectionY < 0 {
-			stepY = -1
-			sideDistY = (camY - float64(mapY)) * deltaDistY
+	}
+	wg.Wait()
+}
+
+func (r *Renderer) castRayForColumn(x int, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	cameraX := 2*float64(x)/float64(r.RenderWidth) - 1
+	rayDirectionX := r.cam.dirX + r.cam.planeX*cameraX
+	rayDirectionY := r.cam.dirY + r.cam.planeY*cameraX
+
+	camX, camY := r.cam.getCoords()
+	mapX, mapY := r.cam.getIntCoords()
+
+	var sideDistX, sideDistY, rayToScreenLength float64
+	deltaDistX := math.Abs(1 / rayDirectionX)
+	deltaDistY := math.Abs(1 / rayDirectionY)
+
+	var stepX, stepY int
+	var side uint8
+
+	hit := false
+
+	if rayDirectionX < 0 {
+		stepX = -1
+		sideDistX = (camX - float64(mapX)) * deltaDistX
+	} else {
+		stepX = 1
+		sideDistX = (float64(mapX) + 1.0 - camX) * deltaDistX
+	}
+	if rayDirectionY < 0 {
+		stepY = -1
+		sideDistY = (camY - float64(mapY)) * deltaDistY
+	} else {
+		stepY = 1
+		sideDistY = (float64(mapY) + 1.0 - camY) * deltaDistY
+	}
+
+	// tracing the ray
+	column := castedRay{x: x}
+	deferredColumn := castedRay{x: x, deferred: false}
+	for !hit {
+		if sideDistX < sideDistY {
+			sideDistX += deltaDistX
+			mapX += stepX
+			side = EW
 		} else {
-			stepY = 1
-			sideDistY = (float64(mapY) + 1.0 - camY) * deltaDistY
+			sideDistY += deltaDistY
+			mapY += stepY
+			side = NS
+		}
+		if side == EW {
+			rayToScreenLength = (float64(mapX) - camX + (1-float64(stepX))/2) / rayDirectionX
+		} else {
+			rayToScreenLength = (float64(mapY) - camY + (1-float64(stepY))/2) / rayDirectionY
+		}
+		// break tracing if the ray is too long
+		if r.MaxRayLength != 0 && rayToScreenLength > r.MaxRayLength {
+			rayToScreenLength = r.MaxRayLength * 2
+			side = EW
+			break
+		}
+		// ray is out of map bounds
+		if !r.scene.AreGridCoordsValid(mapX, mapY) {
+			continue
 		}
 
-		// tracing the ray
-		column := castedRay{x: x}
-		deferredColumn := castedRay{x: x, deferred: false}
-		for !hit {
-			if sideDistX < sideDistY {
-				sideDistX += deltaDistX
-				mapX += stepX
-				side = EW
-			} else {
-				sideDistY += deltaDistY
-				mapY += stepY
-				side = NS
-			}
-			if side == EW {
-				rayToScreenLength = (float64(mapX) - camX + (1-float64(stepX))/2) / rayDirectionX
-			} else {
-				rayToScreenLength = (float64(mapY) - camY + (1-float64(stepY))/2) / rayDirectionY
-			}
-			// break tracing if the ray is too long
-			if r.MaxRayLength != 0 && rayToScreenLength > r.MaxRayLength {
-				rayToScreenLength = r.MaxRayLength * 2
-				side = EW
-				break
-			}
-			// ray is out of map bounds
-			if !r.scene.AreGridCoordsValid(mapX, mapY) {
-				continue
-			}
-
-			// hit detected
-			if r.scene.IsTileOpaque(mapX, mapY) {
-				// THIN WALLS BAD CODE
-				if r.scene.IsTileThin(mapX, mapY) {
-					if side == EW {
-						if sideDistX <= sideDistY {
+		// hit detected
+		if r.scene.IsTileOpaque(mapX, mapY) {
+			// THIN WALLS BAD CODE
+			if r.scene.IsTileThin(mapX, mapY) {
+				if side == EW {
+					if sideDistX <= sideDistY {
+						rayToScreenLength += deltaDistX / 2
+					} else {
+						nperpWallDist := (float64(mapY+stepY) - camY + (1-float64(stepY))/2) / rayDirectionY
+						xCoordOfNextIntersection := camX + (nperpWallDist)*rayDirectionX
+						xCoordOfNextIntersection -= math.Floor(xCoordOfNextIntersection)
+						if stepX < 0 && xCoordOfNextIntersection <= 0.5 ||
+							stepX > 0 && xCoordOfNextIntersection >= 0.5 {
 							rayToScreenLength += deltaDistX / 2
 						} else {
-							nperpWallDist := (float64(mapY+stepY) - camY + (1-float64(stepY))/2) / rayDirectionY
-							xCoordOfNextIntersection := camX + (nperpWallDist)*rayDirectionX
-							xCoordOfNextIntersection -= math.Floor(xCoordOfNextIntersection)
-							if stepX < 0 && xCoordOfNextIntersection <= 0.5 ||
-								stepX > 0 && xCoordOfNextIntersection >= 0.5 {
-								rayToScreenLength += deltaDistX / 2
-							} else {
-								continue
-							}
+							continue
 						}
+					}
+				} else {
+					if sideDistY <= sideDistX {
+						rayToScreenLength += deltaDistY / 2
 					} else {
-						if sideDistY <= sideDistX {
+						nperpWallDist := (float64(mapX+stepX) - camX + (1-float64(stepX))/2) / rayDirectionX
+						xCoordOfNextIntersection := camY + (nperpWallDist)*rayDirectionY
+						xCoordOfNextIntersection -= math.Floor(xCoordOfNextIntersection)
+						if stepY < 0 && xCoordOfNextIntersection <= 0.5 ||
+							stepY > 0 && xCoordOfNextIntersection >= 0.5 {
 							rayToScreenLength += deltaDistY / 2
 						} else {
-							nperpWallDist := (float64(mapX+stepX) - camX + (1-float64(stepX))/2) / rayDirectionX
-							xCoordOfNextIntersection := camY + (nperpWallDist)*rayDirectionY
-							xCoordOfNextIntersection -= math.Floor(xCoordOfNextIntersection)
-							if stepY < 0 && xCoordOfNextIntersection <= 0.5 ||
-								stepY > 0 && xCoordOfNextIntersection >= 0.5 {
-								rayToScreenLength += deltaDistY / 2
-							} else {
-								continue
-							}
+							continue
 						}
-
 					}
-				}
-				// THIN WALLS BAD CODE ENDED
 
-				// sliding tiles code
-				var wallX float64
-				if r.scene.GetTileHorizontalSlide(mapX, mapY) != 0 {
-					if side == EW {
-						wallX = camY + rayToScreenLength*rayDirectionY
-					} else {
-						wallX = camX + rayToScreenLength*rayDirectionX
-					}
-					wallX -= math.Floor(wallX)
-					if wallX < r.scene.GetTileHorizontalSlide(mapX, mapY) {
-						continue
-					}
-				}
-				// sliding tiles code ended
-				if r.scene.GetTileVerticalSlide(mapX, mapY) == 0 {
-					hit = true
-					column.hitTileX, column.hitTileY = mapX, mapY
-					column.horizSlide = r.scene.GetTileHorizontalSlide(mapX, mapY)
-
-				} else {
-					deferredColumn.hitTileX, deferredColumn.hitTileY = mapX, mapY
-					deferredColumn.vertSlide = r.scene.GetTileVerticalSlide(mapX, mapY)
-					deferredColumn.deferred = true
-					deferredColumn.perpWallDist = rayToScreenLength
-					deferredColumn.side = side
-					deferredColumn.horizSlide = r.scene.GetTileHorizontalSlide(mapX, mapY)
 				}
 			}
-		}
+			// THIN WALLS BAD CODE ENDED
 
-		column.perpWallDist = rayToScreenLength
-		column.side = side
-		r.drawColumn(&column, rayDirectionX, rayDirectionY)
-		if deferredColumn.deferred {
-			r.drawColumn(&deferredColumn, rayDirectionX, rayDirectionY)
+			// sliding tiles code
+			var wallX float64
+			if r.scene.GetTileHorizontalSlide(mapX, mapY) != 0 {
+				if side == EW {
+					wallX = camY + rayToScreenLength*rayDirectionY
+				} else {
+					wallX = camX + rayToScreenLength*rayDirectionX
+				}
+				wallX -= math.Floor(wallX)
+				if wallX < r.scene.GetTileHorizontalSlide(mapX, mapY) {
+					continue
+				}
+			}
+			// sliding tiles code ended
+			if r.scene.GetTileVerticalSlide(mapX, mapY) == 0 {
+				hit = true
+				column.hitTileX, column.hitTileY = mapX, mapY
+				column.horizSlide = r.scene.GetTileHorizontalSlide(mapX, mapY)
+
+			} else {
+				deferredColumn.hitTileX, deferredColumn.hitTileY = mapX, mapY
+				deferredColumn.vertSlide = r.scene.GetTileVerticalSlide(mapX, mapY)
+				deferredColumn.deferred = true
+				deferredColumn.perpWallDist = rayToScreenLength
+				deferredColumn.side = side
+				deferredColumn.horizSlide = r.scene.GetTileHorizontalSlide(mapX, mapY)
+			}
 		}
+	}
+
+	column.perpWallDist = rayToScreenLength
+	column.side = side
+	r.drawColumn(&column, rayDirectionX, rayDirectionY)
+	if deferredColumn.deferred {
+		r.drawColumn(&deferredColumn, rayDirectionX, rayDirectionY)
 	}
 }

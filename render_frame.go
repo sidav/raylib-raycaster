@@ -17,10 +17,12 @@ func renderFrame(g *game) {
 	rl.ClearBackground(rl.Black)
 
 	renderer.RenderFrame(s)
+	renderer.ShowDrawnSurface()
 
 	drawWeaponInHands(g)
 
 	drawBackend.EndFrame()
+
 	drawBackend.Flush()
 }
 

@@ -68,8 +68,8 @@ func (r *Renderer) renderThings() {
 				if a == 0 {
 					continue
 				}
-				r.setFoggedColorFromBitmapPixelAtCoords(currSprite.bitmap, spriteX, spriteY, transformY, false)
-				r.backend.DrawPoint(int32(x+osx-osw/2), int32(y+osy-osh/2))
+				color := r.setFoggedColorFromBitmapPixelAtCoords(currSprite.bitmap, spriteX, spriteY, transformY, false)
+				r.putPixel(x+osx-osw/2, y+osy-osh/2, color)
 			}
 		}
 	}

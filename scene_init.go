@@ -45,18 +45,14 @@ func (s *Scene) init() (float64, float64) {
 	}
 
 	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 4, 1)
-	for i := 0; i < 25; i++ {
+	for i := 0; i < 50; i++ {
 		x, y := 0, 0
 		for !s.IsTilePassable(x, y) {
 			x = rnd.Rand(len(s.gameMap))
 			y = rnd.Rand(len(s.gameMap[0]))
 		}
 		rx, ry := tileCoordsToTrueCoords(x, y)
-		s.things.PushBack(&mob{
-			x:          rx,
-			y:          ry,
-			spriteCode: "enemy",
-		})
+		s.things.PushBack(createMob(rx, ry, sTableMobs[rnd.Rand(len(sTableMobs))]))
 	}
 	s.finalizeTiles()
 	return camX, camY

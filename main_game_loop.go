@@ -61,7 +61,9 @@ func (g *game) actProjectiles() {
 			hitMob := g.scene.GetMobAtRealCoords(newX, newY)
 			if hitMob != nil {
 				g.scene.things.Remove(node)
-				g.scene.removeMob(hitMob)
+				// g.scene.removeMob(hitMob)
+				hitMob.state = mobStateDying
+				hitMob.ticksSinceStateChange = 0
 				return
 			}
 			if !g.scene.areRealCoordsPassable(newX, newY) {
@@ -105,7 +107,12 @@ func (g *game) updatePlayerWeaponState() {
 }
 
 func (g *game) decideMobs() {
-
+	for node := g.scene.things.Front(); node != nil; node = node.Next() {
+		switch node.Value.(type) {
+		case *mob:
+			node.Value.(*mob).ticksSinceStateChange++
+		}
+	}
 }
 
 func (g *game) actMobs() {

@@ -29,13 +29,25 @@ func loadResources() {
 
 	loadTexture(&ceilingTexturesAtlas, "DEFAULT", "resources/textures/tile110.png")
 	// init sprites
+	// projectiles
 	loadSprite("projPlasma", "resources/sprites/projectile0.png")
 	loadSprite("projPlasma", "resources/sprites/projectile1.png")
 	loadSprite("projAcid", "resources/sprites/lab/sprites/acidspit.png")
 	loadSprite("projFireball", "resources/sprites/lab/sprites/fireball0.png")
 
-	loadSprite("enemy", "resources/sprites/characters/CommandoWalk1.png")
-	loadSprite("enemy", "resources/sprites/characters/CommandoWalk2.png")
+	// enemies
+	loadSprite("soldier", "resources/sprites/characters/CommandoWalk1.png")
+	loadSprite("soldier", "resources/sprites/characters/CommandoWalk2.png")
+	loadSprite("soldier", "resources/sprites/characters/CommandoDeath1.png")
+	loadSprite("soldier", "resources/sprites/characters/CommandoDeath2.png")
+	loadSprite("soldier", "resources/sprites/characters/CommandoDeath3.png")
+	loadSprite("soldier", "resources/sprites/characters/CommandoDeath4.png")
+	loadSprite("slayer", "resources/sprites/characters/SlayerIdle.png")
+	loadSprite("slayer", "resources/sprites/characters/SlayerWalk1.png")
+	loadSprite("slayer", "resources/sprites/characters/SlayerDeath1.png")
+	loadSprite("slayer", "resources/sprites/characters/SlayerDeath2.png")
+	loadSprite("slayer", "resources/sprites/characters/SlayerDeath3.png")
+	loadSprite("slayer", "resources/sprites/characters/SlayerDeath4.png")
 
 	loadUIImage("pWeaponPistol", "resources/sprites/lab/guns/gun2.png")
 	loadUIImage("pWeaponPistol", "resources/sprites/lab/guns/gun2b.png")

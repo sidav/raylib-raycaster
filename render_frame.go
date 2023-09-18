@@ -17,7 +17,7 @@ func renderFrame(g *game) {
 	rl.ClearBackground(rl.Black)
 
 	renderer.RenderFrame(s)
-	renderer.ShowDrawnSurface()
+	renderer.PresentDrawnSurfaceToBackend()
 
 	drawWeaponInHands(g)
 

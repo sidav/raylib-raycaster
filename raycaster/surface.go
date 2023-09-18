@@ -39,7 +39,7 @@ func (s *surface) verticalLine(x, y0, y1 int, color surfaceColor) {
 	}
 }
 
-func (r *Renderer) ShowDrawnSurface() {
+func (r *Renderer) PresentDrawnSurfaceToBackend() {
 	for x := range r.surface.pixels {
 		for y := range r.surface.pixels[x] {
 			r.backend.SetColor(

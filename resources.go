@@ -26,8 +26,10 @@ func loadResources() {
 
 	loadTexture(&ceilingTexturesAtlas, "DEFAULT", "resources/textures/tile110.png")
 	// init sprites
-	loadSprite("proj", "resources/sprites/projectile0.png")
-	loadSprite("proj", "resources/sprites/projectile1.png")
+	loadSprite("projPlasma", "resources/sprites/projectile0.png")
+	loadSprite("projPlasma", "resources/sprites/projectile1.png")
+	loadSprite("projAcid", "resources/sprites/lab/sprites/acidspit.png")
+	loadSprite("projFireball", "resources/sprites/lab/sprites/fireball0.png")
 	loadSprite("enemy", "resources/sprites/characters/CommandoWalk1.png")
 	loadSprite("enemy", "resources/sprites/characters/CommandoWalk2.png")
 

@@ -105,11 +105,12 @@ func (g *game) shootAsPlayer() {
 	g.player.weaponInHands.state = wStateFiring
 	dx, dy := g.player.GetDirectionVector()
 	g.scene.things.PushBack(&projectile{
-		x:          g.scene.Camera.X,
-		y:          g.scene.Camera.Y,
-		z:          g.scene.Camera.GetVerticalCoordWithBob() - 0.1,
-		dirX:       dx,
-		dirY:       dy,
-		spriteCode: "proj",
+		x:         g.scene.Camera.X,
+		y:         g.scene.Camera.Y,
+		z:         g.scene.Camera.GetVerticalCoordWithBob() - 0.1,
+		dirX:      dx,
+		dirY:      dy,
+		createdAt: g.currentTick,
+		static:    sTableProjectiles[g.player.weaponInHands.static.firesProjectile],
 	})
 }

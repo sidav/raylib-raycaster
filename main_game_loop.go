@@ -62,6 +62,11 @@ func (g *game) actProjectiles() {
 				g.scene.things.Remove(node)
 			} else {
 				proj.x, proj.y = newX, newY
+				if proj.static.changeFrameEveryTicks > 0 {
+					if (g.currentTick-proj.createdAt)%proj.static.changeFrameEveryTicks == 0 {
+						proj.frameNum = (proj.frameNum + 1) % proj.static.totalFrames
+					}
+				}
 			}
 		}
 	}

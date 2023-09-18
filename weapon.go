@@ -37,7 +37,8 @@ type weaponStatic struct {
 	spriteCode         string // unneeded for mobs' weapons
 	ticksInFiringState int
 
-	firingFrames [][2]int // array of: {frame number, max ticks since firing for this sprite to be the current one}
+	firingFrames    [][2]int // array of: {frame number, max ticks since firing for this sprite to be the current one}
+	firesProjectile codeProjectile
 }
 
 var sTableWeapons = []*weaponStatic{
@@ -46,23 +47,27 @@ var sTableWeapons = []*weaponStatic{
 		spriteCode:         "pWeaponPistol",
 		ticksInFiringState: 20,
 		firingFrames:       [][2]int{{1, 5}, {2, 10}},
+		firesProjectile:    projectileFireball,
 	},
 	{
 		name:               "SMG",
 		spriteCode:         "pWeaponSmg",
 		ticksInFiringState: 2,
 		firingFrames:       [][2]int{{1, 1}, {2, 10}},
+		firesProjectile:    projectileFireball,
 	},
 	{
 		name:               "Gun",
 		spriteCode:         "pWeaponGun",
 		ticksInFiringState: 10,
 		firingFrames:       [][2]int{{1, 1}, {2, 10}},
+		firesProjectile:    projectilePlasma,
 	},
 	{
 		name:               "Gun2",
 		spriteCode:         "pWeaponGun2",
 		ticksInFiringState: 15,
 		firingFrames:       [][2]int{{1, 3}, {2, 15}},
+		firesProjectile:    projectileAcid,
 	},
 }

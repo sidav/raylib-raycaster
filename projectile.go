@@ -17,7 +17,7 @@ func (t *projectile) GetCoords() (float64, float64, float64) {
 }
 
 func (t *projectile) GetWidthAndHeightFactors() (float64, float64) {
-	return 0.1, 0.1
+	return t.static.sizeFactor, t.static.sizeFactor
 }
 
 func (t *projectile) GetSprite() *raycaster.SpriteStruct {
@@ -36,6 +36,7 @@ type projectileStatic struct {
 	spriteCode            string
 	totalFrames           int
 	changeFrameEveryTicks int
+	sizeFactor            float64
 }
 
 var sTableProjectiles = map[codeProjectile]*projectileStatic{
@@ -43,13 +44,16 @@ var sTableProjectiles = map[codeProjectile]*projectileStatic{
 		spriteCode:            "projPlasma",
 		totalFrames:           2,
 		changeFrameEveryTicks: 5,
+		sizeFactor:            0.25,
 	},
 	projectileAcid: {
 		spriteCode:  "projAcid",
 		totalFrames: 1,
+		sizeFactor:  0.75,
 	},
 	projectileFireball: {
 		spriteCode:  "projFireball",
 		totalFrames: 1,
+		sizeFactor:  0.1,
 	},
 }

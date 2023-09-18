@@ -40,6 +40,18 @@ func (g *game) workPlayerInput() {
 	if rl.IsKeyDown(rl.KeyPageDown) {
 		g.scene.Camera.OnScreenVerticalOffset++
 	}
+	if rl.IsKeyPressed(rl.KeyOne) {
+		g.player.weaponInHands = &weapon{static: sTableWeapons[0]}
+	}
+	if rl.IsKeyPressed(rl.KeyTwo) {
+		g.player.weaponInHands = &weapon{static: sTableWeapons[1]}
+	}
+	if rl.IsKeyPressed(rl.KeyThree) {
+		g.player.weaponInHands = &weapon{static: sTableWeapons[2]}
+	}
+	if rl.IsKeyPressed(rl.KeyFour) {
+		g.player.weaponInHands = &weapon{static: sTableWeapons[3]}
+	}
 }
 
 func (g *game) movePlayerByFacing(backwards bool) {

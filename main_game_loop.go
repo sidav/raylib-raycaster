@@ -58,6 +58,12 @@ func (g *game) actProjectiles() {
 			proj := node.Value.(*projectile)
 			newX := proj.x + (proj.dirX * speed)
 			newY := proj.y + (proj.dirY * speed)
+			hitMob := g.scene.GetMobAtRealCoords(newX, newY)
+			if hitMob != nil {
+				g.scene.things.Remove(node)
+				g.scene.removeMob(hitMob)
+				return
+			}
 			if !g.scene.areRealCoordsPassable(newX, newY) {
 				g.scene.things.Remove(node)
 			} else {

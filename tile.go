@@ -17,6 +17,9 @@ type tile struct {
 }
 
 func (t *tile) getStaticData() *tileStaticData {
+	if tileStaticTable[t.tileCode] == nil {
+		panic("No tile data for " + t.tileCode)
+	}
 	return tileStaticTable[t.tileCode]
 }
 
@@ -63,6 +66,7 @@ func (t *tile) actOnState() {
 
 type tileStaticData struct {
 	passable, opaque, thin, openable bool
+	opensVertically                  bool // false implies "horizontally"
 }
 
 var tileStaticTable = map[string]*tileStaticData{
@@ -70,11 +74,22 @@ var tileStaticTable = map[string]*tileStaticData{
 		passable: false,
 		opaque:   true,
 	},
+	"WALLELEC": {
+		passable: false,
+		opaque:   true,
+	},
 	"FLOOR": {
 		passable: true,
 		opaque:   false,
 	},
-	"DOOR": {
+	"DOORVERT": {
+		passable:        false,
+		opaque:          true,
+		thin:            true,
+		openable:        true,
+		opensVertically: true,
+	},
+	"DOORHORIZ": {
 		passable: false,
 		opaque:   true,
 		thin:     true,

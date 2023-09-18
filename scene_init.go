@@ -34,7 +34,11 @@ func (s *Scene) init() (float64, float64) {
 			case '#', '"':
 				code = "WALL"
 			case '+':
-				code = "DOOR"
+				if rnd.Rand(2) == 0 {
+					code = "DOORHORIZ"
+				} else {
+					code = "DOORVERT"
+				}
 			}
 			s.gameMap[i] = append(s.gameMap[i], tile{tileCode: code})
 		}
@@ -54,5 +58,23 @@ func (s *Scene) init() (float64, float64) {
 			spriteCode: "enemy",
 		})
 	}
+	s.finalizeTiles()
 	return camX, camY
+}
+
+func (s *Scene) finalizeTiles() {
+	for x := range s.gameMap {
+		for y := range s.gameMap[x] {
+			tileCode := s.gameMap[x][y].tileCode
+			if tileCode == "DOORHORIZ" || tileCode == "DOORVERT" {
+				for i := -1; i <= 1; i++ {
+					for j := -1; j <= 1; j++ {
+						if i*j == 0 && s.AreGridCoordsValid(x+i, y+j) && s.gameMap[x+i][y+j].tileCode == "WALL" {
+							s.gameMap[x+i][y+j].tileCode = "WALLELEC"
+						}
+					}
+				}
+			}
+		}
+	}
 }

@@ -19,10 +19,13 @@ var (
 func loadResources() {
 	// init textures (temp.)
 	loadTexture(&wallTexturesAtlas, "WALL", "resources/textures/scifi/suprt2.png")
-	loadTexture(&wallTexturesAtlas, "DOOR", "resources/textures/door.png")
+	loadTexture(&wallTexturesAtlas, "WALLELEC", "resources/textures/scifi/elecbox.png")
+	loadTexture(&wallTexturesAtlas, "DOORHORIZ", "resources/textures/door.png")
+	loadTexture(&wallTexturesAtlas, "DOORVERT", "resources/textures/scifi/garage.png")
 
 	loadTexture(&floorTexturesAtlas, "DEFAULT", "resources/textures/tile113.png")
-	loadTexture(&floorTexturesAtlas, "DOOR", "resources/textures/tile110.png")
+	loadTexture(&floorTexturesAtlas, "DOORHORIZ", "resources/textures/scifi/8ashf.png")
+	loadTexture(&floorTexturesAtlas, "DOORVERT", "resources/textures/scifi/8ashf.png")
 
 	loadTexture(&ceilingTexturesAtlas, "DEFAULT", "resources/textures/tile110.png")
 	// init sprites
@@ -30,6 +33,7 @@ func loadResources() {
 	loadSprite("projPlasma", "resources/sprites/projectile1.png")
 	loadSprite("projAcid", "resources/sprites/lab/sprites/acidspit.png")
 	loadSprite("projFireball", "resources/sprites/lab/sprites/fireball0.png")
+
 	loadSprite("enemy", "resources/sprites/characters/CommandoWalk1.png")
 	loadSprite("enemy", "resources/sprites/characters/CommandoWalk2.png")
 

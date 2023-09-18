@@ -50,7 +50,7 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 		ceilingY := posY + ceilingRowDistance*rayDirY0 + ceilingStepY*xFloat
 		// fmt.Printf("fx %f, fy %f \n", floorX, floorY)
 
-		if y > wallLowY {
+		if y > wallLowY && r.RenderFloors {
 			// the cell coord is simply got from the integer parts of floorX and floorY
 			cellX := int(floorX)
 			cellY := int(floorY)

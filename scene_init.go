@@ -34,7 +34,7 @@ func (s *Scene) init() (float64, float64) {
 			case '#', '"':
 				code = "WALL"
 			case '+':
-				if rnd.Rand(2) == 0 {
+				if rnd.Rand(5) == 0 {
 					code = "DOORHORIZ"
 				} else {
 					code = "DOORVERT"
@@ -45,7 +45,7 @@ func (s *Scene) init() (float64, float64) {
 	}
 
 	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 4, 1)
-	for i := 0; i < 15; i++ {
+	for i := 0; i < 25; i++ {
 		x, y := 0, 0
 		for !s.IsTilePassable(x, y) {
 			x = rnd.Rand(len(s.gameMap))

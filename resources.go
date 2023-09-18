@@ -38,6 +38,14 @@ func loadResources() {
 	loadUIImage("pWeaponGun", "resources/sprites/lab/guns/gun1a.png")
 	loadUIImage("pWeaponGun", "resources/sprites/lab/guns/gun1b.png")
 	loadUIImage("pWeaponGun", "resources/sprites/lab/guns/gun1c.png")
+
+	loadUIImage("pWeaponSmg", "resources/sprites/lab/guns/gun5a.png")
+	loadUIImage("pWeaponSmg", "resources/sprites/lab/guns/gun5b.png")
+	loadUIImage("pWeaponSmg", "resources/sprites/lab/guns/gun5c.png")
+
+	loadUIImage("pWeaponGun2", "resources/sprites/lab/guns/gun4.png")
+	loadUIImage("pWeaponGun2", "resources/sprites/lab/guns/gun4b.png")
+	loadUIImage("pWeaponGun2", "resources/sprites/lab/guns/gun4c.png")
 }
 
 func loadTexture(atlas *map[string][]*raycaster.Texture, code string, filename string) {

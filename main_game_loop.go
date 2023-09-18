@@ -29,7 +29,7 @@ func (g *game) init() {
 		x: px,
 		y: py,
 		weaponInHands: &weapon{
-			static: sTableWeapons[1],
+			static: sTableWeapons[0],
 		},
 	}
 	gameIsRunning = true

@@ -6,7 +6,7 @@ import (
 
 func (rend *Renderer) drawColumn(column *castedRay, rayDirectionX, rayDirectionY float64) {
 	// drawing the pixels column
-	camH := rend.cam.getVerticalCoordWithBob()
+	camH := rend.cam.GetVerticalCoordWithBob()
 	// columnHeight := int(float64(rend.RenderHeight) / column.perpWallDist * rend.aspectFactor)
 
 	// lowestPixelY := columnHeight/2 + rend.RenderHeight/2

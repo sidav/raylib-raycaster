@@ -12,7 +12,7 @@ type projectile struct {
 }
 
 func (t *projectile) GetCoords() (float64, float64, float64) {
-	return t.x, t.y, 0.5
+	return t.x, t.y, t.z
 }
 
 func (t *projectile) GetWidthAndHeightFactors() (float64, float64) {

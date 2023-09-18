@@ -107,6 +107,7 @@ func (g *game) shootAsPlayer() {
 	g.scene.things.PushBack(&projectile{
 		x:          g.scene.Camera.X,
 		y:          g.scene.Camera.Y,
+		z:          g.scene.Camera.GetVerticalCoordWithBob() - 0.1,
 		dirX:       dx,
 		dirY:       dy,
 		spriteCode: "proj",

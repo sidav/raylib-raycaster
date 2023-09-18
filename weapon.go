@@ -50,7 +50,7 @@ var sTableWeapons = []*weaponStatic{
 	{
 		name:               "Gun",
 		spriteCode:         "pWeaponGun",
-		ticksInFiringState: 10,
-		firingFrames:       [][2]int{{1, 3}, {2, 10}},
+		ticksInFiringState: 2,
+		firingFrames:       [][2]int{{1, 1}, {2, 10}},
 	},
 }

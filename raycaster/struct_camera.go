@@ -34,7 +34,7 @@ func (c *Camera) getCoords() (float64, float64) {
 	return c.X, c.Y
 }
 
-func (c *Camera) getVerticalCoordWithBob() float64 {
+func (c *Camera) GetVerticalCoordWithBob() float64 {
 	return c.Z + c.currVerticalBob
 }
 

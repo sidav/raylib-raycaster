@@ -15,7 +15,7 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 	rayDirX1 := r.cam.dirX + r.cam.planeX
 	rayDirY1 := r.cam.dirY + r.cam.planeY
 	// Vertical position of the Camera.
-	floorPosZ := r.aspectFactor * float64(r.RenderHeight) * r.cam.getVerticalCoordWithBob()
+	floorPosZ := r.aspectFactor * float64(r.RenderHeight) * r.cam.GetVerticalCoordWithBob()
 	ceilingPosZ := r.aspectFactor*float64(r.RenderHeight) - floorPosZ
 
 	for y := 0; y < r.RenderHeight; y++ {

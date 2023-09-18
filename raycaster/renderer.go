@@ -32,6 +32,9 @@ type Renderer struct {
 
 	// time measure
 	columnsTimer, wallsTimer, floorCeilingTimer, thingsTimer timer
+
+	// surface to draw in
+	surface surface
 }
 
 func (r *Renderer) SetBackend(b backend.RendererBackend) {
@@ -49,7 +52,9 @@ func (r *Renderer) RenderFrame(scene Scene) {
 
 	if len(r.rayDistancesBuffer) == 0 || len(r.rayDistancesBuffer) != r.RenderWidth {
 		r.rayDistancesBuffer = make([]float64, r.RenderWidth)
+		r.surface.create(r.RenderWidth, r.RenderHeight)
 	}
+	r.surface.clear()
 
 	r.renderUntexturedFloorAndCeiling()
 

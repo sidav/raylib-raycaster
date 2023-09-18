@@ -1,9 +1,8 @@
 package raycaster
 
 func (r *Renderer) renderUntexturedFloorAndCeiling() {
-	r.backend.SetColor(32, 32, 40)
 	floorOnScreenHeight := r.RenderHeight/2 + r.cam.OnScreenVerticalOffset
-	r.backend.FillRect(0, floorOnScreenHeight, r.RenderWidth, r.RenderHeight-floorOnScreenHeight)
+	r.surface.fillRect(0, floorOnScreenHeight, r.RenderWidth, r.RenderHeight-floorOnScreenHeight, surfaceColor{32, 32, 40})
 }
 
 func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int) {
@@ -15,7 +14,7 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 	rayDirX1 := r.cam.dirX + r.cam.planeX
 	rayDirY1 := r.cam.dirY + r.cam.planeY
 	// Vertical position of the Camera.
-	floorPosZ := r.aspectFactor * float64(r.RenderHeight) * r.cam.getVerticalCoordWithBob()
+	floorPosZ := r.aspectFactor * float64(r.RenderHeight) * r.cam.GetVerticalCoordWithBob()
 	ceilingPosZ := r.aspectFactor*float64(r.RenderHeight) - floorPosZ
 
 	for y := 0; y < r.RenderHeight; y++ {
@@ -50,7 +49,7 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 		ceilingY := posY + ceilingRowDistance*rayDirY0 + ceilingStepY*xFloat
 		// fmt.Printf("fx %f, fy %f \n", floorX, floorY)
 
-		if y > wallLowY {
+		if y > wallLowY && r.RenderFloors {
 			// the cell coord is simply got from the integer parts of floorX and floorY
 			cellX := int(floorX)
 			cellY := int(floorY)
@@ -62,8 +61,8 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 			// get the Texture coordinate from the fractional part
 			tx := int(float64(texWidth) * (floorX - float64(cellX)))  // & (texWidth-1)
 			ty := int(float64(texHeight) * (floorY - float64(cellY))) // & (texHeight-1)
-			r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, floorRowDistance, false)
-			r.backend.DrawPoint(int32(x), int32(y))
+			color := r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, floorRowDistance, false)
+			r.surface.putPixel(x, y, color)
 		} else if r.RenderCeilings {
 			//ceiling
 			cellX := int(ceilingX)
@@ -73,8 +72,8 @@ func (r *Renderer) renderTexturedFloorAndCeilingColumn(x, wallLowY, wallTopY int
 			texHeight := texture.H
 			tx := int(float64(texWidth) * (ceilingX - float64(cellX)))
 			ty := int(float64(texHeight) * (ceilingY - float64(cellY)))
-			r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, ceilingRowDistance, false)
-			r.backend.DrawPoint(int32(x), int32(y))
+			color := r.setFoggedColorFromBitmapPixelAtCoords(texture.Bitmap, tx, ty, ceilingRowDistance, false)
+			r.surface.putPixel(x, y, color)
 		}
 	}
 }

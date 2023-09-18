@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	WINDOW_W = 1360
+	WINDOW_W = 1366
 	WINDOW_H = 768
 	RENDER_W = WINDOW_W / PIXEL_SIZE
 	RENDER_H = WINDOW_H / PIXEL_SIZE
@@ -23,7 +23,7 @@ const (
 var (
 	gameIsRunning bool
 	renderer      *raycaster.Renderer
-	drawBackend   backend.RendererBackend
+	drawBackend   *backend.RaylibBackend // backend.RendererBackend
 	rnd           *rand.Rand
 	tick          int
 )
@@ -31,7 +31,7 @@ var (
 func main() {
 	drawBackend = &backend.RaylibBackend{}
 	drawBackend.Init(WINDOW_W, WINDOW_H)
-	drawBackend.SetInternalResolution(int32(rl.GetScreenWidth()/PIXEL_SIZE), int32(rl.GetScreenHeight()/PIXEL_SIZE))
+	drawBackend.SetInternalResolution(int32(RENDER_W), int32(RENDER_H))
 	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	renderer = &raycaster.Renderer{
@@ -40,9 +40,9 @@ func main() {
 		ApplyTexturing:         true,
 		RenderFloors:           true,
 		RenderCeilings:         true,
-		MaxRayLength:           15,
+		MaxRayLength:           25,
 		MaxFogFraction:         1,
-		RayLengthForMaximumFog: 12,
+		RayLengthForMaximumFog: 20,
 		FogR:                   64,
 		FogG:                   48,
 		FogB:                   32,

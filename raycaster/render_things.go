@@ -38,7 +38,7 @@ func (r *Renderer) renderThings() {
 		transformX := invDet * (r.cam.dirY*xRelative - r.cam.dirX*yRelative)
 		// transformY is equal to the distance to camera plane
 		transformY := invDet * (-r.cam.planeY*xRelative + r.cam.planeX*yRelative)
-		if transformY < 0.01 { // close enough to zero == too close to the camera
+		if transformY < 0.001 { // close enough to zero == too close to the camera
 			continue
 		}
 
@@ -46,7 +46,7 @@ func (r *Renderer) renderThings() {
 		osx := int((float64(r.RenderWidth) / 2) * (1 + transformX/transformY))
 		osw := int(width * float64(r.RenderWidth) / transformY)
 		// Perspective projection of Spritable's center. 0.5 is vertical center of the screen
-		osy := int(float64(r.RenderHeight)*(0.5-r.aspectFactor*(tz-r.cam.getVerticalCoordWithBob())/transformY)) + r.cam.OnScreenVerticalOffset
+		osy := int(float64(r.RenderHeight)*(0.5-r.aspectFactor*(tz-r.cam.GetVerticalCoordWithBob())/transformY)) + r.cam.OnScreenVerticalOffset
 		osh := int(height * r.aspectFactor * float64(r.RenderHeight) / transformY)
 		if osw > r.RenderWidth {
 			continue
@@ -55,21 +55,25 @@ func (r *Renderer) renderThings() {
 		// render the Sprite column-wise, like a Texture
 		currSprite := t.GetSprite()
 		for x := 0; x < osw; x++ {
-			screenXCoord := x + osx - osw/2
-			if screenXCoord < 0 || screenXCoord > r.RenderWidth-1 || r.rayDistancesBuffer[screenXCoord] < transformY {
+			onScreenX := x + osx - osw/2
+			if onScreenX < 0 || onScreenX > r.RenderWidth-1 || r.rayDistancesBuffer[onScreenX] < transformY {
 				continue
 			}
 			// r.rayDistancesBuffer[screenXCoord] = transformY
 			spriteX := x * currSprite.w / osw
 
 			for y := 0; y < osh; y++ {
+				onScreenY := y + osy - osh/2
+				if onScreenY < 0 || onScreenY >= r.RenderHeight {
+					break
+				}
 				spriteY := (y * currSprite.h / osh) % currSprite.h
 				_, _, _, a := currSprite.bitmap.At(spriteX, spriteY).RGBA()
 				if a == 0 {
 					continue
 				}
-				r.setFoggedColorFromBitmapPixelAtCoords(currSprite.bitmap, spriteX, spriteY, transformY, false)
-				r.backend.DrawPoint(int32(x+osx-osw/2), int32(y+osy-osh/2))
+				color := r.setFoggedColorFromBitmapPixelAtCoords(currSprite.bitmap, spriteX, spriteY, transformY, false)
+				r.surface.putPixel(onScreenX, onScreenY, color)
 			}
 		}
 	}

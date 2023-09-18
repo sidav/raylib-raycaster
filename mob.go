@@ -9,8 +9,12 @@ import (
 type mob struct {
 	x, y, z         float64
 	rotationRadians float64
-	intent          *mobIntent
-	spriteCode      string
+
+	weaponInHands *weapon
+
+	asPlayer   *playerStruct
+	intent     *mobIntent
+	spriteCode string
 }
 
 func (t *mob) GetCoords() (float64, float64, float64) {

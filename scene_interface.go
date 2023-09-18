@@ -11,6 +11,9 @@ func (s *Scene) IsTileOpaque(x, y int) bool {
 }
 
 func (s *Scene) GetTileVerticalSlide(x, y int) float64 {
+	if s.gameMap[x][y].getStaticData().opensVertically {
+		return s.gameMap[x][y].tileSlideAmount
+	}
 	return 0
 }
 
@@ -19,6 +22,9 @@ func (s *Scene) GetCamera() *raycaster.Camera {
 }
 
 func (s *Scene) GetTileHorizontalSlide(x, y int) float64 {
+	if s.gameMap[x][y].getStaticData().opensVertically {
+		return 0
+	}
 	return s.gameMap[x][y].tileSlideAmount
 }
 

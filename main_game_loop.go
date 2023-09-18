@@ -16,9 +16,10 @@ const (
 )
 
 type game struct {
-	gameState int
-	player    *mob
-	scene     *Scene
+	gameState   int
+	player      *mob
+	scene       *Scene
+	currentTick int
 }
 
 func (g *game) init() {
@@ -27,6 +28,9 @@ func (g *game) init() {
 	g.player = &mob{
 		x: px,
 		y: py,
+		weaponInHands: &weapon{
+			static: sTableWeapons[0],
+		},
 	}
 	gameIsRunning = true
 }
@@ -38,24 +42,37 @@ func (g *game) gameLoop() {
 		g.decideMobs()
 		g.actMobs()
 		g.actTiles()
+		g.updatePlayerWeaponState()
 		tick++
+		g.currentTick++
 		fmt.Printf("TOTAL %d THINGS\n", g.scene.things.Len())
-		renderFrame(g.scene)
+		renderFrame(g)
 	}
 }
 
 func (g *game) actProjectiles() {
-	speed := 0.75
+	speed := 0.5
 	for node := g.scene.things.Front(); node != nil; node = node.Next() {
 		switch node.Value.(type) {
 		case *projectile:
 			proj := node.Value.(*projectile)
 			newX := proj.x + (proj.dirX * speed)
 			newY := proj.y + (proj.dirY * speed)
+			hitMob := g.scene.GetMobAtRealCoords(newX, newY)
+			if hitMob != nil {
+				g.scene.things.Remove(node)
+				g.scene.removeMob(hitMob)
+				return
+			}
 			if !g.scene.areRealCoordsPassable(newX, newY) {
 				g.scene.things.Remove(node)
 			} else {
 				proj.x, proj.y = newX, newY
+				if proj.static.changeFrameEveryTicks > 0 {
+					if (g.currentTick-proj.createdAt)%proj.static.changeFrameEveryTicks == 0 {
+						proj.frameNum = (proj.frameNum + 1) % proj.static.totalFrames
+					}
+				}
 			}
 		}
 	}
@@ -66,6 +83,24 @@ func (g *game) actTiles() {
 		for y := range g.scene.gameMap[x] {
 			g.scene.gameMap[x][y].actOnState()
 		}
+	}
+}
+
+func (g *game) updatePlayerWeaponState() {
+	wpn := g.player.weaponInHands
+	if wpn == nil {
+		return
+	}
+	ticksSinceFiring := g.currentTick - wpn.lastTickShot
+	if ticksSinceFiring > wpn.static.ticksInFiringState {
+		g.scene.Camera.OnScreenVerticalOffset = 0
+		wpn.state = wStateIdle
+	}
+	if wpn.state == wStateFiring && ticksSinceFiring < 3 {
+		g.scene.Camera.OnScreenVerticalOffset += 3
+	}
+	if wpn.state == wStateIdle || ticksSinceFiring > 3 {
+		g.scene.Camera.OnScreenVerticalOffset = 0
 	}
 }
 

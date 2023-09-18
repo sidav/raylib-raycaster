@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	playerMovementSpeed = 0.05
-	playerRotationSpeed = 3.5 // degrees
+	playerMovementSpeed = 0.075
+	playerRotationSpeed = 5 // degrees
 )
 
 func (g *game) workPlayerInput() {
@@ -31,22 +31,26 @@ func (g *game) workPlayerInput() {
 	if rl.IsKeyPressed(rl.KeySpace) {
 		g.tryOpenDoorAsPlayer()
 	}
-	if rl.IsKeyDown(rl.KeyEnter) {
-		dx, dy := g.player.GetDirectionVector()
-		g.scene.things.PushBack(&projectile{
-			x:          g.scene.Camera.X,
-			y:          g.scene.Camera.Y,
-			dirX:       dx,
-			dirY:       dy,
-			spriteCode: "proj",
-		})
-		g.gameState++
+	if rl.IsKeyDown(rl.KeyEnter) || rl.IsKeyDown(rl.KeyLeftControl) {
+		g.shootAsPlayer()
 	}
 	if rl.IsKeyDown(rl.KeyPageUp) {
 		g.scene.Camera.OnScreenVerticalOffset--
 	}
 	if rl.IsKeyDown(rl.KeyPageDown) {
 		g.scene.Camera.OnScreenVerticalOffset++
+	}
+	if rl.IsKeyPressed(rl.KeyOne) {
+		g.player.weaponInHands = &weapon{static: sTableWeapons[0]}
+	}
+	if rl.IsKeyPressed(rl.KeyTwo) {
+		g.player.weaponInHands = &weapon{static: sTableWeapons[1]}
+	}
+	if rl.IsKeyPressed(rl.KeyThree) {
+		g.player.weaponInHands = &weapon{static: sTableWeapons[2]}
+	}
+	if rl.IsKeyPressed(rl.KeyFour) {
+		g.player.weaponInHands = &weapon{static: sTableWeapons[3]}
 	}
 }
 
@@ -103,4 +107,22 @@ func (g *game) tryOpenDoorAsPlayer() {
 			g.scene.gameMap[tx][ty].state = tileStateOpening
 		}
 	}
+}
+
+func (g *game) shootAsPlayer() {
+	if g.player.weaponInHands == nil || !g.player.weaponInHands.canShoot() {
+		return
+	}
+	g.player.weaponInHands.lastTickShot = g.currentTick
+	g.player.weaponInHands.state = wStateFiring
+	dx, dy := g.player.GetDirectionVector()
+	g.scene.things.PushBack(&projectile{
+		x:         g.scene.Camera.X,
+		y:         g.scene.Camera.Y,
+		z:         g.scene.Camera.GetVerticalCoordWithBob() - 0.1,
+		dirX:      dx,
+		dirY:      dy,
+		createdAt: g.currentTick,
+		static:    sTableProjectiles[g.player.weaponInHands.static.firesProjectile],
+	})
 }

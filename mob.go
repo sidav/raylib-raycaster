@@ -54,6 +54,11 @@ func (t *mob) GetDirectionVector() (float64, float64) {
 	return math.Cos(t.rotationRadians), math.Sin(t.rotationRadians)
 }
 
+func (t *mob) dyingAnimationEnded() bool {
+	ticksNeeded := t.static.dyingFrames[len(t.static.dyingFrames)-1][1]
+	return t.ticksSinceStateChange >= ticksNeeded
+}
+
 func (t *mob) GetSprite() *raycaster.SpriteStruct {
 	var framesArr [][2]int
 	switch t.state {
@@ -74,23 +79,26 @@ func (t *mob) GetSprite() *raycaster.SpriteStruct {
 type mobStatic struct {
 	name                    string
 	spriteCode              string
+	corpseSpriteCode        string
 	maxHitpoints            int
 	idleFrames, dyingFrames [][2]int
 }
 
 var sTableMobs = []*mobStatic{
 	{
-		name:         "Soldier",
-		spriteCode:   "soldier",
-		maxHitpoints: 30,
-		idleFrames:   [][2]int{{0, 30}, {1, 60}},
-		dyingFrames:  [][2]int{{2, 10}, {3, 20}, {4, 30}, {5, 100000}},
+		name:             "Soldier",
+		spriteCode:       "soldier",
+		corpseSpriteCode: "soldiercorpse",
+		maxHitpoints:     30,
+		idleFrames:       [][2]int{{0, 30}, {1, 60}},
+		dyingFrames:      [][2]int{{2, 10}, {3, 20}, {4, 30}, {5, 40}},
 	},
 	{
-		name:         "Elite",
-		spriteCode:   "slayer",
-		maxHitpoints: 50,
-		idleFrames:   [][2]int{{0, 30}, {1, 60}},
-		dyingFrames:  [][2]int{{2, 10}, {3, 20}, {4, 30}, {5, 100000}},
+		name:             "Elite",
+		spriteCode:       "slayer",
+		corpseSpriteCode: "slayercorpse",
+		maxHitpoints:     50,
+		idleFrames:       [][2]int{{0, 30}, {1, 60}},
+		dyingFrames:      [][2]int{{2, 10}, {3, 20}, {4, 30}, {5, 40}},
 	},
 }

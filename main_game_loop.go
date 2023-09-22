@@ -61,7 +61,7 @@ func (g *game) actProjectiles() {
 			if hitMob != nil {
 				g.scene.things.Remove(node)
 				hitMob.hitpoints -= proj.static.damage
-				return
+				continue
 			}
 			if !g.scene.areRealCoordsPassable(newX, newY) {
 				g.scene.things.Remove(node)
@@ -111,6 +111,16 @@ func (g *game) decideMobs() {
 				mob.ticksSinceStateChange = 0
 			} else {
 				mob.ticksSinceStateChange++
+				if mob.state == mobStateDying && mob.dyingAnimationEnded() {
+					g.scene.things.PushBack(&decoration{
+						x:                 mob.x,
+						y:                 mob.y,
+						spriteCode:        mob.static.corpseSpriteCode,
+						blocksMovement:    false,
+						blocksProjectiles: false,
+					})
+					g.scene.things.Remove(node)
+				}
 			}
 		}
 	}

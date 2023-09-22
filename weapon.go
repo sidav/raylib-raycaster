@@ -34,7 +34,7 @@ func (w *weapon) canShoot() bool {
 
 type weaponStatic struct {
 	name       string
-	spriteCode string // unneeded for mobs' weapons
+	spriteCode string
 
 	ticksInFiringState int
 	firingFrames       [][2]int // array of: {frame number, max ticks since firing for this sprite to be the current one}

@@ -55,8 +55,19 @@ func (t *mob) GetDirectionVector() (float64, float64) {
 	return math.Cos(t.rotationRadians), math.Sin(t.rotationRadians)
 }
 
+func (t *mob) changeState(s mobStateCode) {
+	t.state = s
+	t.intent = nil
+	t.ticksSinceStateChange = 0
+}
+
 func (t *mob) dyingAnimationEnded() bool {
 	ticksNeeded := mobTicksPerDyingFrame * len(t.static.dyingFrames)
+	return t.ticksSinceStateChange >= ticksNeeded
+}
+
+func (t *mob) attackingAnimationEnded() bool {
+	ticksNeeded := mobTicksPerAttackingFrame * len(t.static.attackingFrames)
 	return t.ticksSinceStateChange >= ticksNeeded
 }
 
@@ -69,6 +80,8 @@ func (t *mob) GetSprite() *raycaster.SpriteStruct {
 		return spritesAtlas[t.static.spriteCode][t.static.dyingFrames[t.ticksSinceStateChange/mobTicksPerDyingFrame]]
 	case mobStateMoving:
 		return spritesAtlas[t.static.spriteCode][t.static.movingFrames[t.ticksSinceStateChange/mobTicksPerMovingFrame%len(t.static.movingFrames)]]
+	case mobStateAttacking:
+		return spritesAtlas[t.static.spriteCode][t.static.attackingFrames[t.ticksSinceStateChange/mobTicksPerAttackingFrame%len(t.static.attackingFrames)]]
 	default:
 		panic("State not implemented")
 	}
@@ -82,17 +95,18 @@ func (t *mob) GetSprite() *raycaster.SpriteStruct {
 }
 
 type mobStatic struct {
-	name                      string
-	spriteCode                string
-	corpseSpriteCode          string
-	maxHitpoints              int
-	speedPerTick              float64
-	idleFrames                [][2]int
-	dyingFrames, movingFrames []int
+	name                                       string
+	spriteCode                                 string
+	corpseSpriteCode                           string
+	maxHitpoints                               int
+	speedPerTick                               float64
+	idleFrames                                 [][2]int
+	dyingFrames, movingFrames, attackingFrames []int
 }
 
 const mobTicksPerDyingFrame = 5
 const mobTicksPerMovingFrame = 5
+const mobTicksPerAttackingFrame = 7
 
 var sTableMobs = []*mobStatic{
 	{
@@ -100,19 +114,21 @@ var sTableMobs = []*mobStatic{
 		spriteCode:       "soldier",
 		corpseSpriteCode: "soldiercorpse",
 		maxHitpoints:     30,
-		speedPerTick:     0.07,
+		speedPerTick:     0.065,
 		idleFrames:       [][2]int{{0, 30}, {1, 60}},
 		dyingFrames:      []int{2, 3, 4},
 		movingFrames:     []int{5, 6, 7, 8},
+		attackingFrames:  []int{9, 10},
 	},
 	{
 		name:             "Elite",
 		spriteCode:       "slayer",
 		corpseSpriteCode: "slayercorpse",
 		maxHitpoints:     50,
-		speedPerTick:     0.04,
+		speedPerTick:     0.035,
 		idleFrames:       [][2]int{{0, 30}, {1, 60}},
 		dyingFrames:      []int{2, 3, 4},
 		movingFrames:     []int{5, 6, 7, 8},
+		attackingFrames:  []int{9, 10},
 	},
 }

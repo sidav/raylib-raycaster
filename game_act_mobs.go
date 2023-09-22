@@ -6,19 +6,31 @@ func (g *game) actMob(m *mob) {
 	case mobStateSleeping:
 		if g.currentTick%checkIdleStateEach == 0 {
 			if g.doesMobSeePlayer(m) {
-				m.state = mobStateIdle
+				m.changeState(mobStateIdle)
 			}
 		}
 	case mobStateIdle:
 		percent := rnd.Intn(100)
-		if percent < 25 {
-			// m.state = mobStateAttacking
-		} else if percent < 50 {
-			m.state = mobStateMoving
+		if percent < 5 {
+			m.changeState(mobStateAttacking)
+		} else if percent < 15 {
+			m.changeState(mobStateMoving)
 		}
 	case mobStateMoving:
 		g.actMobMoving(m)
+	case mobStateAttacking:
+		g.actMobAttacking(m)
 
+	}
+}
+
+func (g *game) actMobAttacking(m *mob) {
+	if m.attackingAnimationEnded() {
+		if rnd.Intn(100) < 50 {
+			m.changeState(mobStateAttacking)
+		} else {
+			m.changeState(mobStateIdle)
+		}
 	}
 }
 
@@ -31,8 +43,7 @@ func (g *game) actMobMoving(m *mob) {
 		}
 	} else {
 		if rnd.Intn(25) == 0 {
-			m.state = mobStateIdle
-			m.intent = nil
+			m.changeState(mobStateIdle)
 			return
 		}
 	}
@@ -40,8 +51,7 @@ func (g *game) actMobMoving(m *mob) {
 		m.x += m.intent.dirx * m.static.speedPerTick
 		m.y += m.intent.diry * m.static.speedPerTick
 	} else {
-		m.state = mobStateIdle
-		m.intent = nil
+		m.changeState(mobStateIdle)
 	}
 }
 

@@ -57,8 +57,7 @@ func (g *game) actDecorations(dec *decoration) bool {
 
 func (g *game) pushMobState(mob *mob) bool {
 	if mob.hitpoints <= 0 && mob.state != mobStateDying {
-		mob.state = mobStateDying
-		mob.ticksSinceStateChange = 0
+		mob.changeState(mobStateDying)
 		return false
 	}
 	mob.ticksSinceStateChange++

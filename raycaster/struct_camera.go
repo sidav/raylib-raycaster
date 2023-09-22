@@ -23,8 +23,8 @@ func CreateCamera(x, y, viewAngle float64, maxVBobOffset, vBobSpeed int) *Camera
 		movDirY:                0,
 		OnScreenVerticalOffset: 0,
 
-		maxBob:   0.075,
-		bobSpeed: 0.0075,
+		maxBob:   0.05,
+		bobSpeed: 0.007,
 	}
 	cam.ChangeViewWidth(viewAngle)
 	return cam

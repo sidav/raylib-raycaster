@@ -57,13 +57,15 @@ func (g *game) workPlayerInput() {
 }
 
 func (g *game) movePlayerByFacing(backwards bool) {
+	const checkDistanceFactor = 5.0
 	factor := playerMovementSpeed
 	if backwards {
 		factor = -factor
 	}
 	dx, dy := g.player.GetDirectionVector()
-	tx, ty := trueCoordsToTileCoords(g.player.x+5*factor*dx, g.player.y+5*factor*dy)
-	if g.scene.IsTilePassable(tx, ty) && g.scene.GetMobInRadius(g.player.x+factor*dx, g.player.y+factor*dy, 0.7) == nil {
+	checkX, checkY := g.player.x+checkDistanceFactor*factor*dx, g.player.y+checkDistanceFactor*factor*dy
+	tx, ty := trueCoordsToTileCoords(checkX, checkY)
+	if g.scene.IsTilePassable(tx, ty) && g.scene.GetMobInRadius(checkX, checkY, 0.6) == nil {
 		g.player.x += factor * dx
 		g.player.y += factor * dy
 		g.scene.Camera.MoveForward(factor)

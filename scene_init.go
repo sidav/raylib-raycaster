@@ -47,7 +47,7 @@ func (s *Scene) init() (float64, float64) {
 	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 4, 1)
 	for i := 0; i < 50; i++ {
 		x, y := 0, 0
-		for !s.IsTilePassable(x, y) {
+		for !s.IsTilePassable(x, y) || s.GetMobAtTileCoords(x, y) != nil {
 			x = rnd.Rand(len(s.gameMap))
 			y = rnd.Rand(len(s.gameMap[0]))
 		}

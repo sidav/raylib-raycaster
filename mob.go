@@ -55,7 +55,7 @@ func (t *mob) GetDirectionVector() (float64, float64) {
 }
 
 func (t *mob) dyingAnimationEnded() bool {
-	ticksNeeded := t.static.dyingFrames[len(t.static.dyingFrames)-1][1]
+	ticksNeeded := mobTicksPerDyingFrame * len(t.static.dyingFrames)
 	return t.ticksSinceStateChange >= ticksNeeded
 }
 
@@ -65,7 +65,7 @@ func (t *mob) GetSprite() *raycaster.SpriteStruct {
 	case mobStateIdle:
 		framesArr = t.static.idleFrames
 	case mobStateDying:
-		framesArr = t.static.dyingFrames
+		return spritesAtlas[t.static.spriteCode][t.ticksSinceStateChange/mobTicksPerDyingFrame]
 	}
 	maxTick := framesArr[len(framesArr)-1][1]
 	for _, sdata := range framesArr {
@@ -77,12 +77,15 @@ func (t *mob) GetSprite() *raycaster.SpriteStruct {
 }
 
 type mobStatic struct {
-	name                    string
-	spriteCode              string
-	corpseSpriteCode        string
-	maxHitpoints            int
-	idleFrames, dyingFrames [][2]int
+	name             string
+	spriteCode       string
+	corpseSpriteCode string
+	maxHitpoints     int
+	idleFrames       [][2]int
+	dyingFrames      []int
 }
+
+const mobTicksPerDyingFrame = 5
 
 var sTableMobs = []*mobStatic{
 	{
@@ -91,7 +94,7 @@ var sTableMobs = []*mobStatic{
 		corpseSpriteCode: "soldiercorpse",
 		maxHitpoints:     30,
 		idleFrames:       [][2]int{{0, 30}, {1, 60}},
-		dyingFrames:      [][2]int{{2, 10}, {3, 20}, {4, 30}, {5, 40}},
+		dyingFrames:      []int{2, 3, 4, 5},
 	},
 	{
 		name:             "Elite",
@@ -99,6 +102,6 @@ var sTableMobs = []*mobStatic{
 		corpseSpriteCode: "slayercorpse",
 		maxHitpoints:     50,
 		idleFrames:       [][2]int{{0, 30}, {1, 60}},
-		dyingFrames:      [][2]int{{2, 10}, {3, 20}, {4, 30}, {5, 40}},
+		dyingFrames:      []int{2, 3, 4, 5},
 	},
 }

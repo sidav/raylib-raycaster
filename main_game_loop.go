@@ -51,19 +51,16 @@ func (g *game) gameLoop() {
 }
 
 func (g *game) actProjectiles() {
-	speed := 0.5
 	for node := g.scene.things.Front(); node != nil; node = node.Next() {
 		switch node.Value.(type) {
 		case *projectile:
 			proj := node.Value.(*projectile)
-			newX := proj.x + (proj.dirX * speed)
-			newY := proj.y + (proj.dirY * speed)
+			newX := proj.x + (proj.dirX * proj.static.speed)
+			newY := proj.y + (proj.dirY * proj.static.speed)
 			hitMob := g.scene.GetMobAtRealCoords(newX, newY)
 			if hitMob != nil {
 				g.scene.things.Remove(node)
-				// g.scene.removeMob(hitMob)
-				hitMob.state = mobStateDying
-				hitMob.ticksSinceStateChange = 0
+				hitMob.hitpoints -= proj.static.damage
 				return
 			}
 			if !g.scene.areRealCoordsPassable(newX, newY) {
@@ -108,9 +105,13 @@ func (g *game) updatePlayerWeaponState() {
 
 func (g *game) decideMobs() {
 	for node := g.scene.things.Front(); node != nil; node = node.Next() {
-		switch node.Value.(type) {
-		case *mob:
-			node.Value.(*mob).ticksSinceStateChange++
+		if mob, ok := node.Value.(*mob); ok {
+			if mob.hitpoints <= 0 && mob.state != mobStateDying {
+				mob.state = mobStateDying
+				mob.ticksSinceStateChange = 0
+			} else {
+				mob.ticksSinceStateChange++
+			}
 		}
 	}
 }

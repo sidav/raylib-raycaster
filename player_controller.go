@@ -115,14 +115,15 @@ func (g *game) shootAsPlayer() {
 	}
 	g.player.weaponInHands.lastTickShot = g.currentTick
 	g.player.weaponInHands.state = wStateFiring
-	dx, dy := g.player.GetDirectionVector()
-	g.scene.things.PushBack(&projectile{
-		x:         g.scene.Camera.X,
-		y:         g.scene.Camera.Y,
-		z:         g.scene.Camera.GetVerticalCoordWithBob() - 0.1,
-		dirX:      dx,
-		dirY:      dy,
-		createdAt: g.currentTick,
-		static:    sTableProjectiles[g.player.weaponInHands.static.firesProjectile],
-	})
+	for i := 0; i < g.player.weaponInHands.static.projectilesPerShot; i++ {
+		dx, dy := g.player.GetDirectionVector()
+		dx, dy = rotateVectorRandomlyGauss(dx, dy, g.player.weaponInHands.static.spreadDegrees)
+		g.scene.things.PushBack(
+			g.newProjectile(
+				g.player.x, g.player.y, g.scene.Camera.GetVerticalCoordWithBob()-0.1,
+				dx, dy,
+				g.player.weaponInHands.static.firesProjectile,
+			),
+		)
+	}
 }

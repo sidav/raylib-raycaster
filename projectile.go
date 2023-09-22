@@ -12,6 +12,18 @@ type projectile struct {
 	static     *projectileStatic
 }
 
+func (g *game) newProjectile(x, y, z, dirX, dirY float64, s *projectileStatic) *projectile {
+	return &projectile{
+		x:         x,
+		y:         y,
+		z:         z,
+		dirX:      dirX,
+		dirY:      dirY,
+		createdAt: g.currentTick,
+		static:    s,
+	}
+}
+
 func (t *projectile) GetCoords() (float64, float64, float64) {
 	return t.x, t.y, t.z
 }
@@ -26,34 +38,11 @@ func (t *projectile) GetSprite() *raycaster.SpriteStruct {
 
 type codeProjectile uint8
 
-const (
-	projectilePlasma codeProjectile = iota
-	projectileAcid
-	projectileFireball
-)
-
 type projectileStatic struct {
 	spriteCode            string
 	totalFrames           int
 	changeFrameEveryTicks int
+	damage                int
+	speed                 float64
 	sizeFactor            float64
-}
-
-var sTableProjectiles = map[codeProjectile]*projectileStatic{
-	projectilePlasma: {
-		spriteCode:            "projPlasma",
-		totalFrames:           2,
-		changeFrameEveryTicks: 5,
-		sizeFactor:            0.25,
-	},
-	projectileAcid: {
-		spriteCode:  "projAcid",
-		totalFrames: 1,
-		sizeFactor:  0.75,
-	},
-	projectileFireball: {
-		spriteCode:  "projFireball",
-		totalFrames: 1,
-		sizeFactor:  0.1,
-	},
 }

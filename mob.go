@@ -16,8 +16,11 @@ const (
 )
 
 type mob struct {
-	x, y, z               float64
-	rotationRadians       float64
+	x, y, z         float64
+	rotationRadians float64
+
+	hitpoints int
+
 	state                 mobStateCode
 	ticksSinceStateChange int
 
@@ -29,12 +32,14 @@ type mob struct {
 }
 
 func createMob(x, y float64, s *mobStatic) *mob {
-	return &mob{
+	m := &mob{
 		x:      x,
 		y:      y,
 		z:      0.5,
 		static: s,
 	}
+	m.hitpoints = m.static.maxHitpoints
+	return m
 }
 
 func (t *mob) GetCoords() (float64, float64, float64) {

@@ -112,7 +112,7 @@ var sTableMobs = []*mobStatic{
 		spriteCode:             "soldier",
 		corpseSpriteCode:       "soldiercorpse",
 		maxHitpoints:           30,
-		speedPerTick:           0.065,
+		speedPerTick:           0.045,
 		idleFrames:             []int{0, 1},
 		ticksPerIdleFrame:      25,
 		dyingFrames:            []int{2, 3, 4},
@@ -136,7 +136,7 @@ var sTableMobs = []*mobStatic{
 		spriteCode:             "slayer",
 		corpseSpriteCode:       "slayercorpse",
 		maxHitpoints:           50,
-		speedPerTick:           0.035,
+		speedPerTick:           0.03,
 		idleFrames:             []int{0, 1},
 		ticksPerIdleFrame:      25,
 		dyingFrames:            []int{2, 3, 4},
@@ -144,7 +144,7 @@ var sTableMobs = []*mobStatic{
 		movingFrames:           []int{5, 6, 7, 8},
 		ticksPerMovingFrame:    5,
 		attackingFrames:        []int{9, 10},
-		ticksPerAttackingFrame: 7,
+		ticksPerAttackingFrame: 4,
 
 		spreadDegrees: 5,
 		firesProjectile: &projectileStatic{

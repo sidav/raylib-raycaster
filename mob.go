@@ -102,6 +102,9 @@ type mobStatic struct {
 	speedPerTick                               float64
 	idleFrames                                 [][2]int
 	dyingFrames, movingFrames, attackingFrames []int
+
+	spreadDegrees   float64
+	firesProjectile *projectileStatic
 }
 
 const mobTicksPerDyingFrame = 5
@@ -119,6 +122,15 @@ var sTableMobs = []*mobStatic{
 		dyingFrames:      []int{2, 3, 4},
 		movingFrames:     []int{5, 6, 7, 8},
 		attackingFrames:  []int{9, 10},
+
+		spreadDegrees: 5,
+		firesProjectile: &projectileStatic{
+			spriteCode:  "projFireball",
+			totalFrames: 1,
+			speed:       0.7,
+			damage:      15,
+			sizeFactor:  0.1,
+		},
 	},
 	{
 		name:             "Elite",
@@ -130,5 +142,14 @@ var sTableMobs = []*mobStatic{
 		dyingFrames:      []int{2, 3, 4},
 		movingFrames:     []int{5, 6, 7, 8},
 		attackingFrames:  []int{9, 10},
+
+		spreadDegrees: 5,
+		firesProjectile: &projectileStatic{
+			spriteCode:  "projFireball",
+			totalFrames: 1,
+			speed:       0.7,
+			damage:      15,
+			sizeFactor:  0.1,
+		},
 	},
 }

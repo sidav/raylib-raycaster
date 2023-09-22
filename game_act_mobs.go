@@ -25,6 +25,10 @@ func (g *game) actMob(m *mob) {
 }
 
 func (g *game) actMobAttacking(m *mob) {
+	if m.ticksSinceStateChange == 1 {
+		dx, dy := makeUnitVector(m.x, m.y, g.player.x, g.player.y)
+		g.doProjectileAttack(m.static.firesProjectile, m, dx, dy, m.static.spreadDegrees)
+	}
 	if m.attackingAnimationEnded() {
 		if rnd.Intn(100) < 50 {
 			m.changeState(mobStateAttacking)
@@ -42,7 +46,7 @@ func (g *game) actMobMoving(m *mob) {
 			diry: dy,
 		}
 	} else {
-		if rnd.Intn(25) == 0 {
+		if rnd.Intn(20) == 0 {
 			m.changeState(mobStateIdle)
 			return
 		}

@@ -2,17 +2,7 @@ package main
 
 import (
 	"fmt"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
-)
-
-const (
-	GSTATE_PLAYER_INPUT = iota
-	GSTATE_PROJECTILE_MOVEMENT
-	GSTATE_MOBS_DECISION
-	GSTATE_MOBS_ACTION
-	GSTATE_WORLD_MOVEMENT
-	GSTATE_RESET_TO_ZERO // this state should be reset to 0
 )
 
 type game struct {

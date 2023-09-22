@@ -67,7 +67,7 @@ func (g *game) updatePlayerWeaponState() {
 		wpn.state = wStateIdle
 	}
 	if wpn.state == wStateFiring && ticksSinceFiring < 3 {
-		g.scene.Camera.OnScreenVerticalOffset += 3
+		g.scene.Camera.OnScreenVerticalOffset += rnd.Intn(4) + 1
 	}
 	if wpn.state == wStateIdle || ticksSinceFiring > 3 {
 		g.scene.Camera.OnScreenVerticalOffset = 0

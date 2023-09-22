@@ -2,6 +2,13 @@ package main
 
 import "math"
 
+func makeUnitVector(fx, fy, tx, ty float64) (float64, float64) {
+	tx -= fx
+	ty -= fy
+	length := math.Sqrt(tx*tx + ty*ty)
+	return tx / length, ty / length
+}
+
 func rotateVectorRandomly(vx, vy, maxDegrees float64) (float64, float64) {
 	randomDegrees := rnd.Float64()*maxDegrees - maxDegrees/2
 	radians := randomDegrees * 3.1415926 / 180.0

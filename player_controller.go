@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -120,35 +118,12 @@ func (g *game) shootAsPlayer() {
 	g.player.weaponInHands.lastTickShot = g.currentTick
 	g.player.weaponInHands.state = wStateFiring
 	weapStatic := g.player.weaponInHands.static
+	dx, dy := g.player.GetDirectionVector()
 	for i := 0; i < g.player.weaponInHands.static.shotsPerShot; i++ {
 		if weapStatic.firesProjectile != nil {
-			dx, dy := g.player.GetDirectionVector()
-			dx, dy = rotateVectorRandomlyGauss(dx, dy, weapStatic.spreadDegrees)
-			g.scene.things.PushBack(
-				g.newProjectile(
-					g.player.x, g.player.y, g.scene.Camera.GetVerticalCoordWithBob()-0.1,
-					dx, dy,
-					weapStatic.firesProjectile,
-				),
-			)
+			g.doProjectileAttack(weapStatic.firesProjectile, g.player, dx, dy, weapStatic.spreadDegrees)
 		} else if weapStatic.firesHitscan != nil {
-			dx, dy := g.player.GetDirectionVector()
-			dx, dy = rotateVectorRandomlyGauss(dx, dy, weapStatic.spreadDegrees)
-			hitX, hitY, hitMob := g.scene.traceAttackRay(g.player.x, g.player.y, dx, dy, weapStatic.firesHitscan.maxLength)
-			if hitMob != nil {
-				fmt.Printf("Hit the %+v\n", hitMob)
-				hitMob.hitpoints -= weapStatic.firesHitscan.damage
-			}
-			g.scene.things.PushBack(&decoration{
-				x:                 hitX,
-				y:                 hitY,
-				remainingLifetime: 3,
-				spriteCode:        weapStatic.firesHitscan.hitDecorationSpriteCode,
-				width:             0.1,
-				height:            0.1,
-				blocksMovement:    false,
-				blocksProjectiles: false,
-			})
+			g.doHitscanAttack(weapStatic.firesHitscan, g.player, dx, dy, weapStatic.spreadDegrees)
 		} else {
 			panic("Wat")
 		}

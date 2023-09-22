@@ -134,7 +134,7 @@ func (g *game) shootAsPlayer() {
 		} else if weapStatic.firesHitscan != nil {
 			dx, dy := g.player.GetDirectionVector()
 			dx, dy = rotateVectorRandomlyGauss(dx, dy, weapStatic.spreadDegrees)
-			hitX, hitY, hitMob := g.scene.traceRay(g.player.x, g.player.y, dx, dy, weapStatic.firesHitscan.maxLength)
+			hitX, hitY, hitMob := g.scene.traceAttackRay(g.player.x, g.player.y, dx, dy, weapStatic.firesHitscan.maxLength)
 			if hitMob != nil {
 				fmt.Printf("Hit the %+v\n", hitMob)
 				hitMob.hitpoints -= weapStatic.firesHitscan.damage

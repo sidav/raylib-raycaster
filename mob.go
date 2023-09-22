@@ -8,7 +8,8 @@ import (
 type mobStateCode uint8
 
 const (
-	mobStateIdle mobStateCode = iota
+	mobStateSleeping mobStateCode = iota
+	mobStateIdle
 	mobStateAttacking
 	mobStateMoving
 	mobStatePain
@@ -62,10 +63,14 @@ func (t *mob) dyingAnimationEnded() bool {
 func (t *mob) GetSprite() *raycaster.SpriteStruct {
 	var framesArr [][2]int
 	switch t.state {
-	case mobStateIdle:
+	case mobStateSleeping, mobStateIdle:
 		framesArr = t.static.idleFrames
 	case mobStateDying:
-		return spritesAtlas[t.static.spriteCode][t.ticksSinceStateChange/mobTicksPerDyingFrame]
+		return spritesAtlas[t.static.spriteCode][t.static.dyingFrames[t.ticksSinceStateChange/mobTicksPerDyingFrame]]
+	case mobStateMoving:
+		return spritesAtlas[t.static.spriteCode][t.static.movingFrames[t.ticksSinceStateChange/mobTicksPerMovingFrame%len(t.static.movingFrames)]]
+	default:
+		panic("State not implemented")
 	}
 	maxTick := framesArr[len(framesArr)-1][1]
 	for _, sdata := range framesArr {
@@ -77,15 +82,17 @@ func (t *mob) GetSprite() *raycaster.SpriteStruct {
 }
 
 type mobStatic struct {
-	name             string
-	spriteCode       string
-	corpseSpriteCode string
-	maxHitpoints     int
-	idleFrames       [][2]int
-	dyingFrames      []int
+	name                      string
+	spriteCode                string
+	corpseSpriteCode          string
+	maxHitpoints              int
+	speedPerTick              float64
+	idleFrames                [][2]int
+	dyingFrames, movingFrames []int
 }
 
 const mobTicksPerDyingFrame = 5
+const mobTicksPerMovingFrame = 5
 
 var sTableMobs = []*mobStatic{
 	{
@@ -93,15 +100,19 @@ var sTableMobs = []*mobStatic{
 		spriteCode:       "soldier",
 		corpseSpriteCode: "soldiercorpse",
 		maxHitpoints:     30,
+		speedPerTick:     0.07,
 		idleFrames:       [][2]int{{0, 30}, {1, 60}},
-		dyingFrames:      []int{2, 3, 4, 5},
+		dyingFrames:      []int{2, 3, 4},
+		movingFrames:     []int{5, 6, 7, 8},
 	},
 	{
 		name:             "Elite",
 		spriteCode:       "slayer",
 		corpseSpriteCode: "slayercorpse",
 		maxHitpoints:     50,
+		speedPerTick:     0.04,
 		idleFrames:       [][2]int{{0, 30}, {1, 60}},
-		dyingFrames:      []int{2, 3, 4, 5},
+		dyingFrames:      []int{2, 3, 4},
+		movingFrames:     []int{5, 6, 7, 8},
 	},
 }

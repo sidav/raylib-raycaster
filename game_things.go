@@ -13,7 +13,10 @@ func (g *game) actThings() {
 		case (*decoration):
 			needToRemove = g.actDecorations(node.Value.(*decoration))
 		case (*mob):
-			needToRemove = g.pushMobStates(node.Value.(*mob))
+			needToRemove = g.pushMobState(node.Value.(*mob))
+			if !needToRemove {
+				g.actMob(node.Value.(*mob))
+			}
 		}
 		if needToRemove {
 			g.scene.things.Remove(node)
@@ -52,29 +55,25 @@ func (g *game) actDecorations(dec *decoration) bool {
 	return false
 }
 
-func (g *game) pushMobStates(mob *mob) bool {
+func (g *game) pushMobState(mob *mob) bool {
 	if mob.hitpoints <= 0 && mob.state != mobStateDying {
 		mob.state = mobStateDying
 		mob.ticksSinceStateChange = 0
-	} else {
-		mob.ticksSinceStateChange++
-		if mob.state == mobStateDying && mob.dyingAnimationEnded() {
-			g.scene.things.PushBack(&decoration{
-				x:                 mob.x,
-				y:                 mob.y,
-				width:             1,
-				height:            1,
-				remainingLifetime: -1,
-				spriteCode:        mob.static.corpseSpriteCode,
-				blocksMovement:    false,
-				blocksProjectiles: false,
-			})
-			return true
-		}
+		return false
+	}
+	mob.ticksSinceStateChange++
+	if mob.state == mobStateDying && mob.dyingAnimationEnded() {
+		g.scene.things.PushBack(&decoration{
+			x:                 mob.x,
+			y:                 mob.y,
+			width:             1,
+			height:            1,
+			remainingLifetime: -1,
+			spriteCode:        mob.static.corpseSpriteCode,
+			blocksMovement:    false,
+			blocksProjectiles: false,
+		})
+		return true
 	}
 	return false
-}
-
-func (g *game) actMobs() {
-
 }

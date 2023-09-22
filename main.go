@@ -35,17 +35,18 @@ func main() {
 	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	renderer = &raycaster.Renderer{
-		RenderWidth:            RENDER_W,
-		RenderHeight:           RENDER_H,
-		ApplyTexturing:         true,
-		RenderFloors:           true,
-		RenderCeilings:         true,
-		MaxRayLength:           25,
-		MaxFogFraction:         1,
-		RayLengthForMaximumFog: 20,
-		FogR:                   64,
-		FogG:                   48,
-		FogB:                   32,
+		RenderWidth:             RENDER_W,
+		RenderHeight:            RENDER_H,
+		ApplyTexturing:          true,
+		RenderFloors:            true,
+		RenderCeilings:          true,
+		MinRenderedSpriteHeight: 3,
+		MaxRayLength:            25,
+		MaxFogFraction:          1,
+		RayLengthForMaximumFog:  20,
+		FogR:                    64,
+		FogG:                    48,
+		FogB:                    32,
 	}
 	renderer.SetBackend(drawBackend)
 	loadResources()

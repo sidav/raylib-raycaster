@@ -61,7 +61,7 @@ func (g *game) movePlayerByFacing(backwards bool) {
 	}
 	dx, dy := g.player.GetDirectionVector()
 	tx, ty := trueCoordsToTileCoords(g.player.x+5*factor*dx, g.player.y+5*factor*dy)
-	if g.scene.IsTilePassable(tx, ty) && g.scene.GetMobAtTileCoords(tx, ty) == nil {
+	if g.scene.IsTilePassable(tx, ty) && g.scene.GetMobInRadius(g.player.x+factor*dx, g.player.y+factor*dy, 0.7) == nil {
 		g.player.x += factor * dx
 		g.player.y += factor * dy
 		g.scene.Camera.MoveForward(factor)

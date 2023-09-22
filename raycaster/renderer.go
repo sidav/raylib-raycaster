@@ -20,6 +20,7 @@ type Renderer struct {
 	ApplyTexturing               bool
 	RenderFloors, RenderCeilings bool
 	MaxRayLength                 float64
+	MinRenderedSpriteHeight      int
 
 	MaxFogFraction, RayLengthForMaximumFog float64
 	FogR, FogG, FogB                       uint8 // color for ambient "fog", (0,0,0) is for darkness

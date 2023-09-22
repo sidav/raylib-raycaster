@@ -26,10 +26,6 @@ func (r *Renderer) renderThings() {
 	}
 
 	for node := things.Front(); node != nil; node = node.Next() {
-		// unneeded?
-		//if node.Value == nil {
-		//	continue
-		//}
 		t := node.Value.(Spritable)
 		tx, ty, tz := t.GetCoords()
 		// check if the Sprite is faced by Camera
@@ -48,7 +44,7 @@ func (r *Renderer) renderThings() {
 		// Perspective projection of Spritable's center. 0.5 is vertical center of the screen
 		osy := int(float64(r.RenderHeight)*(0.5-r.aspectFactor*(tz-r.cam.GetVerticalCoordWithBob())/transformY)) + r.cam.OnScreenVerticalOffset
 		osh := int(height * r.aspectFactor * float64(r.RenderHeight) / transformY)
-		if osw > r.RenderWidth {
+		if osw > r.RenderWidth || osh < r.MinRenderedSpriteHeight {
 			continue
 		}
 

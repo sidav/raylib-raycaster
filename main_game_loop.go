@@ -57,7 +57,7 @@ func (g *game) actProjectiles() {
 			proj := node.Value.(*projectile)
 			newX := proj.x + (proj.dirX * proj.static.speed)
 			newY := proj.y + (proj.dirY * proj.static.speed)
-			hitMob := g.scene.GetMobAtRealCoords(newX, newY)
+			hitMob := g.scene.GetMobInRadius(newX, newY, proj.static.sizeFactor/2)
 			if hitMob != nil {
 				g.scene.things.Remove(node)
 				hitMob.hitpoints -= proj.static.damage

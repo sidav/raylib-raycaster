@@ -62,66 +62,65 @@ func (t *mob) changeState(s mobStateCode) {
 }
 
 func (t *mob) dyingAnimationEnded() bool {
-	ticksNeeded := mobTicksPerDyingFrame * len(t.static.dyingFrames)
+	ticksNeeded := t.static.ticksPerDyingFrame * len(t.static.dyingFrames)
 	return t.ticksSinceStateChange >= ticksNeeded
 }
 
 func (t *mob) attackingAnimationEnded() bool {
-	ticksNeeded := mobTicksPerAttackingFrame * len(t.static.attackingFrames)
+	ticksNeeded := t.static.ticksPerAttackingFrame * len(t.static.attackingFrames)
 	return t.ticksSinceStateChange >= ticksNeeded
 }
 
 func (t *mob) GetSprite() *raycaster.SpriteStruct {
-	var framesArr [][2]int
+	var framesArr []int
+	var ticksPerFrame int
 	switch t.state {
 	case mobStateSleeping, mobStateIdle:
 		framesArr = t.static.idleFrames
+		ticksPerFrame = t.static.ticksPerIdleFrame
 	case mobStateDying:
-		return spritesAtlas[t.static.spriteCode][t.static.dyingFrames[t.ticksSinceStateChange/mobTicksPerDyingFrame]]
+		framesArr = t.static.dyingFrames
+		ticksPerFrame = t.static.ticksPerDyingFrame
 	case mobStateMoving:
-		return spritesAtlas[t.static.spriteCode][t.static.movingFrames[t.ticksSinceStateChange/mobTicksPerMovingFrame%len(t.static.movingFrames)]]
+		framesArr = t.static.movingFrames
+		ticksPerFrame = t.static.ticksPerMovingFrame
 	case mobStateAttacking:
-		return spritesAtlas[t.static.spriteCode][t.static.attackingFrames[t.ticksSinceStateChange/mobTicksPerAttackingFrame%len(t.static.attackingFrames)]]
+		framesArr = t.static.attackingFrames
+		ticksPerFrame = t.static.ticksPerAttackingFrame
 	default:
 		panic("State not implemented")
 	}
-	maxTick := framesArr[len(framesArr)-1][1]
-	for _, sdata := range framesArr {
-		if t.ticksSinceStateChange%maxTick < sdata[1] {
-			return spritesAtlas[t.static.spriteCode][sdata[0]]
-		}
-	}
-	panic("Frame calculation failure")
+	return spritesAtlas[t.static.spriteCode][framesArr[t.ticksSinceStateChange/ticksPerFrame%len(framesArr)]]
 }
 
 type mobStatic struct {
-	name                                       string
-	spriteCode                                 string
-	corpseSpriteCode                           string
-	maxHitpoints                               int
-	speedPerTick                               float64
-	idleFrames                                 [][2]int
-	dyingFrames, movingFrames, attackingFrames []int
+	name                                                                               string
+	spriteCode                                                                         string
+	corpseSpriteCode                                                                   string
+	maxHitpoints                                                                       int
+	speedPerTick                                                                       float64
+	idleFrames, dyingFrames, movingFrames, attackingFrames                             []int
+	ticksPerIdleFrame, ticksPerDyingFrame, ticksPerMovingFrame, ticksPerAttackingFrame int
 
 	spreadDegrees   float64
 	firesProjectile *projectileStatic
 }
 
-const mobTicksPerDyingFrame = 5
-const mobTicksPerMovingFrame = 5
-const mobTicksPerAttackingFrame = 7
-
 var sTableMobs = []*mobStatic{
 	{
-		name:             "Soldier",
-		spriteCode:       "soldier",
-		corpseSpriteCode: "soldiercorpse",
-		maxHitpoints:     30,
-		speedPerTick:     0.065,
-		idleFrames:       [][2]int{{0, 30}, {1, 60}},
-		dyingFrames:      []int{2, 3, 4},
-		movingFrames:     []int{5, 6, 7, 8},
-		attackingFrames:  []int{9, 10},
+		name:                   "Soldier",
+		spriteCode:             "soldier",
+		corpseSpriteCode:       "soldiercorpse",
+		maxHitpoints:           30,
+		speedPerTick:           0.065,
+		idleFrames:             []int{0, 1},
+		ticksPerIdleFrame:      25,
+		dyingFrames:            []int{2, 3, 4},
+		ticksPerDyingFrame:     5,
+		movingFrames:           []int{5, 6, 7, 8},
+		ticksPerMovingFrame:    5,
+		attackingFrames:        []int{9, 10},
+		ticksPerAttackingFrame: 7,
 
 		spreadDegrees: 5,
 		firesProjectile: &projectileStatic{
@@ -133,15 +132,19 @@ var sTableMobs = []*mobStatic{
 		},
 	},
 	{
-		name:             "Elite",
-		spriteCode:       "slayer",
-		corpseSpriteCode: "slayercorpse",
-		maxHitpoints:     50,
-		speedPerTick:     0.035,
-		idleFrames:       [][2]int{{0, 30}, {1, 60}},
-		dyingFrames:      []int{2, 3, 4},
-		movingFrames:     []int{5, 6, 7, 8},
-		attackingFrames:  []int{9, 10},
+		name:                   "Elite",
+		spriteCode:             "slayer",
+		corpseSpriteCode:       "slayercorpse",
+		maxHitpoints:           50,
+		speedPerTick:           0.035,
+		idleFrames:             []int{0, 1},
+		ticksPerIdleFrame:      25,
+		dyingFrames:            []int{2, 3, 4},
+		ticksPerDyingFrame:     5,
+		movingFrames:           []int{5, 6, 7, 8},
+		ticksPerMovingFrame:    5,
+		attackingFrames:        []int{9, 10},
+		ticksPerAttackingFrame: 7,
 
 		spreadDegrees: 5,
 		firesProjectile: &projectileStatic{

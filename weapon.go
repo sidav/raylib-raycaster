@@ -39,9 +39,10 @@ type weaponStatic struct {
 	ticksInFiringState int
 	firingFrames       [][2]int // array of: {frame number, max ticks since firing for this sprite to be the current one}
 
-	spreadDegrees      float64 // spread cone angle IN DEGREES
-	projectilesPerShot int
-	firesProjectile    *projectileStatic
+	spreadDegrees   float64 // spread cone angle IN DEGREES
+	shotsPerShot    int
+	firesProjectile *projectileStatic
+	firesHitscan    *hitScanAttack
 }
 
 var sTableWeapons = []*weaponStatic{
@@ -51,9 +52,9 @@ var sTableWeapons = []*weaponStatic{
 		ticksInFiringState: 20,
 		firingFrames:       [][2]int{{1, 5}, {2, 10}},
 		spreadDegrees:      3,
-		projectilesPerShot: 1,
+		shotsPerShot:       1,
 		firesProjectile: &projectileStatic{
-			spriteCode:  "projFireball",
+			spriteCode:  "projPlasma",
 			totalFrames: 1,
 			speed:       0.85,
 			damage:      30,
@@ -65,14 +66,12 @@ var sTableWeapons = []*weaponStatic{
 		spriteCode:         "pWeaponSmg",
 		ticksInFiringState: 2,
 		spreadDegrees:      6,
-		projectilesPerShot: 1,
+		shotsPerShot:       1,
 		firingFrames:       [][2]int{{1, 1}, {2, 10}},
-		firesProjectile: &projectileStatic{
-			spriteCode:  "projFireball",
-			totalFrames: 1,
-			speed:       0.7,
-			damage:      5,
-			sizeFactor:  0.1,
+		firesHitscan: &hitScanAttack{
+			hitDecorationSpriteCode: "projFireball",
+			damage:                  4,
+			maxLength:               10,
 		},
 	},
 	{
@@ -80,15 +79,12 @@ var sTableWeapons = []*weaponStatic{
 		spriteCode:         "pWeaponGun",
 		ticksInFiringState: 10,
 		spreadDegrees:      10,
-		projectilesPerShot: 5,
+		shotsPerShot:       7,
 		firingFrames:       [][2]int{{1, 1}, {2, 10}},
-		firesProjectile: &projectileStatic{
-			spriteCode:            "projPlasma",
-			totalFrames:           2,
-			speed:                 0.5,
-			changeFrameEveryTicks: 5,
-			damage:                4,
-			sizeFactor:            0.25,
+		firesHitscan: &hitScanAttack{
+			hitDecorationSpriteCode: "projFireball",
+			damage:                  3,
+			maxLength:               10,
 		},
 	},
 	{
@@ -97,7 +93,7 @@ var sTableWeapons = []*weaponStatic{
 		ticksInFiringState: 60,
 		firingFrames:       [][2]int{{1, 10}, {2, 35}},
 		spreadDegrees:      1,
-		projectilesPerShot: 1,
+		shotsPerShot:       1,
 		firesProjectile: &projectileStatic{
 			spriteCode:  "projAcid",
 			totalFrames: 1,

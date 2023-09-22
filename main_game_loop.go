@@ -39,6 +39,7 @@ func (g *game) gameLoop() {
 	for gameIsRunning && !rl.WindowShouldClose() {
 		g.workPlayerInput()
 		g.actProjectiles()
+		g.actDecorations()
 		g.decideMobs()
 		g.actMobs()
 		g.actTiles()
@@ -103,6 +104,19 @@ func (g *game) updatePlayerWeaponState() {
 	}
 }
 
+func (g *game) actDecorations() {
+	for node := g.scene.things.Front(); node != nil; node = node.Next() {
+		if dec, ok := node.Value.(*decoration); ok {
+			if dec.remainingLifetime > 0 {
+				dec.remainingLifetime--
+			}
+			if dec.remainingLifetime == 0 {
+				g.scene.things.Remove(node)
+			}
+		}
+	}
+}
+
 func (g *game) decideMobs() {
 	for node := g.scene.things.Front(); node != nil; node = node.Next() {
 		if mob, ok := node.Value.(*mob); ok {
@@ -115,6 +129,9 @@ func (g *game) decideMobs() {
 					g.scene.things.PushBack(&decoration{
 						x:                 mob.x,
 						y:                 mob.y,
+						width:             1,
+						height:            1,
+						remainingLifetime: -1,
 						spriteCode:        mob.static.corpseSpriteCode,
 						blocksMovement:    false,
 						blocksProjectiles: false,

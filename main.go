@@ -1,8 +1,9 @@
 package main
 
 import (
-	"math/rand"
 	"raylib-raycaster/backend"
+	"raylib-raycaster/lib/random"
+	"raylib-raycaster/lib/random/pcgrandom"
 	"raylib-raycaster/raycaster"
 	"time"
 
@@ -24,7 +25,7 @@ var (
 	gameIsRunning bool
 	renderer      *raycaster.Renderer
 	drawBackend   *backend.RaylibBackend // backend.RendererBackend
-	rnd           *rand.Rand
+	rnd           random.PRNG
 	tick          int
 )
 
@@ -32,7 +33,8 @@ func main() {
 	drawBackend = &backend.RaylibBackend{}
 	drawBackend.Init(WINDOW_W, WINDOW_H)
 	drawBackend.SetInternalResolution(int32(RENDER_W), int32(RENDER_H))
-	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
+	rnd = pcgrandom.NewPCG64()
+	rnd.SetSeed(int(time.Now().UnixNano()))
 
 	renderer = &raycaster.Renderer{
 		RenderWidth:             RENDER_W,

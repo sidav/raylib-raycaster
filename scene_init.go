@@ -3,9 +3,7 @@ package main
 import (
 	"container/list"
 	bspdung "raylib-raycaster/lib/bsp_dung"
-	pcgr "raylib-raycaster/lib/random/pcgrandom"
 	"raylib-raycaster/raycaster"
-	"time"
 )
 
 func (s *Scene) init() (float64, float64) {
@@ -14,9 +12,6 @@ func (s *Scene) init() (float64, float64) {
 		MinRoomSide:            3,
 		RoomWForRandomDropping: 8,
 	}
-	rnd := pcgr.NewPCG64()
-	rnd.SetSeed(int(time.Now().UnixNano()))
-	// rnd.SetSeed(1)
 	mp := gen.Generate(rnd, 40, 40)
 	s.gameMap = make([][]tile, 0)
 	camX, camY := 0.0, 0.0
@@ -45,6 +40,13 @@ func (s *Scene) init() (float64, float64) {
 	}
 
 	s.Camera = raycaster.CreateCamera(camX, camY, VIEW_ANGLE, 4, 1)
+	s.placeMobs()
+	s.placeItems()
+	s.finalizeTiles()
+	return camX, camY
+}
+
+func (s *Scene) placeMobs() {
 	for i := 0; i < 50; i++ {
 		x, y := 0, 0
 		for !s.IsTilePassable(x, y) || s.GetMobAtTileCoords(x, y) != nil {
@@ -54,9 +56,6 @@ func (s *Scene) init() (float64, float64) {
 		rx, ry := tileCoordsToTrueCoords(x, y)
 		s.things.PushBack(createMob(rx, ry, sTableMobs[rnd.Rand(len(sTableMobs))]))
 	}
-	s.placeItems()
-	s.finalizeTiles()
-	return camX, camY
 }
 
 func (s *Scene) placeItems() {
@@ -64,11 +63,11 @@ func (s *Scene) placeItems() {
 		x, y := 0, 0
 		// TODO: don't place items on items
 		for !s.IsTilePassable(x, y) {
-			x = rnd.Intn(len(s.gameMap))
-			y = rnd.Intn(len(s.gameMap[0]))
+			x = rnd.Rand(len(s.gameMap))
+			y = rnd.Rand(len(s.gameMap[0]))
 		}
 		rx, ry := tileCoordsToTrueCoords(x, y)
-		s.things.PushBack(createPickupable(rx, ry, sTablePickupables[rnd.Intn(len(sTablePickupables))]))
+		s.things.PushBack(createPickupable(rx, ry, sTablePickupables[rnd.Rand(len(sTablePickupables))]))
 	}
 }
 

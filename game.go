@@ -41,7 +41,35 @@ func (g *game) gameLoop() {
 func (g *game) actTiles() {
 	for x := range g.scene.gameMap {
 		for y := range g.scene.gameMap[x] {
-			g.scene.gameMap[x][y].actOnState()
+			t := &(g.scene.gameMap[x][y])
+			if t.state == tileStateIdle {
+				continue
+			}
+			speed := 0.1
+			switch t.state {
+			case tileStateOpening:
+				t.tileSlideAmount += speed
+				if t.isOpened() {
+					t.state = tileStateWaitsToClose
+					t.tileStateCooldown = 75
+				}
+			case tileStateWaitsToClose:
+				t.tileStateCooldown--
+				if t.tileStateCooldown == 0 {
+					t.state = tileStateClosing
+				}
+			case tileStateClosing:
+				t.tileSlideAmount -= speed
+				px, py := trueCoordsToTileCoords(g.player.x, g.player.y)
+				if px == x && py == y || g.scene.GetMobAtTileCoords(x, y) != nil {
+					t.state = tileStateOpening
+					continue
+				}
+				if t.isClosed() {
+					t.tileSlideAmount = 0
+					t.state = tileStateIdle
+				}
+			}
 		}
 	}
 }

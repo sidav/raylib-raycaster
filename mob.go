@@ -102,8 +102,16 @@ type mobStatic struct {
 	idleFrames, dyingFrames, movingFrames, attackingFrames                             []int
 	ticksPerIdleFrame, ticksPerDyingFrame, ticksPerMovingFrame, ticksPerAttackingFrame int
 
+	aiData *mobAiStatic
+
 	spreadDegrees   float64
 	firesProjectile *projectileStatic
+}
+
+type mobAiStatic struct {
+	aggressiveness               int // chance (%) to repeat attack right after previous one
+	chanceToAttack, chanceToMove int
+	averageMoveSteps             int
 }
 
 var sTableMobs = []*mobStatic{
@@ -121,6 +129,13 @@ var sTableMobs = []*mobStatic{
 		ticksPerMovingFrame:    5,
 		attackingFrames:        []int{9, 10},
 		ticksPerAttackingFrame: 7,
+
+		aiData: &mobAiStatic{
+			aggressiveness:   10,
+			chanceToAttack:   40,
+			chanceToMove:     60,
+			averageMoveSteps: 15,
+		},
 
 		spreadDegrees: 5,
 		firesProjectile: &projectileStatic{
@@ -145,6 +160,13 @@ var sTableMobs = []*mobStatic{
 		ticksPerMovingFrame:    5,
 		attackingFrames:        []int{9, 10},
 		ticksPerAttackingFrame: 4,
+
+		aiData: &mobAiStatic{
+			aggressiveness:   65,
+			chanceToAttack:   5,
+			chanceToMove:     10,
+			averageMoveSteps: 25,
+		},
 
 		spreadDegrees: 5,
 		firesProjectile: &projectileStatic{

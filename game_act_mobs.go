@@ -11,9 +11,9 @@ func (g *game) actMob(m *mob) {
 		}
 	case mobStateIdle:
 		percent := rnd.Intn(100)
-		if percent < 5 {
+		if percent < m.static.aiData.chanceToAttack {
 			m.changeState(mobStateAttacking)
-		} else if percent < 15 {
+		} else if percent < m.static.aiData.chanceToAttack+m.static.aiData.chanceToMove {
 			m.changeState(mobStateMoving)
 		}
 	case mobStateMoving:
@@ -30,7 +30,7 @@ func (g *game) actMobAttacking(m *mob) {
 		g.doProjectileAttack(m.static.firesProjectile, m, dx, dy, m.static.spreadDegrees)
 	}
 	if m.attackingAnimationEnded() {
-		if rnd.Intn(100) < 50 {
+		if rnd.Intn(100) < m.static.aiData.aggressiveness {
 			m.changeState(mobStateAttacking)
 		} else {
 			m.changeState(mobStateIdle)
@@ -46,7 +46,7 @@ func (g *game) actMobMoving(m *mob) {
 			diry: dy,
 		}
 	} else {
-		if rnd.Intn(20) == 0 {
+		if rnd.Intn(m.static.aiData.averageMoveSteps) == 0 {
 			m.changeState(mobStateIdle)
 			return
 		}

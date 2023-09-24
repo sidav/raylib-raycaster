@@ -45,8 +45,13 @@ type projectileStatic struct {
 	totalFrames           int
 	changeFrameEveryTicks int
 	damage                int
-	destroysOnMobHit      bool
-	speedIsRandom         bool // if true, treats speed as max speed
+	penetratesMobs        bool
 	speed                 float64
 	sizeFactor            float64
+
+	leavesTrail           bool
+	trailSpriteCode       string
+	trailParticlesPerStep int
+	trailLifetime         int
+	trailSizeFactor       float64
 }

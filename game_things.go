@@ -31,21 +31,34 @@ func (g *game) actThings() {
 
 func (g *game) actProjectiles(proj *projectile) bool {
 	speed := proj.static.speed
-	if proj.static.speedIsRandom {
-		speed *= float64(rnd.Rand(10000)) / 10000
-	}
 	newX := proj.x + (proj.dirX * speed)
 	newY := proj.y + (proj.dirY * speed)
 	hitMob := g.scene.GetMobInRadius(newX, newY, proj.static.sizeFactor/2, proj.creator)
 	if hitMob != nil {
 		hitMob.hitpoints -= proj.static.damage
-		if proj.static.destroysOnMobHit {
+		if !proj.static.penetratesMobs {
 			return true
 		}
 	}
 	if !g.scene.areRealCoordsPassable(newX, newY) {
 		return true
 	} else {
+		if proj.static.leavesTrail {
+			trailStep := 1 / float64(proj.static.trailParticlesPerStep+1)
+			for i := trailStep; i < 1; i += trailStep {
+				trailx := proj.x + (proj.dirX * speed / i)
+				traily := proj.y + (proj.dirY * speed / i)
+				g.scene.things.PushBack(&decoration{
+					x:                 trailx,
+					y:                 traily,
+					z:                 proj.z,
+					spriteCode:        proj.static.trailSpriteCode,
+					width:             proj.static.trailSizeFactor,
+					height:            proj.static.trailSizeFactor,
+					remainingLifetime: proj.static.trailLifetime,
+				})
+			}
+		}
 		proj.x, proj.y = newX, newY
 		if proj.static.changeFrameEveryTicks > 0 {
 			if (g.currentTick-proj.createdAt)%proj.static.changeFrameEveryTicks == 0 {
@@ -85,6 +98,7 @@ func (g *game) pushMobState(mob *mob) bool {
 		g.scene.things.PushBack(&decoration{
 			x:                 mob.x,
 			y:                 mob.y,
+			z:                 0.5,
 			width:             1,
 			height:            1,
 			remainingLifetime: -1,

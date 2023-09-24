@@ -3,7 +3,7 @@ package main
 import "raylib-raycaster/raycaster"
 
 type decoration struct {
-	x, y              float64
+	x, y, z           float64
 	spriteCode        string
 	width, height     float64
 	blocksMovement    bool
@@ -12,7 +12,7 @@ type decoration struct {
 }
 
 func (d *decoration) GetCoords() (float64, float64, float64) {
-	return d.x, d.y, 0.5
+	return d.x, d.y, d.z
 }
 
 func (d *decoration) GetWidthAndHeightFactors() (float64, float64) {

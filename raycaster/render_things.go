@@ -1,13 +1,20 @@
 package raycaster
 
+import (
+	"container/list"
+	"fmt"
+	"math"
+)
+
 func (r *Renderer) renderThings() {
 	camx, camy := r.cam.getCoords()
 	things := r.scene.GetListOfThings()
 
 	// sort by distance from camera (descending)
 	// WARNING: breaks things list order!
-	for node1 := things.Front(); node1 != nil && node1.Next() != nil; node1 = node1.Next() {
-
+	var next *list.Element
+	for node1 := things.Front(); node1 != nil && node1.Next() != nil; node1 = next {
+		next = node1.Next()
 		t1 := node1.Value.(Spritable)
 		t1x, t1y, _ := t1.GetCoords()
 		dist1 := (camx-t1x)*(camx-t1x) + (camy-t1y)*(camy-t1y)
@@ -24,6 +31,20 @@ func (r *Renderer) renderThings() {
 			}
 		}
 	}
+
+	// DEBUG CHECK, SAFE TO REMOVE:
+	currDist := math.MaxFloat64
+	for node := things.Front(); node != nil; node = node.Next() {
+		t := node.Value.(Spritable)
+		t1x, t1y, _ := t.GetCoords()
+		dist := (camx-t1x)*(camx-t1x) + (camy-t1y)*(camy-t1y)
+		if dist <= currDist {
+			currDist = dist
+		} else {
+			panic(fmt.Sprintf("SORTING FAILED: %.2f should be lower than %.2f", dist, currDist))
+		}
+	}
+	// DEBUG CHECK ENDED
 
 	for node := things.Front(); node != nil; node = node.Next() {
 		t := node.Value.(Spritable)

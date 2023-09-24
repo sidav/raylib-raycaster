@@ -11,17 +11,15 @@ import (
 )
 
 const (
-	WINDOW_W = 1366
-	WINDOW_H = 768
-	RENDER_W = WINDOW_W / PIXEL_SIZE
-	RENDER_H = WINDOW_H / PIXEL_SIZE
-
 	PIXEL_SIZE = 4
-
 	VIEW_ANGLE = 110
 )
 
 var (
+	WINDOW_W      = 1366
+	WINDOW_H      = 768
+	RENDER_W      = WINDOW_W / PIXEL_SIZE
+	RENDER_H      = WINDOW_H / PIXEL_SIZE
 	gameIsRunning bool
 	renderer      *raycaster.Renderer
 	drawBackend   *backend.RaylibBackend // backend.RendererBackend
@@ -31,7 +29,7 @@ var (
 
 func main() {
 	drawBackend = &backend.RaylibBackend{}
-	drawBackend.Init(WINDOW_W, WINDOW_H)
+	drawBackend.Init(int32(WINDOW_W), int32(WINDOW_H))
 	drawBackend.SetInternalResolution(int32(RENDER_W), int32(RENDER_H))
 	rnd = pcgrandom.NewPCG64()
 	rnd.SetSeed(int(time.Now().UnixNano()))

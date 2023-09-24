@@ -22,6 +22,7 @@ func (g *game) init() {
 			static: sTableWeapons[0],
 		},
 	}
+	g.scene.things.PushFront(g.player)
 	gameIsRunning = true
 }
 

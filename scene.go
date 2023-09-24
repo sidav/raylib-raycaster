@@ -15,11 +15,15 @@ func (s *Scene) AreGridCoordsValid(x, y int) bool {
 	return x >= 0 && y >= 0 && x < len(s.gameMap) && y < len(s.gameMap[0])
 }
 
-func (s *Scene) GetMobInRadius(fromX, fromY, radius float64) *mob {
+func (s *Scene) GetMobInRadius(fromX, fromY, radius float64, ignored *mob) *mob {
 	for m := s.things.Front(); m != nil; m = m.Next() {
 		switch m.Value.(type) {
 		case *mob:
-			mrx, mry, _ := m.Value.(*mob).GetCoords()
+			mb := m.Value.(*mob)
+			if mb == ignored {
+				continue
+			}
+			mrx, mry, _ := mb.GetCoords()
 			mrx -= fromX
 			mry -= fromY
 			// TODO: real mob size here (not 0.5)

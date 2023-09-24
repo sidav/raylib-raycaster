@@ -9,10 +9,11 @@ type projectile struct {
 	dirX, dirY float64
 	createdAt  int // tick
 	frameNum   int
+	creator    *mob
 	static     *projectileStatic
 }
 
-func (g *game) newProjectile(x, y, z, dirX, dirY float64, s *projectileStatic) *projectile {
+func (g *game) newProjectile(x, y, z, dirX, dirY float64, s *projectileStatic, creator *mob) *projectile {
 	return &projectile{
 		x:         x,
 		y:         y,
@@ -21,6 +22,7 @@ func (g *game) newProjectile(x, y, z, dirX, dirY float64, s *projectileStatic) *
 		dirY:      dirY,
 		createdAt: g.currentTick,
 		static:    s,
+		creator:   creator,
 	}
 }
 

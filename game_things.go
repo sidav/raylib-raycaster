@@ -13,6 +13,9 @@ func (g *game) actThings() {
 		case (*decoration):
 			needToRemove = g.actDecorations(node.Value.(*decoration))
 		case (*mob):
+			if node.Value.(*mob) == g.player {
+				continue
+			}
 			needToRemove = g.pushMobState(node.Value.(*mob))
 			if !needToRemove {
 				g.actMob(node.Value.(*mob))
@@ -27,7 +30,7 @@ func (g *game) actThings() {
 func (g *game) actProjectiles(proj *projectile) bool {
 	newX := proj.x + (proj.dirX * proj.static.speed)
 	newY := proj.y + (proj.dirY * proj.static.speed)
-	hitMob := g.scene.GetMobInRadius(newX, newY, proj.static.sizeFactor/2)
+	hitMob := g.scene.GetMobInRadius(newX, newY, proj.static.sizeFactor/2, proj.creator)
 	if hitMob != nil {
 		hitMob.hitpoints -= proj.static.damage
 		return true

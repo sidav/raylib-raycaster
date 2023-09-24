@@ -9,12 +9,13 @@ type hitScanAttack struct {
 }
 
 // returns last UNHIT coords and hit mob if any
-func (s *Scene) traceAttackRay(fromx, fromy, dirx, diry, maxLength float64) (float64, float64, *mob) {
+func (s *Scene) traceAttackRay(attacker *mob, dirx, diry, maxLength float64) (float64, float64, *mob) {
 	const step = 0.1
+	fromx, fromy, _ := attacker.GetCoords()
 	length := 0.0
 	for {
 		nextX, nextY := fromx+dirx*step, fromy+diry*step
-		mob := s.GetMobInRadius(nextX, nextY, 0)
+		mob := s.GetMobInRadius(nextX, nextY, 0, attacker)
 		if mob != nil || !s.areRealCoordsPassable(nextX, nextY) {
 			return fromx, fromy, mob
 		}

@@ -40,7 +40,7 @@ func main() {
 		ApplyTexturing:          true,
 		RenderFloors:            true,
 		RenderCeilings:          true,
-		MinRenderedSpriteHeight: 3,
+		MinRenderedSpriteHeight: 2,
 		MaxRayLength:            25,
 		MaxFogFraction:          1,
 		RayLengthForMaximumFog:  20,

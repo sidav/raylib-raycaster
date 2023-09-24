@@ -51,7 +51,9 @@ func (g *game) actMobMoving(m *mob) {
 			return
 		}
 	}
-	if g.scene.areRealCoordsPassable(m.x+m.intent.dirx, m.y+m.intent.diry) {
+	if g.scene.areRealCoordsPassable(m.x+m.intent.dirx, m.y+m.intent.diry) &&
+		g.scene.GetMobInRadius(m.x+m.intent.dirx, m.y+m.intent.diry, 0.4, m) == nil {
+
 		m.x += m.intent.dirx * m.static.speedPerTick
 		m.y += m.intent.diry * m.static.speedPerTick
 	} else {

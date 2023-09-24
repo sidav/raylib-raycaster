@@ -35,18 +35,6 @@ func (s *Scene) GetMobInRadius(fromX, fromY, radius float64, ignored *mob) *mob 
 	return nil
 }
 
-func (s *Scene) removeMob(mb *mob) {
-	for m := s.things.Front(); m != nil; m = m.Next() {
-		switch m.Value.(type) {
-		case *mob:
-			if m.Value.(*mob) == mb {
-				s.things.Remove(m)
-				return
-			}
-		}
-	}
-}
-
 func (s *Scene) GetMobAtTileCoords(tx, ty int) *mob {
 	for m := s.things.Front(); m != nil; m = m.Next() {
 		switch m.Value.(type) {

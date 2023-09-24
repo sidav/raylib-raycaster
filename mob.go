@@ -145,8 +145,8 @@ var sTableMobs = []*mobStatic{
 		firesProjectile: &projectileStatic{
 			spriteCode:  "projFireball",
 			totalFrames: 1,
-			speed:       0.7,
-			damage:      15,
+			speed:       0.3,
+			damage:      6,
 			sizeFactor:  0.1,
 		},
 	},
@@ -174,10 +174,10 @@ var sTableMobs = []*mobStatic{
 
 		spreadDegrees: 5,
 		firesProjectile: &projectileStatic{
-			spriteCode:  "projFireball",
+			spriteCode:  "projAcid",
 			totalFrames: 1,
-			speed:       0.7,
-			damage:      15,
+			speed:       0.3,
+			damage:      14,
 			sizeFactor:  0.1,
 		},
 	},

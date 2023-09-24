@@ -13,10 +13,16 @@ func (s *Scene) traceAttackRay(attacker *mob, dirx, diry, maxLength float64) (fl
 	const step = 0.1
 	fromx, fromy, _ := attacker.GetCoords()
 	length := 0.0
-	for {
+	var mob *mob
+	for stepNum := 0; ; stepNum++ {
 		nextX, nextY := fromx+dirx*step, fromy+diry*step
-		mob := s.GetMobInRadius(nextX, nextY, 0, attacker)
-		if mob != nil || !s.areRealCoordsPassable(nextX, nextY) {
+		if stepNum%2 == 0 { // slight optimization
+			mob = s.GetMobInRadius(nextX, nextY, 0, attacker)
+			if mob != nil {
+				return fromx, fromy, mob
+			}
+		}
+		if !s.areRealCoordsPassable(nextX, nextY) {
 			return fromx, fromy, mob
 		}
 		fromx = nextX

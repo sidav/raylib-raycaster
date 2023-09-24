@@ -54,8 +54,22 @@ func (s *Scene) init() (float64, float64) {
 		rx, ry := tileCoordsToTrueCoords(x, y)
 		s.things.PushBack(createMob(rx, ry, sTableMobs[rnd.Rand(len(sTableMobs))]))
 	}
+	s.placeItems()
 	s.finalizeTiles()
 	return camX, camY
+}
+
+func (s *Scene) placeItems() {
+	for i := 0; i < 25; i++ {
+		x, y := 0, 0
+		// TODO: don't place items on items
+		for !s.IsTilePassable(x, y) {
+			x = rnd.Intn(len(s.gameMap))
+			y = rnd.Intn(len(s.gameMap[0]))
+		}
+		rx, ry := tileCoordsToTrueCoords(x, y)
+		s.things.PushBack(createPickupable(rx, ry, sTablePickupables[rnd.Intn(len(sTablePickupables))]))
+	}
 }
 
 func (s *Scene) finalizeTiles() {

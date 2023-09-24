@@ -9,6 +9,10 @@ func makeUnitVector(fx, fy, tx, ty float64) (float64, float64) {
 	return tx / length, ty / length
 }
 
+func areFloatCoordsInRange(fx, fy, tx, ty, rang float64) bool {
+	return (tx-fx)*(tx-fx)+(ty-fy)*(ty-fy) <= rang*rang
+}
+
 func rotateVectorRandomly(vx, vy, maxDegrees float64) (float64, float64) {
 	randomDegrees := rnd.Float64()*maxDegrees - maxDegrees/2
 	radians := randomDegrees * 3.1415926 / 180.0

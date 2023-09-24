@@ -11,7 +11,9 @@ func (g *game) actThings() {
 		case (*projectile):
 			needToRemove = g.actProjectiles(node.Value.(*projectile))
 		case (*decoration):
-			needToRemove = g.actDecorations(node.Value.(*decoration))
+			needToRemove = g.actDecoration(node.Value.(*decoration))
+		case (*pickupable):
+			needToRemove = g.actPickupable(node.Value.(*pickupable))
 		case (*mob):
 			if node.Value.(*mob) == g.player {
 				continue
@@ -48,7 +50,7 @@ func (g *game) actProjectiles(proj *projectile) bool {
 	return false
 }
 
-func (g *game) actDecorations(dec *decoration) bool {
+func (g *game) actDecoration(dec *decoration) bool {
 	if dec.remainingLifetime > 0 {
 		dec.remainingLifetime--
 	}
@@ -56,6 +58,15 @@ func (g *game) actDecorations(dec *decoration) bool {
 		return true
 	}
 	return false
+}
+
+func (g *game) actPickupable(pk *pickupable) bool {
+	if !areFloatCoordsInRange(pk.x, pk.y, g.player.x, g.player.y, 0.6) {
+		return false
+	}
+	g.player.hitpoints += pk.static.givesHealth
+	g.player.hitpoints += pk.static.givesArmor
+	return true
 }
 
 func (g *game) pushMobState(mob *mob) bool {

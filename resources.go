@@ -61,6 +61,9 @@ func loadResources() {
 	loadSprite("slayer", "resources/sprites/characters/SlayerAttack2.png")
 	loadSprite("slayercorpse", "resources/sprites/characters/SlayerDeath4.png")
 
+	loadSprite("food", "resources/sprites/lab/sprites/i_health.png")
+	loadSprite("armor", "resources/sprites/lab/sprites/i_armor.png")
+
 	loadUIImage("pWeaponPistol", "resources/sprites/lab/guns/gun2.png")
 	loadUIImage("pWeaponPistol", "resources/sprites/lab/guns/gun2b.png")
 	loadUIImage("pWeaponPistol", "resources/sprites/lab/guns/gun2c.png")

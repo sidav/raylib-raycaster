@@ -2,7 +2,7 @@ package raycaster
 
 import "time"
 
-type timer struct {
+type Timer struct {
 	beginning       time.Time
 	currentlyPassed time.Duration
 
@@ -11,7 +11,7 @@ type timer struct {
 	meanPassedAccumulated time.Duration
 }
 
-func (b *timer) newMeasure() {
+func (b *Timer) NewMeasure() {
 	const calculateMeanIn = 100
 	if b.totalMeasures == calculateMeanIn {
 		b.meanPassedCalculated = b.meanPassedAccumulated / time.Duration(calculateMeanIn)
@@ -24,17 +24,17 @@ func (b *timer) newMeasure() {
 	b.beginning = time.Now()
 }
 
-func (b *timer) measure(f func()) {
+func (b *Timer) Measure(f func()) {
 	start := time.Now()
 	f()
 	b.currentlyPassed += time.Since(start)
 	b.meanPassedAccumulated += time.Since(start)
 }
 
-func (b *timer) getMeasuredPassedTime() time.Duration {
+func (b *Timer) GetMeasuredPassedTime() time.Duration {
 	return b.currentlyPassed
 }
 
-func (b *timer) getMeanPassedTime() time.Duration {
+func (b *Timer) GetMeanPassedTime() time.Duration {
 	return b.meanPassedCalculated
 }

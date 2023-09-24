@@ -32,7 +32,7 @@ type Renderer struct {
 	rayDistancesBuffer []float64
 
 	// time measure
-	columnsTimer, wallsTimer, floorCeilingTimer, thingsTimer timer
+	columnsTimer, wallsTimer, floorCeilingTimer, thingsTimer Timer
 
 	// surface to draw in
 	surface surface
@@ -55,29 +55,35 @@ func (r *Renderer) RenderFrame(scene Scene) {
 		r.rayDistancesBuffer = make([]float64, r.RenderWidth)
 		r.surface.create(r.RenderWidth, r.RenderHeight)
 	}
-	r.surface.clear()
+
+	tmr := Timer{}
+	tmr.NewMeasure()
+	tmr.Measure(func() {
+		r.surface.clear()
+	})
+	debugPrintf("Surface cleared in %d ms.\n", int(r.columnsTimer.GetMeasuredPassedTime()/time.Millisecond))
 
 	r.renderUntexturedFloorAndCeiling()
 
-	r.columnsTimer.newMeasure()
-	r.wallsTimer.newMeasure()
-	r.floorCeilingTimer.newMeasure()
+	r.columnsTimer.NewMeasure()
+	r.wallsTimer.NewMeasure()
+	r.floorCeilingTimer.NewMeasure()
 	// r.renderWalls()
-	r.columnsTimer.measure(func() { r.castRays() })
+	r.columnsTimer.Measure(func() { r.castRays() })
 	debugPrintf("Columns rendered in %d ms (mean %d ms).\n",
-		int(r.columnsTimer.getMeasuredPassedTime()/time.Millisecond),
-		int(r.columnsTimer.getMeanPassedTime()/time.Millisecond),
+		int(r.columnsTimer.GetMeasuredPassedTime()/time.Millisecond),
+		int(r.columnsTimer.GetMeanPassedTime()/time.Millisecond),
 	)
 	debugPrintf(" -> Walls: %d ms (mean %dms), floors/ceilings %dms (mean %d ms).\n",
-		int(r.wallsTimer.getMeasuredPassedTime()/time.Millisecond),
-		int(r.wallsTimer.getMeanPassedTime()/time.Millisecond),
-		int(r.floorCeilingTimer.getMeasuredPassedTime()/time.Millisecond),
-		int(r.floorCeilingTimer.getMeanPassedTime()/time.Millisecond),
+		int(r.wallsTimer.GetMeasuredPassedTime()/time.Millisecond),
+		int(r.wallsTimer.GetMeanPassedTime()/time.Millisecond),
+		int(r.floorCeilingTimer.GetMeasuredPassedTime()/time.Millisecond),
+		int(r.floorCeilingTimer.GetMeanPassedTime()/time.Millisecond),
 	)
 
-	r.thingsTimer.newMeasure()
-	r.thingsTimer.measure(func() { r.renderThings() })
-	debugPrintf("Things rendered in %d ms.\n", int(r.thingsTimer.getMeasuredPassedTime()/time.Millisecond))
+	r.thingsTimer.NewMeasure()
+	r.thingsTimer.Measure(func() { r.renderThings() })
+	debugPrintf("Things rendered in %d ms.\n", int(r.thingsTimer.GetMeasuredPassedTime()/time.Millisecond))
 
 	elapsedTime := int(time.Since(startTimeTotal) / time.Millisecond)
 	if elapsedTime != 0 {

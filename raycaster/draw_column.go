@@ -27,16 +27,16 @@ func (rend *Renderer) drawColumn(column *castedRay, rayDirectionX, rayDirectionY
 	}
 
 	if !rend.ApplyTexturing {
-		rend.wallsTimer.measure(func() {
+		rend.wallsTimer.Measure(func() {
 			rend.drawColumnUntextured(column, lowestPixelY, highestPixelY)
 		})
 	} else {
-		rend.wallsTimer.measure(func() {
+		rend.wallsTimer.Measure(func() {
 			rend.drawColumnTextured(column, rayDirectionX, rayDirectionY, columnHeight, verticalSlideOffset, lowestPixelY, highestPixelY)
 		})
 		// Render floor/ceiling only once per column
 		if !column.deferred {
-			rend.floorCeilingTimer.measure(func() {
+			rend.floorCeilingTimer.Measure(func() {
 				rend.renderTexturedFloorAndCeilingColumn(column.x, lowestPixelY, highestPixelY)
 			})
 		}

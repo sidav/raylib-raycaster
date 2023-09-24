@@ -20,8 +20,6 @@ type castedRay struct {
 	deferred bool
 }
 
-const maxThreads = 4
-
 func (r *Renderer) castRays() {
 	wg := &sync.WaitGroup{}
 	for x := 0; x < r.RenderWidth; x++ {
@@ -29,7 +27,7 @@ func (r *Renderer) castRays() {
 
 		go r.castRayForColumn(x, wg)
 
-		if (x+1)%maxThreads == 0 {
+		if (x+1)%r.RenderThreads == 0 {
 			wg.Wait()
 		}
 	}

@@ -1,5 +1,9 @@
 package raycaster
 
+import (
+	"sync"
+)
+
 type surfaceColor struct {
 	r, g, b uint8
 }
@@ -15,8 +19,23 @@ func (s *surface) create(w, h int) {
 	}
 }
 
-func (s *surface) clear() {
-	s.fillRect(0, 0, len(s.pixels), len(s.pixels[0]), surfaceColor{0, 0, 0})
+func (s *surface) clear(threads int) {
+	wg := &sync.WaitGroup{}
+	for x := 0; x < len(s.pixels); x++ {
+		wg.Add(1)
+
+		go s.clearColumn(x, wg)
+
+		if (x+1)%threads == 0 {
+			wg.Wait()
+		}
+	}
+	wg.Wait()
+}
+
+func (s *surface) clearColumn(x int, wg *sync.WaitGroup) {
+	defer wg.Done()
+	s.verticalLine(x, 0, len(s.pixels[0]), surfaceColor{0, 0, 0})
 }
 
 func (s *surface) putPixel(x, y int, color surfaceColor) {

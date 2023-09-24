@@ -15,6 +15,7 @@ type Renderer struct {
 	cam     *Camera
 	scene   Scene
 
+	RenderThreads                int
 	RenderWidth                  int
 	RenderHeight                 int
 	ApplyTexturing               bool
@@ -32,7 +33,7 @@ type Renderer struct {
 	rayDistancesBuffer []float64
 
 	// time measure
-	columnsTimer, wallsTimer, floorCeilingTimer, thingsTimer Timer
+	surfaceClearTimer, columnsTimer, wallsTimer, floorCeilingTimer, thingsTimer Timer
 
 	// surface to draw in
 	surface surface
@@ -51,17 +52,19 @@ func (r *Renderer) RenderFrame(scene Scene) {
 
 	r.aspectFactor = float64(r.RenderWidth) / (1.35 * float64(r.RenderHeight)) // * r.cam.distToScreenPlane
 
+	if r.RenderThreads == 0 {
+		r.RenderThreads = 1
+	}
 	if len(r.rayDistancesBuffer) == 0 || len(r.rayDistancesBuffer) != r.RenderWidth {
 		r.rayDistancesBuffer = make([]float64, r.RenderWidth)
 		r.surface.create(r.RenderWidth, r.RenderHeight)
 	}
 
-	tmr := Timer{}
-	tmr.NewMeasure()
-	tmr.Measure(func() {
-		r.surface.clear()
+	r.surfaceClearTimer.NewMeasure()
+	r.surfaceClearTimer.Measure(func() {
+		r.surface.clear(r.RenderThreads)
 	})
-	debugPrintf("Surface cleared in %d ms.\n", int(r.columnsTimer.GetMeasuredPassedTime()/time.Millisecond))
+	debugPrintf("Surface cleared in %d ms.\n", int(r.surfaceClearTimer.GetMeasuredPassedTime()/time.Millisecond))
 
 	r.renderUntexturedFloorAndCeiling()
 

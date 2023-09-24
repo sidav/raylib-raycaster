@@ -35,6 +35,7 @@ func main() {
 	rnd.SetSeed(int(time.Now().UnixNano()))
 
 	renderer = &raycaster.Renderer{
+		RenderThreads:           8,
 		RenderWidth:             RENDER_W,
 		RenderHeight:            RENDER_H,
 		ApplyTexturing:          true,

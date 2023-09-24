@@ -51,6 +51,9 @@ func (g *game) workPlayerInput() {
 	if rl.IsKeyPressed(rl.KeyFour) {
 		g.player.weaponInHands = &weapon{static: sTableWeapons[3]}
 	}
+	if rl.IsKeyPressed(rl.KeyFive) {
+		g.player.weaponInHands = &weapon{static: sTableWeapons[4]}
+	}
 }
 
 func (g *game) movePlayerByFacing(backwards bool) {

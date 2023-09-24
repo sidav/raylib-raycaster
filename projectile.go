@@ -45,6 +45,8 @@ type projectileStatic struct {
 	totalFrames           int
 	changeFrameEveryTicks int
 	damage                int
+	destroysOnMobHit      bool
+	speedIsRandom         bool // if true, treats speed as max speed
 	speed                 float64
 	sizeFactor            float64
 }

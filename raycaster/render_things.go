@@ -27,6 +27,12 @@ func (r *Renderer) renderThings() {
 
 	for node := things.Front(); node != nil; node = node.Next() {
 		t := node.Value.(Spritable)
+		currSprite := t.GetSprite()
+		if currSprite == nil {
+			debugPrintf("No sprite given; skipping...")
+			continue
+		}
+
 		tx, ty, tz := t.GetCoords()
 		// check if the Sprite is faced by Camera
 		xRelative, yRelative := tx-camx, ty-camy
@@ -49,7 +55,6 @@ func (r *Renderer) renderThings() {
 		}
 
 		// render the Sprite column-wise, like a Texture
-		currSprite := t.GetSprite()
 		for x := 0; x < osw; x++ {
 			onScreenX := x + osx - osw/2
 			if onScreenX < 0 || onScreenX > r.RenderWidth-1 || r.rayDistancesBuffer[onScreenX] < transformY {

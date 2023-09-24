@@ -72,6 +72,10 @@ func (t *mob) attackingAnimationEnded() bool {
 }
 
 func (t *mob) GetSprite() *raycaster.SpriteStruct {
+	if t.static.spriteCode == "" {
+		// may be useful for unrenderable things (for now it is Player)
+		return nil
+	}
 	var framesArr []int
 	var ticksPerFrame int
 	switch t.state {

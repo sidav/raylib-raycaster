@@ -15,12 +15,15 @@ type game struct {
 func (g *game) init() {
 	g.scene = &Scene{}
 	px, py := g.scene.init()
-	g.player = &mob{
-		x: px,
-		y: py,
-		weaponInHands: &weapon{
-			static: sTableWeapons[0],
+	g.player = createMob(
+		px, py, &mobStatic{
+			name:         "Player",
+			maxHitpoints: 100,
+			speedPerTick: 0.065,
 		},
+	)
+	g.player.weaponInHands = &weapon{
+		static: sTableWeapons[0],
 	}
 	g.scene.things.PushFront(g.player)
 	gameIsRunning = true

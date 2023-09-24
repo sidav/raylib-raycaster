@@ -5,7 +5,6 @@ import (
 )
 
 const (
-	playerMovementSpeed = 0.075
 	playerRotationSpeed = 5 // degrees
 )
 
@@ -56,7 +55,7 @@ func (g *game) workPlayerInput() {
 
 func (g *game) movePlayerByFacing(backwards bool) {
 	const checkDistanceFactor = 5.0
-	factor := playerMovementSpeed
+	factor := g.player.static.speedPerTick
 	if backwards {
 		factor = -factor
 	}
@@ -73,7 +72,7 @@ func (g *game) movePlayerByFacing(backwards bool) {
 }
 
 func (g *game) movePlayerSideways(right bool) {
-	factor := playerMovementSpeed
+	factor := g.player.static.speedPerTick
 	if right {
 		factor = -factor
 	}

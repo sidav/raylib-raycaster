@@ -41,7 +41,6 @@ func (rend *Renderer) drawColumn(column *castedRay, rayDirectionX, rayDirectionY
 			})
 		}
 	}
-	rend.rayDistancesBuffer[column.x] = column.perpWallDist
 }
 
 func (rend *Renderer) drawColumnUntextured(column *castedRay, lowestPixelY, highestPixelY int) {

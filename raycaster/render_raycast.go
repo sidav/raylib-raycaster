@@ -169,7 +169,11 @@ func (r *Renderer) castRayForColumn(x int, wg *sync.WaitGroup) {
 	column.perpWallDist = rayToScreenLength
 	column.side = side
 	r.drawColumn(&column, rayDirectionX, rayDirectionY)
+	r.rayDistancesBuffer[x] = column.perpWallDist
 	if deferredColumn.deferred {
+		if deferredColumn.vertSlide < 0.6 {
+			r.rayDistancesBuffer[x] = deferredColumn.perpWallDist
+		}
 		r.drawColumn(&deferredColumn, rayDirectionX, rayDirectionY)
 	}
 }
